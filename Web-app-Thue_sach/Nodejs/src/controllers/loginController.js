@@ -1,0 +1,77 @@
+import pool from "../config/connectDB";
+import loginService from "../services/loginService";
+import axios from "../axios";
+
+
+let getLoginPage = async (req, res) => {
+    return res.render('auth/login.ejs');
+}
+
+let getApiLogin = async (req, res) => {
+    let email = req.body.email;
+    let matkhau = req.body.matkhau;
+    if (!email || !matkhau) {
+        return res.status(500).json({
+            errcode: 1,
+            message: 'vui lòng nhập gmail và mật khẩu'
+        })
+    }
+
+    let adminData = await loginService.handleAdminLogin(email, matkhau);
+    return res.status(200).json({
+        errcode: adminData.errcode,
+        message: adminData.errMessage,
+        admin: adminData.admin ? adminData.admin : { 'a': 'abc' }
+
+    })
+}
+
+
+let getLogin = async (req, res) => {
+    let email = req.body.email;
+    let matkhau = req.body.matkhau;
+    let adminData = await axios.post('/api-adminlogin', { email, matkhau });
+    if (adminData.errcode == 0) {
+        req.session.adminData = adminData.admin.email;
+        console.log(req.session.adminData)
+        return res.redirect('home');
+    } else {
+        let data = adminData.errMessage;
+    }
+}
+
+
+let dataAccount = async (req, res) => {
+    let adminID = req.query.adminID;
+    console.log(adminID)
+    if (!adminID) {
+        return res.status(500).json({
+            errcode: 1,
+            message: 'missing inputs parmeter'
+        })
+    }
+    let detailAdmin = await loginService.detailAcount(adminID)
+    return res.status(200).json({
+        admin: detailAdmin.admin
+    })
+
+}
+
+
+let getDetailAccount = async (req, res) => {
+    let adminID = req.query.adminID;
+    let detailAdmin = await axios.get('/api-admin?adminID=' + adminID);
+    if (detailAdmin) {
+        detailAdmin = detailAdmin.admin;
+        return res.render('auth/detailAccount.ejs', { detailAdmin: detailAdmin });
+    }
+}
+
+
+module.exports = {
+    getLoginPage,
+    getLogin,
+    getDetailAccount,
+    getApiLogin,
+    dataAccount
+}
