@@ -3,6 +3,7 @@ const isLogin = async (req, res, next) => {
     try {
         if (req.session.adminData) {
             res.locals.adminData = req.session.adminData;
+
         } else {
 
             res.redirect('/');
@@ -13,6 +14,9 @@ const isLogin = async (req, res, next) => {
 
     }
 }
+
+
+
 
 const isLogout = async (req, res, next) => {
     try {

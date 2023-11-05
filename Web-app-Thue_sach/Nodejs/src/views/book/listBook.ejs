@@ -35,46 +35,121 @@
                                 <!-- Data Tables -->
                                 <div class="col-12">
                                     <div class="card">
+                                        <div>
+                                            <form action="">
+                                                <input value="<%= name %>" type="text" name="name" />
+                                                <button type="submit">tìm</button>
+                                            </form>
+                                        </div>
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <thead class="table-light">
                                                     <tr>
+                                                        <th class="text-truncate">STT</th>
                                                         <th class="text-truncate">Hình</th>
                                                         <th class="text-truncate">Tên</th>
-                                                        <th class="text-truncate">Tác giả</th>
+                                                        <th class="text-truncate">Loại</th>
+                                                        <th class="text-truncate">Thể Loại </th>
+                                                        <th class="text-truncate">Người Đăng</th>
+                                                        <th class="text-truncate">Tác Giả</th>
+                                                        <th class="text-truncate">Trạng Thái</th>
                                                         <th class="text-truncate">Action</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="avatar avatar-sm me-3">
-                                                                    <img src="../../public/img/avatars/1.png"
-                                                                        class="rounded-circle" />
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="text-truncate">
-                                                            Jordan Stevenson
-                                                        </td>
-                                                        <td class="text-truncate">
-                                                            Admin
-                                                        </td>
+                                                <%if(errcode==1) {%>
+                                                    <tbody>
+                                                        <div>
+                                                            <td class="text-truncate">
+                                                                <%=message %>
+                                                            </td>
+                                                        </div>
+                                                        <% }else { %>
+                                                    </tbody>
+                                                    <tbody>
 
+                                                        <% for(let i=0; i < data.length; i++) { %>
+                                                            <tr>
+                                                                <td class="text-truncate">
+                                                                    <%= i+1 %>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <div class="avatar avatar-sm me-3">
+                                                                            <img src="../../public/img/avatars/1.png"
+                                                                                class="rounded-circle" />
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <%= data[i].ten %>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <%= data[i].loai===0 ? "Thuê" : "Đọc online" %>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <%= data[i].theloai %>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <%= data[i].nguoidang %>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <%= data[i].tentacgia %>
+                                                                </td>
+                                                                <td class="text-truncate">
+                                                                    <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                                </td>
+                                                                <td>
+                                                                    <a class="btnDeleteCategory"
+                                                                        data-id="<%= data[i].id %>" href="">
+                                                                        <span
+                                                                            class="badge bg-label-warning rounded-pill">Duyệt</span></a>
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
 
-                                                        <td><a href="/get-detailbook"><span
-                                                                    class="badge bg-label-warning rounded-pill">Chi
-                                                                    tiết</span></a>
-                                                            <span
-                                                                class="badge bg-label-warning rounded-pill">Duyệt</span>
-                                                        </td>
-                                                    </tr>
-
-
-                                                </tbody>
+                                                    </tbody>
+                                                    <% } %>
                                             </table>
+                                            <div class="col-sm-12 col-md-6">
+                                                <div class="dataTables_paginate paging_simple_numbers">
+                                                    <ul class="pagination">
+                                                        <%if(name) {%>
+                                                            <li>
+                                                                <a class="page-link"
+                                                                    href="/book?page=<%= page > 1 ? page - 1 : 1%>&name=<%= name%>">&laquo;</a>
+                                                            </li>
+                                                            <%for(i=1; i<=totalPage; i++){ %>
+                                                                <li class="paginate_button page-item "><a
+                                                                        class="page-link"
+                                                                        href="?page=<%=i %>&name=<%= name%>">
+                                                                        <%= i %>
+                                                                    </a></li>
+                                                                <%} %>
+                                                                    <li><a class="page-link"
+                                                                            href="/book?page=<%= page < totalPage ? page + 1 : totalPage%>&name=<%= name%>">&raquo;</a>
+                                                                    </li>
+                                                                    <%}else{%>
+                                                                        <li>
+                                                                            <a class="page-link"
+                                                                                href="/book?page=<%= page > 1 ? page - 1 : 1  %>">&laquo;</a>
+                                                                        </li>
+                                                                        <%for(i=1; i<=totalPage; i++){ %>
+                                                                            <li class="paginate_button page-item ">
+                                                                                <a class="page-link"
+                                                                                    href="?page=<%=i %>">
+                                                                                    <%= i %>
+                                                                                </a>
+                                                                            </li>
+                                                                            <%} %>
+                                                                                <li><a class="page-link"
+                                                                                        href="/book?page=<%= page < totalPage ? page + 1 : totalPage  %>">&raquo;</a>
+                                                                                </li>
+                                                                                <%} %>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
                                 <!--/ Data Tables -->
@@ -103,3 +178,8 @@
 </body>
 
 </html>
+<div class="d-flex align-items-center">
+    <div class="avatar avatar-sm me-3">
+        <img src="../../public/img/avatars/1.png" class="rounded-circle" />
+    </div>
+</div

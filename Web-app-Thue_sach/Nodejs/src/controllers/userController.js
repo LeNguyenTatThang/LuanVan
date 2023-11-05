@@ -1,5 +1,5 @@
 
-// import userService from "../services/userService"
+import userService from "../services/userService"
 
 let getUser = async (req, res) => {
 
@@ -45,28 +45,30 @@ let getUser = async (req, res) => {
 // }
 
 
-// //api
-// let handlelogin = async (req, res) => {
-//     let email = req.body.email;
-//     let password = req.body.password;
-//     if (!email || !password) {
-//         return res.status(500).json({
-//             errcode: 1,
-//             message: 'missing inputs parmeter'
-//         })
-//     }
+//api
 
-//     let userData = await userService.handleUserLogin(email, password);
+// api đăng nhập user
+let usserLogin = async (req, res) => {
+    let email = req.body.email;
+    let matkhau = req.body.matkhau;
+    if (!email || !matkhau) {
+        return res.status(500).json({
+            errcode: 1,
+            message: 'vui lòng nhập gmail và mật khẩu'
+        })
+    }
+    let userData = await userService.handleUserLogin(email, matkhau);
+    return res.status(200).json({
+        errcode: userData.errcode,
+        message: userData.errMessage,
+        user: userData.user ? userData.user : { 'a': 'abc' }
+
+    })
+}
 
 
-//     return res.status(200).json({
-//         errcode: userData.errcode,
-//         message: userData.errMessage,
-//         user: userData.user ? userData.user : { 'a': 'abc' }
-
-//     })
-// }
 
 module.exports = {
-    getUser
+    getUser,
+    usserLogin
 }

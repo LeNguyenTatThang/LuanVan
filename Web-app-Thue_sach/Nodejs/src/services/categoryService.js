@@ -27,8 +27,6 @@ let checkCategories = async (data) => {
         try {
             let data1 = data.trim();
             let data2 = data1.replace(/\s+/g, ' ');
-            console.log(data2)
-            console.log(data2)
             const [rows, fields] = await pool.execute('SELECT * FROM theloai where ten= ?', [data2])
             let categories = rows[0];
             if (categories) {
@@ -59,15 +57,11 @@ let getAllCategory = async (page, name) => {
             page = page > 0 ? Math.floor(page) : 1;
             page = page <= totalPage ? Math.floor(page) : totalPage;
             let start = (page - 1) * limit;
-            console.log(start)
             start = start > 0 ? start : 0;
-            console.log('hh' + start)
             if (name) {
                 sql += " WHERE ten LIKE '%" + name + "%' "
             }
             const [rows, fields] = await pool.execute(sql + ' ' + 'order by id ASC LIMIT ' + start + ',' + limit)
-            console.log(rows)
-            console.log('kq :' + rows.length)
             if (rows.length === 0) {
                 data = {
                     totalPage,
@@ -95,45 +89,59 @@ let getAllCategory = async (page, name) => {
 
 
 
+// chi tiết thể loại
+let getCategoryInFoByID = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            const [rows, fields] = await pool.execute('SELECT * FROM theloai where id= ?', [id])
+            let dataCatetory = rows[0];
+            if (dataCatetory) {
+                data = {
+                    errcode: 0,
+                    dataCatetory,
+                    message: 'ok',
+                }
+            } else {
+                data = {
+                    errcode: 1,
+                    message: 'id không tồn tại',
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
-// let getCategoryInFoByID = (categoryID) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let categories = await db.category.findOne(
-//                 { where: { id: categoryID }, raw: true, }
-//             );
-//             if (categories) {
-//                 resolve(categories)
-//             } else {
-//                 resolve({})
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     })
-// }
-
-// let updateCatetory = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let categories = await db.category.findOne(
-//                 { where: { id: data.id } }
-//             );
-//             if (categories) {
-//                 categories.categoryName = data.categoryName;
-//                 await categories.save();
-//                 let allCategory = await db.category.findAll(
-//                     { raw: true }
-//                 );
-//                 resolve(allCategory);
-//             } else {
-//                 resolve();
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     })
-// }
+//cap nhat the loai
+let updateCatetory = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataCaterory = {}
+            const [rows, fields] = await pool.execute('SELECT * FROM theloai where id= ?', [data.id])
+            let check = rows[0]
+            console.log(check)
+            if (check) {
+                await pool.execute('update theloai set ten = ?, mota = ?, trangthai = ? where id = ?',
+                    [data.ten, data.mota, data.trangthai, data.id]);
+                dataCaterory = {
+                    errcode: 0,
+                    message: 'cập nhật thành công'
+                }
+            } else {
+                dataCaterory = {
+                    errcode: 1,
+                    message: 'cập nhật thất bại'
+                }
+            }
+            resolve(dataCaterory)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 let deleteCatetoryByID = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -142,12 +150,14 @@ let deleteCatetoryByID = (id) => {
             const [rows] = await pool.execute("SELECT theloai.id FROM theloai INNER JOIN sach ON theloai.id=sach.theloai_id WHERE theloai.id = ?", [id])
             if (rows[0]) {
                 data = {
+                    errcode: 1,
                     message: 'không thể xóa thể loại này'
                 }
             } else {
                 let sql = "DELETE from theloai WHERE id = ?"
                 await pool.execute(sql, [id])
                 data = {
+                    errcode: 0,
                     message: 'xóa thành công'
                 }
             }
@@ -161,5 +171,7 @@ let deleteCatetoryByID = (id) => {
 module.exports = {
     createCategory,
     getAllCategory,
-    deleteCatetoryByID
+    deleteCatetoryByID,
+    getCategoryInFoByID,
+    updateCatetory
 }

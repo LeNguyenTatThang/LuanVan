@@ -1,7 +1,7 @@
 // import db from "../models";
 // import bcrypt from "bcrypt";
 // const salt = bcrypt.genSaltSync(10);
-
+import pool from "../config/connectDB";
 // let getAllUser = () => {
 //     return new Promise(async (resolve, reject) => {
 //         try {
@@ -106,66 +106,64 @@
 // }
 
 // //api
-// let handleUserLogin = (email, password) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let userData = {};
-//             let isExit = await checkUserEmail(email);
-//             if (isExit) {
-//                 let user = await db.user.findOne({
-//                     attributes: ['email', 'roleId', 'password'],
-//                     where: { email: email }, raw: true
 
-//                 });
-//                 if (user) {
-//                     let check = await bcrypt.compareSync(password, user.password);
-//                     if (check) {
-//                         userData.errcode = 0;
-//                         userData.errMessage = 'ok';
-//                         delete user.password;
-//                         userData.user = user;
-//                     } else {
-//                         userData.errcode = 3;
-//                         userData.errMessage = 'wrong password';
-//                     }
-
-//                 } else {
-//                     userData.errcode = 2;
-//                     userData.errMessage = `User'a not found`
-//                 }
-
-//             } else {
-//                 userData.errcode = 1;
-//                 userData.errMessage = `your's Email inn't exist`
-
-//             }
-//             resolve(userData)
-//         } catch (e) {
-//             reject(e);
-//         }
-//     })
-// }
+// dang nhap user
+let handleUserLogin = (email, matkhau) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userData = {};
+            console.log(email);
+            console.log(matkhau);
+            let isCheck = await checkEmail(email);
+            if (isCheck) {
+                const [rows, fields] = await pool.execute('SELECT email,matkhau, loai FROM users where email= ?', [email])
+                let user = rows[0];
+                if (user) {
+                    if (user.matkhau == matkhau) {
+                        userData.errcode = 0;
+                        userData.errMessage = 'đăng nhập thành công';
+                        delete user.matkhau;
+                        userData.user = user;
+                    } else {
+                        userData.errcode = 3;
+                        userData.errMessage = "sai mật khẩu";
+                    }
+                } else {
+                    adminData.errcode = 4;
+                    adminData.errMessage = "sai email";
+                }
+            } else {
+                userData.errcode = 5;
+                userData.errMessage = "email không tồn tại";
+            }
+            resolve(userData)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 
 
-// let checkUserEmail = (email) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let user = await db.user.findOne({
-//                 where: { email: email }
-//             })
-//             if (user) {
-//                 resolve(true);
-//             } else {
-//                 resolve(false);
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
+let checkEmail = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT * FROM users where email= ?', [email])
+            let admin = rows[0];
+            if (admin) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
 
-//     })
-// }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
 
-// module.exports = {
-//     handleUserLogin, checkUserEmail, getAllUser, createUser, deleteUserByID, getUserFromByID, updateUser
-// }
+module.exports = {
+    handleUserLogin,
+    // checkUserEmail, getAllUser, createUser, deleteUserByID, getUserFromByID, updateUser
+}

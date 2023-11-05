@@ -33,7 +33,7 @@ let getLogin = async (req, res) => {
     let adminData = await axios.post('/api-adminlogin', { email, matkhau });
     if (adminData.errcode == 0) {
         req.session.adminData = adminData.admin.email;
-        console.log(req.session.adminData)
+
         return res.redirect('home');
     } else {
         let data = adminData.errMessage;
