@@ -7,11 +7,6 @@ let getUser = async (req, res) => {
 
 }
 
-// let postUser = async (req, res) => {
-//     let message = await userService.createUser(req.body);
-//     return res.redirect('/user');
-
-// }
 
 // let getAddUser = (req, res) => {
 //     return res.render('user/postUser.ejs');
@@ -48,7 +43,7 @@ let getUser = async (req, res) => {
 //api
 
 // api đăng nhập user
-let usserLogin = async (req, res) => {
+let userApiLogin = async (req, res) => {
     let email = req.body.email;
     let matkhau = req.body.matkhau;
     if (!email || !matkhau) {
@@ -62,13 +57,30 @@ let usserLogin = async (req, res) => {
         errcode: userData.errcode,
         message: userData.errMessage,
         user: userData.user ? userData.user : { 'a': 'abc' }
-
     })
+}
+
+//api đăng kí
+let Apiregister = async (req, res) => {
+    let user = req.body
+    if (!user.ten || !user.email || !user.matkhau) {
+        return res.status(500).json({
+            message: "email và mật khẩu không được để trống"
+        })
+    }
+    let userData = await userService.registerUser(user);
+
+    return res.status(200).json({
+        errcode: userData.errcode,
+        message: userData.message
+    })
+
 }
 
 
 
 module.exports = {
     getUser,
-    usserLogin
+    userApiLogin,
+    Apiregister
 }

@@ -9,7 +9,7 @@ import auth from "../middelware/auth";
 let router = express.Router();
 
 let initApiRouter = (app) => {
-    //Admin 
+    //Trang Admin 
 
     //dang nhap
     router.post('/api-adminlogin', loginController.getApiLogin);
@@ -22,8 +22,11 @@ let initApiRouter = (app) => {
     router.get('/get-api-CatetoryByID', categoryController.getApiFromCatetoryByID);
     router.put('/put-api-category', categoryController.putApiCategory)
 
+    //Trang User
+
     //User
-    router.get('/api-userLogin', userController.usserLogin);
+    router.get('/api-userLogin', userController.userApiLogin);
+    router.post('/api-userRegister', userController.Apiregister)
 
     //sach
     router.get('/get-api-listBook', bookController.getApiListBook)

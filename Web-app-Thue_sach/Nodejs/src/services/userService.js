@@ -1,7 +1,7 @@
-// import db from "../models";
-// import bcrypt from "bcrypt";
-// const salt = bcrypt.genSaltSync(10);
+import bcrypt from "bcrypt";
+const salt = bcrypt.genSaltSync(10);
 import pool from "../config/connectDB";
+
 // let getAllUser = () => {
 //     return new Promise(async (resolve, reject) => {
 //         try {
@@ -119,7 +119,8 @@ let handleUserLogin = (email, matkhau) => {
                 const [rows, fields] = await pool.execute('SELECT email,matkhau, loai FROM users where email= ?', [email])
                 let user = rows[0];
                 if (user) {
-                    if (user.matkhau == matkhau) {
+                    let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
+                    if (checkmk) {
                         userData.errcode = 0;
                         userData.errMessage = 'đăng nhập thành công';
                         delete user.matkhau;
@@ -144,7 +145,7 @@ let handleUserLogin = (email, matkhau) => {
 }
 
 
-
+// kiểm tra email
 let checkEmail = (email) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -155,7 +156,6 @@ let checkEmail = (email) => {
             } else {
                 resolve(false);
             }
-
         }
         catch (e) {
             reject(e);
@@ -163,7 +163,52 @@ let checkEmail = (email) => {
     });
 }
 
+// ma hoa mat khau
+let hashUsePassword = (matkhau) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let hashPassword = await bcrypt.hashSync(matkhau, salt);
+            resolve(hashPassword);
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+// đăng kí email
+let registerUser = async (user) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userData = {};
+            let check = await checkEmail(user.email)
+            console.log(user.matkhau)
+            let matkhau = await hashUsePassword(user.matkhau)
+            console.log(matkhau)
+            let loai = 1;
+            let hoatdong = 0;
+            if (check === false) {
+                await pool.execute('insert into users(ten, email, matkhau, loai, hoatdong) values (?, ?, ?, ?, ?)',
+                    [user.ten, user.email, matkhau, loai, hoatdong]);
+                userData = {
+                    errcode: 0,
+                    message: 'Đăng kí thành công'
+                }
+            } else {
+                userData = {
+                    errcode: 1,
+                    message: 'email đã tồn tại'
+                }
+            }
+            resolve(userData)
+            console.log(userData)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleUserLogin,
+    registerUser
     // checkUserEmail, getAllUser, createUser, deleteUserByID, getUserFromByID, updateUser
 }

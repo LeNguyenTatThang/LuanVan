@@ -1,6 +1,8 @@
 import { raw } from "body-parser";
 import pool from "../config/connectDB";
 
+
+// thêm thể loại
 let createCategory = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
