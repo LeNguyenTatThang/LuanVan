@@ -12,21 +12,26 @@ import Footer from './views/Footer';
 import Profile from './views/Profile';
 import TestApi from './views/TestApi';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { User } from './domain/index'
+import Addbook from './views/Addbook';
 function App() {
-  const [user, isUser] = useState < User > ({})
+  // const [user, isUser] = useState < User > ({})
 
 
-  const [userLogin, setUserLogin] = useState({})
-  const tokenUser = JSON.parse(localStorage.getItem('token'))
-  useEffect(() => {
-    if (tokenUser) {
-      isUser(tokenUser)
-    }
-    // setUserLogin(tokenUser)
-  }, [])
-  // console.log(use)
+  // const [userLogin, setUserLogin] = useState({})
+  // const tokenUser = JSON.parse(localStorage.getItem('token'))
+  // useEffect(() => {
+  //   if (tokenUser) {
+  //     isUser(tokenUser)
+  //   }
+  //   // setUserLogin(tokenUser)
+  // }, [])
+  // // console.log(use)
+  const [login, setLogin] = useState();
+  const userData = useSelector((state) => state.user)
+  const dispatch = useDispatch();
   return (
     <>
       <Router>
@@ -74,13 +79,25 @@ function App() {
                 </div></Link>
               </li>
               <li>
-                <Link to="/signin"><div className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                  <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  {user ? <> <span className="flex-1 ml-3 whitespace-nowrap">{user?.name}</span></> : <>  <span className="flex-1 ml-3 whitespace-nowrap">Tài khoản </span></>}
+                {userData.isLogin === true ? <>
+                  <Link to="/profiles"><div className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {/* {user ? <> <span className="flex-1 ml-3 whitespace-nowrap">{user?.name}</span></> : <>  <span className="flex-1 ml-3 whitespace-nowrap">Tài khoản </span></>} */}
+                    <span className="flex-1 ml-3 whitespace-nowrap">{userData.userInfo.name} </span>
+                  </div></Link>
 
-                </div></Link>
+                </> : <>
+                  <Link to="/signin"><div className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {/* {user ? <> <span className="flex-1 ml-3 whitespace-nowrap">{user?.name}</span></> : <>  <span className="flex-1 ml-3 whitespace-nowrap">Tài khoản </span></>} */}
+                    <span className="flex-1 ml-3 whitespace-nowrap">Tài khoản </span>
+                  </div></Link>
+                </>
+                }
               </li>
             </ul>
           </div>
@@ -95,6 +112,7 @@ function App() {
           <Route path="/authur" element={<div className="p-4 sm:ml-64"> <Authur /> </div>} />
           <Route path="/signup" element={<div className="p-4 sm:ml-64"> <SignUp /> </div>} />
           <Route path="/testapi" element={<div className="p-4 sm:ml-64"> <TestApi /> </div>} />
+          <Route path="/add-book" element={<div className="p-4 sm:ml-64"> <Addbook /> </div>} />
           <Route path="*" element={<div className="p-4 sm:ml-64"><NoPage /></div>} />
         </Routes>
         <div className="p-4 sm:ml-64"> <Footer /> </div>

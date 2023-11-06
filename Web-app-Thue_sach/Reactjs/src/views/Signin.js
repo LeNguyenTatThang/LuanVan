@@ -2,29 +2,37 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { loginApi } from '../Service/UserService';
 import { toast } from 'react-toastify';
-import { User } from '../domain/index'
+
+import { useDispatch, useSelector } from 'react-redux';
+import { LOGIN_SUCCESS } from '../app/userReducer';
 export default function Signin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const [isUser, setIsUser] = useState < User > ({});
+
+
+
+    const userData = useSelector((state) => state.user);
+
+    const dispatch = useDispatch();
+
     const handleLogin = async () => {
         if (!email || !password) {
             toast.error("Email hoặc mật khẩu trống!");
             return;
         }
-
         let res = await loginApi(email, password);
         if (res && res.token) {
             toast.success("Đăng nhập thành công");
             let b = res.token
-            let a = { name: 'nan', tuoi: '11', b }
+            let a = { name: 'Ken Dev', tuoi: '11', b }
             console.log(a)
             let token = localStorage.setItem("token", JSON.stringify(a));
-            setIsUser(token)
+            dispatch(LOGIN_SUCCESS(a))
+
             navigate('/', { replace: true });
             return token
-            console.log(email);
+
         } else {
             if (res && res.status === 400) {
                 toast.error(res.data.error);
