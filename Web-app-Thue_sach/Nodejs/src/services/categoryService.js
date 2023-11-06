@@ -9,10 +9,11 @@ let createCategory = async (data) => {
             let categoryData = {};
             let categories = await checkCategories(data.ten)
             if (categories === true) {
-                await pool.execute('insert into theloai(ten, mota, trangthai) values (?, ?, ?)',
+                const [rows] = await pool.execute('insert into theloai(ten, mota, trangthai) values (?, ?, ?)',
                     [data.ten, data.mota, data.trangthai]);
                 categoryData.errcode = 0;
                 categoryData.message = 'Thêm thể loại thành công'
+
             } else {
                 categoryData.errcode = 1;
                 categoryData.message = 'Thể loại này đã tồn tại';

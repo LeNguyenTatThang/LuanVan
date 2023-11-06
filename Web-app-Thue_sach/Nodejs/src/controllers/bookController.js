@@ -31,7 +31,7 @@ const getbook = async (req, res) => {
 
 
 // api lay ds sach ben admin
-let getApiListBook = async (req, res) => {
+const getApiListBook = async (req, res) => {
     let name = req.query.name;
     let page = req.query.page ? req.query.page : 1;
     let categoryData = await bookService.getAllBook(page, name);
@@ -45,16 +45,25 @@ let getApiListBook = async (req, res) => {
 
     })
 }
-
 let getDetailBook = (req, res) => {
     return res.render('book/detailBook.ejs');
 }
 
+//api them sach
+const postBook = async (req, res) => {
+    let book = req.body
+    let bookData = await bookService.createBook(book)
+    return res.status(200).json({
+        errcode: bookData.errcode,
+        message: bookData.message
+    })
 
+}
 
 module.exports = {
     getbook,
     getDetailBook,
-    getApiListBook
+    getApiListBook,
+    postBook
 }
 

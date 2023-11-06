@@ -30,7 +30,7 @@ let initApiRouter = (app) => {
 
     //sach
     router.get('/get-api-listBook', bookController.getApiListBook)
-
+    router.post('/post-api-book', bookController.postBook)
     //tac gia
     router.get('/post-api-author', authorController.postApiAuthor)
 
