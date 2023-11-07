@@ -4,56 +4,73 @@ import React from 'react'
 
 import { Link } from 'react-router-dom'
 
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
+// import { Carousel } from 'react-responsive-carousel';
 
-
+import image from './bookstore.jpg';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules'
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import 'swiper/css/autoplay';
 export default function HomeBook() {
   return (
     <>
 
-
-      <Carousel onSlideChange={slideIdx => console.log(slideIdx)}>
-
-        <div className='body'>
-          <div className='picture'>
-            <div className='banner'>Thuê / đọc sách tại trang chủ Thuê sách
-              <div className='main-banner'>
-                <h1>Chia sẻ những cuốn sách hay đến mọi người</h1></div>
-
-              <div className='end-button'>
-                <button className='btn-shopnow'>Đăng ký để chia sẻ sách</button>
-              </div>
-
+      {/* <div>
+        <div className="carousel w-full h-80">
+          <div id="slide1" className="carousel-item relative w-full">
+            <img src={image} className="w-full h-80" />
+            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+              <a className="btn btn-circle">❮</a>
+              <a className="btn btn-circle">❯</a>
+            </div>
+          </div>
+          <div id="slide2" className="carousel-item relative w-full">
+            <img src={image} className="w-full" />
+            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+              <div className="btn btn-circle">❮</div>
+              <div className="btn btn-circle">❯</div>
+            </div>
+          </div>
+          <div id="slide3" className="carousel-item relative w-full">
+            <img src={image} className="w-full" />
+            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+              <div className="btn btn-circle">❮</div>
+              <div className="btn btn-circle">❯</div>
+            </div>
+          </div>
+          <div id="slide4" className="carousel-item relative w-full">
+            <img src={image} className="w-full" />
+            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+              <div className="btn btn-circle">❮</div>
+              <div className="btn btn-circle">❯</div>
             </div>
           </div>
         </div>
-        <div className='body'>
-          <div className='picture'>
-            <div className='banner'>Thuê / đọc sách tại trang chủ Thuê sách
-              <div className='main-banner'>
-                <h1>Chia sẻ những cuốn sách hay đến mọi người</h1></div>
+      </div> */}
 
-              <div className='end-button'>
-                <button className='btn-shopnow'>Đăng ký để chia sẻ sách</button>
-              </div>
+      <Swiper
+        spaceBetween={50}
+        // slidesPerView={1}
+        loop={true}
+        // pagination={{ clickable: true }}
+        speed={1500}
+        modules={[Autoplay]}
+        autoplay={{
+          delay: 2500,
+        }}
+        slidesPerView={'auto'}
+        onSlideChange={() => console.log('slide change')}
+        onSwiper={(swiper) => console.log(swiper)}
+      >
+        <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
+        <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
+        <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
+        <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
+      </Swiper>
 
-            </div>
-          </div>
-        </div><div className='body'>
-          <div className='picture'>
-            <div className='banner'>Thuê / đọc sách tại trang chủ Thuê sách
-              <div className='main-banner'>
-                <h1>Chia sẻ những cuốn sách hay đến mọi người</h1></div>
-
-              <div className='end-button'>
-                <button className='btn-shopnow'>Đăng ký để chia sẻ sách</button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </Carousel>
       <div className="max-w-screen-xl mx-auto p-2 sm:p-10 md:p-4">
         <div className="border-b mb-5 flex justify-between text-sm">
 
