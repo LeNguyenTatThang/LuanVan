@@ -5,7 +5,6 @@ let handleAdminLogin = (email, matkhau) => {
         try {
             let adminData = {};
             let isExit = await checkEmail(email);
-            console.log(isExit)
             if (isExit) {
                 const [rows, fields] = await pool.execute('SELECT email,matkhau, loai FROM users where email= ?', [email])
                 let admin = rows[0];
@@ -13,16 +12,16 @@ let handleAdminLogin = (email, matkhau) => {
                     if (admin.matkhau == matkhau) {
                         if (admin.loai === 0) {
                             adminData.errcode = 0;
-                            adminData.errMessage = 'ok';
+                            adminData.errMessage = 'đăng nhập thành công';
                             delete admin.matkhau;
                             adminData.admin = admin;
                         } else {
                             adminData.errcode = 1;
-                            adminData.errMessage = "ban ko co quyen truy cap";
+                            adminData.errMessage = "bạn không có quyền truy cập";
                         }
                     } else {
                         adminData.errcode = 3;
-                        adminData.errMessage = "sai mat khau";
+                        adminData.errMessage = "sai mật khẩu";
                     }
                 } else {
                     adminData.errcode = 4;
@@ -30,7 +29,7 @@ let handleAdminLogin = (email, matkhau) => {
                 }
             } else {
                 adminData.errcode = 5;
-                adminData.errMessage = "email khong ton tai";
+                adminData.errMessage = "email không tồn tại";
             }
             resolve(adminData)
         } catch (e) {

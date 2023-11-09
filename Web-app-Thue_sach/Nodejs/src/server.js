@@ -8,13 +8,16 @@ import cors from 'cors';
 var flash = require('connect-flash');
 require('dotenv').config();
 
+
 let app = express();
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.use(session({
-    secret: 'keyboard cat'
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
 }));
 app.use(flash());
 viewEngine(app);

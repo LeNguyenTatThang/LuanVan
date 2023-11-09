@@ -1,8 +1,8 @@
 
 const isLogin = async (req, res, next) => {
     try {
-        if (req.session.adminData) {
-            res.locals.adminData = req.session.adminData;
+        if (req.session.adminData1) {
+            res.locals.adminData = req.session.adminData1;
 
         } else {
 
@@ -20,7 +20,7 @@ const isLogin = async (req, res, next) => {
 
 const isLogout = async (req, res, next) => {
     try {
-        if (req.session.adminData) {
+        if (req.session.adminData1) {
             req.session.destroy(err => {
                 if (err) {
                     res.redirect('/home');

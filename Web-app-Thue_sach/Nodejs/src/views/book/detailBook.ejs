@@ -33,42 +33,74 @@
                             <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
                                 <h4 class="py-3 mb-4"><span class="text-muted fw-light">Thông tin sách</span></h4>
                                 <div class="card mb-4 center">
-                                    <div class="card-body">
-                                        <div class="user-avatar-section">
-                                            <div class=" d-flex align-items-center flex-column">
-                                                <img class="img-fluid rounded mb-3 mt-4" src="/img/dnt.jpg" height="120"
-                                                    width="120" alt="User avatar" />
-                                                <div class="user-info text-center">
-                                                    <h4>Đắc Nhân tâm</h4>
-                                                    <span class="badge bg-label-danger rounded-pill">Thuê</span>
+                                    <form action="/post-browsebook" method="post">
+                                        <div class="card-body">
+                                            <div class="user-avatar-section">
+                                                <div class=" d-flex align-items-center flex-column">
+                                                    <img class="img-fluid rounded mb-3 mt-4" src="/img/dnt.jpg"
+                                                        height="120" width="120" alt="User avatar" />
+                                                    <div class="user-info text-center">
+                                                        <h4>
+                                                            <%= data.ten %>
+                                                        </h4>
+                                                        <span class="badge bg-label-danger rounded-pill">
+                                                            <%= data.loai===0 ? "sách thuê" : "sách đọc online" %>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <h5 class="pb-3 border-bottom mb-3">Thông tin</h5>
+                                            <div class="info-container">
+                                                <ul class="list-unstyled mb-4">
+                                                    <li class="mb-3">
+                                                        <span class="h6">
+                                                            người đăng:
+                                                        </span>
+                                                        <span>
+                                                            <%= data.nguoidang %>
+                                                        </span>
+                                                    </li>
+                                                    <li class="mb-3">
+                                                        <span class="h6">
+                                                            tác giả:
+                                                        </span>
+                                                        <span>
+                                                            <%= data.tentacgia %>
+                                                        </span>
+                                                    </li>
+                                                    <li class="mb-3">
+                                                        <span class="h6">Thể Loại:</span>
+                                                        <span>
+                                                            <%= data.theloai %>
+                                                        </span>
+                                                    </li>
+                                                    <%if(data.loai==0) {%>
+                                                        <li class="mb-3">
+                                                            <span class="h6">giá</span>
+                                                            <span>
+                                                                <%= data.gia %>
+                                                            </span>
+                                                        </li>
+                                                        <li class="mb-3">
+                                                            <span class="h6">tiền cọc</span>
+                                                            <span>
+                                                                <%= data.tiencoc %>
+                                                            </span>
+                                                        </li>
+                                                        <% } %>
+                                                </ul>
+                                                <div>
+                                                    <input name="id" value="<%= data.id %>" hidden />
+                                                </div>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="submit">Duyệt</button>
+                                                    <!-- <a href="javascript:;"
+                                                class="btn btn-outline-danger suspend-user">Suspend</a> -->
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <h5 class="pb-3 border-bottom mb-3">Thông tin</h5>
-                                        <div class="info-container">
-                                            <ul class="list-unstyled mb-4">
-                                                <li class="mb-3">
-                                                    <span class="h6">Tác giả:</span>
-                                                    <span>Dale Carnegie</span>
-                                                </li>
-                                                <li class="mb-3">
-                                                    <span class="h6">Thể Loại:</span>
-                                                    <span>Tâm lý</span>
-                                                </li>
-                                                <li class="mb-3">
-                                                    <span class="h6">giá</span>
-                                                    <span>50</span>
-                                                </li>
-                                            </ul>
-                                            <div class="d-flex justify-content-center">
-                                                <a href="javascript:;" class="btn btn-primary me-3"
-                                                    data-bs-target="#editUser" data-bs-toggle="modal">Duyệt</a>
-                                                <!-- <a href="javascript:;"
-                                                class="btn btn-outline-danger suspend-user">Suspend</a> -->
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

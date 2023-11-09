@@ -14,6 +14,8 @@ const getCategory = async (req, res) => {
             message: data.message,
             errcode: data.errcode,
             page: parseInt(page),
+            msgPutCatetory: req.flash('msgPutCatetory'),
+            errPutCatetory: req.flash('errPutCatetory'),
             errFoByID: req.flash('errFoByID')
         })
     } else {
@@ -24,13 +26,15 @@ const getCategory = async (req, res) => {
             totalPage: data.totalPage,
             message: data.message,
             errcode: data.errcode,
+            msgPutCatetory: req.flash('msgPutCatetory'),
+            errPutCatetory: req.flash('errPutCatetory'),
             errFoByID: req.flash('errFoByID'),
             page: parseInt(page)
         })
     }
 }
 
-// chi tiết thể loại
+//chuyển sang trang chi tiết thể loại
 const getFromCatetoryByID = async (req, res) => {
     let id = req.query.id;
     if (!id) {
@@ -39,9 +43,10 @@ const getFromCatetoryByID = async (req, res) => {
     }
     let data = await axios.get('get-api-CatetoryByID?id=' + id)
     if (data.errcode == 0) {
-        return res.render('category/editCategory.ejs', { data: data.data });
+        return res.render('category/editCategory.ejs', {
+            data: data.data
+        });
     } else {
-        req.flash('errFoByID', data.message)
         return res.render('/category')
     }
 }
@@ -51,15 +56,15 @@ const postCatetory = async (req, res) => {
     let category = req.body
     if (!category.ten) {
         let message = "vui lòng nhập thể loại cần thêm"
-        req.flash('message', message)
+        req.flash('errPostCatetory', message)
         return res.redirect('/add-category')
     } else {
         let data = await axios.post('/post-api-catetory', category)
         if (data.errcode == 0) {
-            req.flash('message', data.message)
+            req.flash('msgPostCatetory', data.message)
             return res.redirect('/add-category')
         } else {
-            req.flash('message', data.message)
+            req.flash('errPostCatetory', data.message)
             return res.redirect('/add-category')
         }
     }
@@ -67,7 +72,10 @@ const postCatetory = async (req, res) => {
 
 // chuyển sang trang thêm thể loại
 const getAddCategory = async (req, res) => {
-    return res.render('category/postCategory.ejs', { message: req.flash('message') });
+    return res.render('category/postCategory.ejs', {
+        msgPostCatetory: req.flash('msgPostCatetory'),
+        errPostCatetory: req.flash('errPostCatetory'),
+    });
 }
 
 
@@ -90,13 +98,12 @@ const deleteCategory = async (req, res) => {
 //cập nhật thể loại
 const putCatetory = async (req, res) => {
     let category = req.body
-
     let data = await axios.put('/put-api-category', category)
     if (data.errcode == 0) {
-        req.flash('errFoByID', data.message)
+        req.flash('msgPutCatetory', data.message)
         return res.redirect('/category')
     } else {
-        req.flash('errFoByID', data.message)
+        req.flash('errPutCatetory', data.message)
         return res.redirect('/category')
     }
 }

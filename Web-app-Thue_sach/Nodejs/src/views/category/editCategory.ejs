@@ -12,6 +12,7 @@
 
     <meta name="description" content="" />
     <%- include('../index.ejs') %>
+
 </head>
 
 <body>
@@ -31,7 +32,9 @@
 
                         <!-- Content -->
                         <div class="container-xxl flex-grow-1 container-p-y">
-                            <h4 class="py-3 mb-4"><span class="text-muted fw-light">Thêm thể loại</span>
+
+                            <h4 class="py-3 mb-4"><span class="text-muted fw-light">Sửa
+                                    thể loại</span>
                             </h4>
                             <div class="row">
                                 <!-- Basic Layout -->
@@ -59,9 +62,10 @@
                                                 </div>
                                                 <div class="row mb-3">
                                                     <label class="col-sm-2 col-form-label"
-                                                        for="basic-default-email">Trạng Thái</label>
+                                                        for="basic-default-email">Trạng
+                                                        Thái</label>
                                                     <div class="col-sm-1 ">
-                                                        <select name="trangthai" class="form-control">
+                                                        <select class="form-control" name="trangthai">
                                                             <% let options=["1","0"]; %>
                                                                 <% for ( let i=0; i < options.length; i++ ){ %>
                                                                     <% let isSelected=(data.trangthai==options[i] )
@@ -71,17 +75,15 @@
                                                                             <%= options[i]==="1" ? "Hiện" : "Ẩn" %>
                                                                         </option>
                                                                         <% } %>
+                                                        </select>
                                                     </div>
                                                 </div>
-                                                <div class="" hidden>
-                                                    <input type="text" hidden class="form-control" style="" name="id"
-                                                        value="<%= data.id %>" />
+                                                <div>
+                                                    <input name="id" value="<%= data.id %>" hidden />
                                                 </div>
-
-                                                <div class="row justify-content-end mt-3">
+                                                <div class="row justify-content-end">
                                                     <div class="col-sm-10">
-                                                        <button type="submit" class="btn btn-primary">Chỉnh
-                                                            sửa</button>
+                                                        <button type="submit" class="btn btn-primary">Cập nhật</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -90,26 +92,27 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- / Content -->
 
-                            <!-- Footer -->
-                            <%- include('../page/footer.ejs') %>
-                                <!-- / Footer -->
-
-                                <div class="content-backdrop fade"></div>
                         </div>
-                        <!-- Content wrapper -->
+                        <!-- / Content -->
+
+                        <!-- Footer -->
+                        <%- include('../page/footer.ejs') %>
+                            <!-- / Footer -->
+                            <div class="content-backdrop fade"></div>
+                            <!-- Content wrapper -->
                     </div>
                     <!-- / Layout page -->
                 </div>
 
                 <!-- Overlay -->
-                <div class="layout-overlay layout-menu-toggle"></div>
         </div>
-        <!-- / Layout wrapper -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
 
 
-        <%- include('../page/layout.ejs') %>
+    <%- include('../page/layout.ejs') %>
+
 </body>
 
 </html>

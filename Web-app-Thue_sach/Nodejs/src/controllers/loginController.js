@@ -4,14 +4,19 @@ import axios from "../axios";
 
 
 let getLoginPage = async (req, res) => {
-    return res.render('auth/login.ejs');
+    return res.render('auth/login.ejs', {
+        msgLogin: req.flash('msgLogin'),
+        errLogin: req.flash('errLogin')
+    });
 }
+
+
 
 let getApiLogin = async (req, res) => {
     let email = req.body.email;
     let matkhau = req.body.matkhau;
     if (!email || !matkhau) {
-        return res.status(500).json({
+        return res.status(200).json({
             errcode: 1,
             message: 'vui lòng nhập gmail và mật khẩu'
         })
@@ -22,7 +27,6 @@ let getApiLogin = async (req, res) => {
         errcode: adminData.errcode,
         message: adminData.errMessage,
         admin: adminData.admin ? adminData.admin : { 'a': 'abc' }
-
     })
 }
 
@@ -31,12 +35,14 @@ let getLogin = async (req, res) => {
     let email = req.body.email;
     let matkhau = req.body.matkhau;
     let adminData = await axios.post('/api-adminlogin', { email, matkhau });
-    if (adminData.errcode == 0) {
-        req.session.adminData = adminData.admin.email;
-
+    if (adminData.errcode === 0) {
+        req.session.adminData1 = adminData.admin.email;
+        req.flash('msgLogin', adminData.message)
         return res.redirect('home');
-    } else {
-        let data = adminData.errMessage;
+    }
+    if (adminData.errcode !== 0) {
+        req.flash('errLogin', adminData.message)
+        return res.redirect('/');
     }
 }
 

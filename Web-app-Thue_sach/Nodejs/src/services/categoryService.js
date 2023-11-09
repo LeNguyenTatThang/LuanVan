@@ -125,7 +125,6 @@ let updateCatetory = (data) => {
             let dataCaterory = {}
             const [rows, fields] = await pool.execute('SELECT * FROM theloai where id= ?', [data.id])
             let check = rows[0]
-            console.log(check)
             if (check) {
                 await pool.execute('update theloai set ten = ?, mota = ?, trangthai = ? where id = ?',
                     [data.ten, data.mota, data.trangthai, data.id]);

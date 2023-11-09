@@ -21,7 +21,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.3",
     "mysql2": "^3.4.2",
-    "sequelize": "^6.32.1"
+    "sequelize": "^6.32.1",
+    "toastify-js": "^1.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",

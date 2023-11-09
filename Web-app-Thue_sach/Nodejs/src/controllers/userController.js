@@ -78,7 +78,6 @@ let Apiregister = async (req, res) => {
 }
 
 
-
 module.exports = {
     getUser,
     userApiLogin,

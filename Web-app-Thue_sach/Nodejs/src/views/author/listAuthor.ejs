@@ -30,7 +30,13 @@
                     <div class="content-wrapper">
                         <!-- Content -->
                         <div class="container-xxl flex-grow-1 container-p-y">
-                            <h4 class="py-3 mb-4"><span class="text-muted fw-light">Duyệt sách</span></h4>
+                            <h4 class="py-3 mb-4"><span class="text-muted fw-light">Danh sách tác giả</span></h4>
+                            <div class="py-3 mb-4">
+                                <div class="col-sm-10">
+                                    <a href="/add-author" class="btn btn-primary">Thêm tác giả
+                                    </a>
+                                </div>
+                            </div>
                             <div class="row gy-4">
                                 <!-- Data Tables -->
                                 <div class="col-12">
@@ -48,11 +54,7 @@
                                                         <th class="text-truncate">STT</th>
                                                         <th class="text-truncate">Hình</th>
                                                         <th class="text-truncate">Tên</th>
-                                                        <th class="text-truncate">Loại</th>
-                                                        <th class="text-truncate">Thể Loại </th>
-                                                        <th class="text-truncate">Người Đăng</th>
-                                                        <th class="text-truncate">Tác Giả</th>
-                                                        <th class="text-truncate">Trạng Thái</th>
+                                                        <th class="text-truncate">Giới thiệu</th>
                                                         <th class="text-truncate">Action</th>
                                                     </tr>
                                                 </thead>
@@ -81,28 +83,17 @@
                                                                     </div>
                                                                 </td>
                                                                 <td class="text-truncate">
-                                                                    <%= data[i].ten %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].loai===0 ? "Thuê" : "Đọc online" %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].theloai %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].nguoidang %>
-                                                                </td>
-                                                                <td class="text-truncate">
                                                                     <%= data[i].tentacgia %>
                                                                 </td>
+
                                                                 <td class="text-truncate">
-                                                                    <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                                    <%= data[i].gioithieu %>
                                                                 </td>
                                                                 <td>
                                                                     <a class="btnDeleteCategory"
                                                                         href="/get-detailbook?id=<%= data[i].id %>">
                                                                         <span
-                                                                            class="badge bg-label-warning rounded-pill">Duyệt</span></a>
+                                                                            class="badge bg-label-warning rounded-pill">Sửa</span></a>
                                                                 </td>
                                                             </tr>
                                                             <% } %>
@@ -160,7 +151,6 @@
                         <!-- Footer -->
                         <%- include('../page/footer.ejs') %>
                             <!-- / Footer -->
-
                             <div class="content-backdrop fade"></div>
                     </div>
                     <!-- Content wrapper -->

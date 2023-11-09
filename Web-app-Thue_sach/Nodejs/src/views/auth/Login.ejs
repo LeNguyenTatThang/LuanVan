@@ -6,21 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thuê Sách</title>
     <link rel="stylesheet" type="text/css" href="css/login.css" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+
+
+    <!-- Vendors CSS -->
+
+
+
+
 </head>
 
 <body>
-    <div>
-    </div>
     <div class="login-page">
+        <div class="alert alert-success">
+            <% let arrayErrLogin=[] %>
+                <% errLogin.forEach(function(err){ %>
+                    <% arrayErrLogin.push(err) %>
+                        <% })%>
+        </div>
         <div class="form">
             <form class="login-form" action="post-login" method="post">
-                <input type="text" placeholder="username" name="email" />
-                <input type="password" placeholder="password" name="matkhau" />
-                <button>login</button>
+                <input type="text" placeholder="email" name="email" />
+                <input type="password" placeholder="mật khẩu" name="matkhau" />
+                <button type="submit">Đăng nhập</button>
                 <!-- <p class="message">Not registered? <a href="#">Create an account</a></p> -->
             </form>
         </div>
     </div>
+    <script src="vendor/libs/jquery/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let toasName = '<%= arrayErrLogin%>';
+            if (toasName != '') {
+                toastr.error(toasName, { timeOut: 5000 })
+            }
+        })
+    </script>
 </body>
+
 
 </html>

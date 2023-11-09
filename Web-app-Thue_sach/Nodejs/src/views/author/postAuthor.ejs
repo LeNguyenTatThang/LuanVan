@@ -33,15 +33,15 @@
                         <!-- Content -->
                         <div class="container-xxl flex-grow-1 container-p-y">
                             <% let arrMsg=[] %>
-                                <% msgPostCatetory.forEach(function(msg){ %>
+                                <% msgPostAuthor.forEach(function(msg){ %>
                                     <% arrMsg.push(msg) %>
                                         <% })%>
                                             <% let arrErr=[] %>
-                                                <% errPostCatetory.forEach(function(err){ %>
+                                                <% errPostAuthor.forEach(function(err){ %>
                                                     <% arrErr.push(err) %>
                                                         <% })%>
                                                             <h4 class="py-3 mb-4"><span class="text-muted fw-light">Thêm
-                                                                    thể loại</span>
+                                                                    Tác giả</span>
                                                             </h4>
                                                             <div class="row">
                                                                 <!-- Basic Layout -->
@@ -49,7 +49,7 @@
                                                                     <div class="card mb-4">
 
                                                                         <div class="card-body">
-                                                                            <form action="/post-category" method="POST"
+                                                                            <form action="/post-author" method="POST"
                                                                                 id="add-category">
                                                                                 <div class="row mb-3">
                                                                                     <label
@@ -59,8 +59,34 @@
                                                                                         <input type="text"
                                                                                             class="form-control"
                                                                                             id="basic-default-name"
-                                                                                            placeholder="tên thể loại"
-                                                                                            name="ten" />
+                                                                                            placeholder="tên tác giả"
+                                                                                            name="tentacgia" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label
+                                                                                        class="col-sm-2 col-form-label"
+                                                                                        for="basic-default-company">Giới
+                                                                                        thiệu
+                                                                                    </label>
+                                                                                    <div class="col-sm-10">
+                                                                                        <input type="text"
+                                                                                            class="form-control"
+                                                                                            id="basic-default-company"
+                                                                                            placeholder="giới thiệu về tác giả"
+                                                                                            name="gioithieu" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row mb-3">
+                                                                                    <label
+                                                                                        class="col-sm-2 col-form-label"
+                                                                                        for="basic-default-company">Hình
+                                                                                    </label>
+                                                                                    <div class="col-sm-10">
+                                                                                        <input type="file"
+                                                                                            class="form-control"
+                                                                                            id="basic-default-company"
+                                                                                            name="hinhtacgia" />
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row mb-3">
@@ -72,7 +98,7 @@
                                                                                         <input type="text"
                                                                                             class="form-control"
                                                                                             id="basic-default-company"
-                                                                                            placeholder="Mô tả về thể loại"
+                                                                                            placeholder="Mô tả về tác giả"
                                                                                             name="mota" />
                                                                                     </div>
                                                                                 </div>
@@ -81,11 +107,13 @@
                                                                                         class="col-sm-2 col-form-label"
                                                                                         for="basic-default-email">Trạng
                                                                                         Thái</label>
-                                                                                    <div class="col-sm-1 ">
+                                                                                    <div class="col-sm-2 ">
                                                                                         <select class="form-control"
                                                                                             name="trangthai">
-                                                                                            <option value="0">0</option>
-                                                                                            <option value="1">1</option>
+                                                                                            <option value="0">Bình
+                                                                                                thường</option>
+                                                                                            <option value="1">Nổi bật
+                                                                                            </option>
                                                                                         </select>
                                                                                     </div>
                                                                                 </div>
@@ -101,6 +129,10 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+
+
+
+
 
                         </div>
                         <!-- / Content -->
@@ -118,6 +150,7 @@
         </div>
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+    <!-- / Layout wrapper -->
 
 
     <%- include('../page/layout.ejs') %>
