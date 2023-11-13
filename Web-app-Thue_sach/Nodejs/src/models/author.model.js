@@ -89,4 +89,29 @@ let checkAuthor = async (data) => {
     })
 }
 
+author.delete = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            const [rows] = await pool.execute("SELECT tacgia.id FROM tacgia INNER JOIN sach ON tacgia.id=sach.id_tacgia WHERE tacgia.id = ?", [id])
+            if (rows[0]) {
+                data = {
+                    errcode: 1,
+                    message: 'không thể xóa tác giả này'
+                }
+            } else {
+                let sql = "DELETE from tacgia WHERE id = ?"
+                await pool.execute(sql, [id])
+                data = {
+                    errcode: 0,
+                    message: 'xóa thành công'
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = author;

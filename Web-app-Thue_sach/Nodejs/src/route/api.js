@@ -18,19 +18,8 @@ let initApiRouter = (app) => {
     router.get('/api-admin', loginController.dataAccount);
 
     // api danh sách thể loại
-    router.get('/get-api-listCatetory', categoryController.getApiListCategory);
+    router.get('/get-api-category', categoryController.apiListCategory)
 
-    //api thêm thể loại
-    router.post('/post-api-catetory', categoryController.postApiCategory);
-
-    //api xóa thể loại
-    router.delete('/delete-api-catetory/:id', categoryController.deleteApiCategory);
-
-    //api lấy chi tiết thể loại
-    router.get('/get-api-CatetoryByID', categoryController.getApiFromCatetoryByID);
-
-    //api sửa thể loại
-    router.put('/put-api-category', categoryController.putApiCategory)
 
     //api lấy ds phân trang bên user
     router.post('/post-api-listBook', bookController.postApiListBookUser)

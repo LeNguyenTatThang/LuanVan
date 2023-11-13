@@ -12,6 +12,20 @@
 
     <meta name="description" content="" />
     <%- include('../index.ejs') %>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $(".btnDeleteAuthor").click(function () {
+                    const id = $(this).attr('data-id');
+                    if (confirm(`Bạn có muốn xóa thể loại có id= ${id}`)) {
+                        return true
+
+                    } else {
+                        return false
+                    }
+                })
+            })
+        </script>
 </head>
 
 <body>
@@ -89,10 +103,15 @@
                                                                     <%= data[i].gioithieu %>
                                                                 </td>
                                                                 <td>
-                                                                    <a class="btnDeleteCategory"
-                                                                        href="/get-detailbook?id=<%= data[i].id %>">
+                                                                    <a class="btnDeleteAuthor"
+                                                                        data-id="<%= data[i].id %>"
+                                                                        href="/delete-author/<%= data[i].id %>">
                                                                         <span
-                                                                            class="badge bg-label-warning rounded-pill">Sửa</span></a>
+                                                                            class="badge bg-label-warning rounded-pill">Xóa</span></a>
+                                                                    <a href="/get-authorFoByID?id=<%= data[i].id %>">
+                                                                        <span
+                                                                            class="badge bg-label-warning rounded-pill">
+                                                                            Sửa</span></a>
                                                                 </td>
                                                             </tr>
                                                             <% } %>

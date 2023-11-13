@@ -40,36 +40,46 @@ const getAddAuthor = async (req, res) => {
 
 
 const postAuthor = async (req, res) => {
-    let author = req.body
+    let authorData = req.body
     if (req.file && req.file !== undefined) {
-        author.hinhtacgia = req.file.filename
+        authorData.hinhtacgia = req.file.filename
     }
-    console.log(author.hinhtacgia, author.tentacgia)
-    if (!author.tentacgia) {
+    console.log(authorData.hinhtacgia, authorData.tentacgia)
+    if (!authorData.tentacgia) {
         let message = "vui lòng nhập tên tác giả cần thêm"
         if (req.file && req.file !== undefined) {
-            fs.unlink('src/public/img/' + author.hinhtacgia)
+            fs.unlink('src/public/img/' + authorData.hinhtacgia)
         }
         req.flash('errPostAuthor', message)
         return res.redirect('/add-author')
     } else {
-        let data = await authorService.createAuthor(author);
+        let data = await author.create(authorData);
         if (data.errcode == 0) {
             req.flash('msgPostAuthor', data.message)
             return res.redirect('/add-author')
 
         } else {
-            fs.unlink('src/public/img/' + author.hinhtacgia)
-            req.flash('errPostAuthor', error.data.message)
+            fs.unlink('src/public/img/' + authorData.hinhtacgia)
+            req.flash('errPostAuthor', data.message)
             return res.redirect('/add-author')
         }
     }
 }
 
 const deleteAuthor = async (req, res) => {
-    // let id = req.query.id
-    // await authorService.delete()
+    let id = req.params.id;
+    let data = await author.delete(id);
+    if (data.errcode == 0) {
+        res.locals.message = data.message
+        return res.redirect('/author')
+    } else {
+        res.locals.message = data.message
+        console.log(res.locals.message)
+        return res.redirect('/author')
+    }
 }
+
+
 
 
 
@@ -81,5 +91,6 @@ const deleteAuthor = async (req, res) => {
 module.exports = {
     getAuthor,
     getAddAuthor,
-    postAuthor
+    postAuthor,
+    deleteAuthor
 }

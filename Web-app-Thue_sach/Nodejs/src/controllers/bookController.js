@@ -1,12 +1,12 @@
-import bookService from '../services/bookService'
-import axios from "../axios";
-const fs = require('fs/promises')
+
+import book from '../models/book.model'
+import fs from 'fs/promises'
 
 const getbook = async (req, res) => {
     let page = req.query.page ? req.query.page : 1;
     let name = req.query.name;
     if (name) {
-        let data = await bookService.getAllBook(page, name);
+        let data = await book.getTrangthai0(page, name);
         return res.render('book/listBook.ejs', {
             data: data.rows,
             totalPage: data.totalPage,
@@ -16,7 +16,7 @@ const getbook = async (req, res) => {
             page: parseInt(page),
         })
     } else {
-        let data = await bookService.getAllBook(page);
+        let data = await book.getTrangthai0(page);
         return res.render('book/listBook.ejs', {
             data: data.rows,
             name: data.name,
@@ -30,15 +30,14 @@ const getbook = async (req, res) => {
 
 const getDetailBook = async (req, res) => {
     let id = req.query.id;
-    let data = await axios.get('/get-api-detailBook?id=' + id)
-    return res.render('book/detailBook.ejs', { data: data.data });
+    let data = await book.getId(id)
+    return res.render('book/detailBook.ejs', { data: data.book });
 }
 
-// duyệt sách
 const BrowseBooks = async (req, res) => {
     let id = req.body.id;
     console.log(id)
-    await bookService.BrowseBooksService(id);
+    await book.updateTrangthai(id);
     return res.redirect('/book')
 }
 
@@ -50,7 +49,13 @@ const postBook = async (req, res, next) => {
     if (req.file && req.file !== undefined) {
         book.hinh = req.file.filename
     }
-    let bookData = await bookService.createBook(book)
+    if (!req.file || req.file === undefined) {
+        return res.status(401).json({
+            status: 401,
+            message: 'không có hình'
+        })
+    }
+    let bookData = await book.create(book)
     if (bookData.errcode === 0) {
         return res.status(200).json({
             status: 200,
@@ -68,7 +73,7 @@ const postBook = async (req, res, next) => {
 //api ds sach
 const postApiListBookUser = async (req, res) => {
     let page = req.body.page ? req.body.page : 1;
-    let book = await bookService.ListBookUser(page)
+    let book = await book.getTrangthai1(page)
     return res.status(200).json({
         data: book.rows,
         name: book.name,
@@ -89,7 +94,7 @@ const getApiDetailBooks = async (req, res) => {
             message: 'id không tồn tại'
         })
     }
-    let data = await bookService.detailBook(id)
+    let data = await book.getId(id)
     return res.status(200).json({
         data: data.book ? data.book : 'ko',
         errcode: data.errcode,

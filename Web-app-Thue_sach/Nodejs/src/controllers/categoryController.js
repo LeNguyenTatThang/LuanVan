@@ -1,14 +1,12 @@
-
-import axios from "../axios";
-import categoryService from "../services/categoryService"
+import category from "../models/category.model"
 
 const getCategory = async (req, res) => {
     let page = req.query.page ? req.query.page : 1;
     let name = req.query.name;
     if (name) {
-        let data = await axios.get('/get-api-listCatetory?page=' + page + '&name=' + name)
+        let data = await category.getPhanTrang(page, name);
         return res.render('category/listCategory.ejs', {
-            data: data.data,
+            data: data.rows,
             totalPage: data.totalPage,
             name: data.name,
             message: data.message,
@@ -19,9 +17,9 @@ const getCategory = async (req, res) => {
             errFoByID: req.flash('errFoByID')
         })
     } else {
-        let data = await axios.get('/get-api-listCatetory?page=' + page)
+        let data = await category.getPhanTrang(page);
         return res.render('category/listCategory.ejs', {
-            data: data.data,
+            data: data.rows,
             name: data.name,
             totalPage: data.totalPage,
             message: data.message,
@@ -41,10 +39,10 @@ const getFromCatetoryByID = async (req, res) => {
         req.flash('errFoByID', 'không có id')
         return res.redirect('/category')
     }
-    let data = await axios.get('get-api-CatetoryByID?id=' + id)
+    let data = await category.getId(id)
     if (data.errcode == 0) {
         return res.render('category/editCategory.ejs', {
-            data: data.data
+            data: data.dataCatetory
         });
     } else {
         return res.render('/category')
@@ -53,13 +51,13 @@ const getFromCatetoryByID = async (req, res) => {
 
 // thêm thể loại
 const postCatetory = async (req, res) => {
-    let category = req.body
-    if (!category.ten) {
+    let categoryData = req.body
+    if (!categoryData.ten) {
         let message = "vui lòng nhập thể loại cần thêm"
         req.flash('errPostCatetory', message)
         return res.redirect('/add-category')
     } else {
-        let data = await axios.post('/post-api-catetory', category)
+        let data = await category.create(categoryData);
         if (data.errcode == 0) {
             req.flash('msgPostCatetory', data.message)
             return res.redirect('/add-category')
@@ -83,7 +81,7 @@ const getAddCategory = async (req, res) => {
 // xóa thể loại
 const deleteCategory = async (req, res) => {
     let id = req.params.id;
-    let data = await axios.delete('/delete-api-catetory/' + id)
+    let data = await category.delete(id);
     if (data.errcode == 0) {
         res.locals.message = data.message
         return res.redirect('/category')
@@ -97,8 +95,8 @@ const deleteCategory = async (req, res) => {
 
 //cập nhật thể loại
 const putCatetory = async (req, res) => {
-    let category = req.body
-    let data = await axios.put('/put-api-category', category)
+    let categoryData = req.body
+    let data = await category.update(categoryData);
     if (data.errcode == 0) {
         req.flash('msgPutCatetory', data.message)
         return res.redirect('/category')
@@ -110,98 +108,29 @@ const putCatetory = async (req, res) => {
 
 
 //Api
-
-// Api lấy ds tìm kiếm phân trang
-const getApiListCategory = async (req, res) => {
-    let name = req.query.name;
-    let page = req.query.page ? req.query.page : 1;
-    let categoryData = await categoryService.getAllCategory(page, name);
-    console.log(categoryData)
-    return res.status(200).json({
-        data: categoryData.rows,
-        name: categoryData.name,
-        totalPage: categoryData.totalPage,
-        errcode: categoryData.errcode,
-        message: categoryData.message,
-        data: categoryData.rows ? categoryData.rows : 'không có dữ liệu'
-
-    })
-}
-
-// api thêm thể loại
-const postApiCategory = async (req, res) => {
-    let category = req.body;
-    if (!category.ten) {
-        return res.status(500).json({
-            message: 'vui lòng nhập thông tin'
+const apiListCategory = async (req, res) => {
+    let data = await category.getAll()
+    if (data.errcode == 0) {
+        return res.status(200).json({
+            status: 200,
+            data: data.rows,
+            message: data.message
+        })
+    } else {
+        return res.status(404).json({
+            status: 404,
+            message: data.message
         })
     }
-    let categoryData = await categoryService.createCategory(category);
-    return res.status(200).json({
-        errcode: categoryData.errcode,
-        message: categoryData.message,
-    })
 }
 
-// api xóa thể loại
-const deleteApiCategory = async (req, res) => {
-    let id = req.params.id;
-
-    let data = await categoryService.deleteCatetoryByID(id);
-    return res.status(200).json({
-        errcode: data.errcode,
-        message: data.message
-    })
-
-
-}
-
-// api chi tiet the loai
-const getApiFromCatetoryByID = async (req, res) => {
-    let id = req.query.id;
-    if (!id) {
-        return res.status(500).json({
-            message: 'id không tồn tại'
-        })
-    }
-    let data = await categoryService.getCategoryInFoByID(id)
-    console.log(data)
-    return res.status(200).json({
-        data: data.dataCatetory ? data.dataCatetory : 'a',
-        errcode: data.errcode,
-        message: data.message
-    })
-}
-
-// api cập nhật thể loại
-let putApiCategory = async (req, res) => {
-    let data = req.body;
-    console.log(data.ten)
-    if (!data.ten) {
-        return res.status(500).json({
-            message: 'dữ liệu không tồn tại',
-            errcode: 1
-        })
-    }
-    let category = await categoryService.updateCatetory(data);
-    return res.status(200).json({
-        message: category.message,
-        errcode: category.errcode
-    })
-
-
-}
 
 module.exports = {
     getCategory,
     getAddCategory,
     postCatetory,
-    getApiFromCatetoryByID,
     deleteCategory,
-    getApiListCategory,
-    postApiCategory,
-    deleteApiCategory,
     getFromCatetoryByID,
-    putApiCategory,
-    putCatetory
+    putCatetory,
+    apiListCategory
 }

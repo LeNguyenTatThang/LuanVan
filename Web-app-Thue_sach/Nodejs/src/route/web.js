@@ -40,9 +40,12 @@ let initWebRouter = (app) => {
     router.get('/get-detailbook', auth.isLogin, bookController.getDetailBook);
     router.post('/post-browsebook', auth.isLogin, bookController.BrowseBooks);
 
+    //tac gia
     router.get('/author', auth.isLogin, authorController.getAuthor);
     router.get('/add-author', auth.isLogin, authorController.getAddAuthor);
-    router.post('/post-author', auth.isLogin, upload.single('hinhtacgia'), authorController.postAuthor)
+    router.post('/post-author/', auth.isLogin, upload.single('hinhtacgia'), authorController.postAuthor)
+    router.get('/delete-author/:id', auth.isLogin, authorController.deleteAuthor)
+
     return app.use("/", router)
 }
 export default initWebRouter;
