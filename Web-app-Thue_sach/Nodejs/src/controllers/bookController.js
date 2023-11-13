@@ -45,9 +45,10 @@ const BrowseBooks = async (req, res) => {
 
 //api them sach
 const postBook = async (req, res, next) => {
-    let book = req.body
+    let bookData = req.body
     if (req.file && req.file !== undefined) {
-        book.hinh = req.file.filename
+        bookData.hinh = req.file.filename
+        console.log(bookData.hinh)
     }
     if (!req.file || req.file === undefined) {
         return res.status(401).json({
@@ -55,17 +56,17 @@ const postBook = async (req, res, next) => {
             message: 'không có hình'
         })
     }
-    let bookData = await book.create(book)
-    if (bookData.errcode === 0) {
+    let data = await book.create(bookData)
+    if (data.errcode === 0) {
         return res.status(200).json({
             status: 200,
-            message: bookData.message
+            message: data.message
         })
     } else {
-        fs.unlink('src/public/img/' + book.hinh)
+        // fs.unlink('src/public/img/' + bookData.hinh)
         return res.status(400).json({
             status: 400,
-            message: bookData.message
+            message: data.message
         })
     }
 }

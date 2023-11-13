@@ -88,7 +88,7 @@ book.getTrangthai1 = (page) => {
 }
 
 //them sach
-book.create = (book) => {
+book.create = (bookData) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
@@ -96,23 +96,24 @@ book.create = (book) => {
             let sql1 = 'insert into sach(hinh, ten , trangthai,loai,theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?)';
             let trangthai = 0;
 
-            if (book.loai == 0) {
-                if (!book.hinh || !book.ten || !book.gia || !book.theloai_id || !book.tiencoc || !book.tentacgia || !book.id_user) {
+            if (bookData.loai == 0) {
+
+                if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users) {
                     data = {
                         errcode: 1,
                         message: 'không được để trống dữ liệu'
                     }
                 } else {
-                    let user = await checkuser(book.id_user)
+                    let user = await checkuser(bookData.id_users)
                     if (user) {
                         data = {
                             errcode: 2,
                             message: 'người dùng không có quyền sử dụng chức năng này'
                         }
                     } else {
-                        let dataAuthorID = await checkAuthor(book.tentacgia)
+                        let dataAuthorID = await checkAuthor(bookData.tentacgia)
                         let id_tacgia = dataAuthorID;
-                        await pool.execute(sql0, [book.hinh, book.ten, trangthai, book.loai, book.theloai_id, book.gia, book.tiencoc, id_tacgia, book.id_user]);
+                        await pool.execute(sql0, [bookData.hinh, bookData.ten, trangthai, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
                         data = {
                             errcode: 0,
                             message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
@@ -120,22 +121,22 @@ book.create = (book) => {
                     }
                 }
             } else {
-                if (!book.hinh || !book.ten || !book.theloai_id || !book.tentacgia || !book.id_user) {
+                if (!bookData.hinh || !bookData.ten || !bookData.theloai_id || !bookData.tentacgia || !bookData.id_users) {
                     data = {
                         errcode: 3,
                         message: 'không được để trống dữ liệu'
                     }
                 } else {
-                    let user = await checkuser(book.id_user)
+                    let user = await checkuser(bookData.id_users)
                     if (user) {
                         data = {
                             errcode: 4,
                             message: 'người dùng không có quyền sử dụng chức năng này'
                         }
                     } else {
-                        let dataAuthorID = await checkAuthor(book.tentacgia)
+                        let dataAuthorID = await checkAuthor(bookData.tentacgia)
                         let id_tacgia = dataAuthorID;
-                        await pool.execute(sql1, [book.hinh, book.ten, trangthai, book.loai, book.theloai_id, id_tacgia, book.id_user]);
+                        await pool.execute(sql1, [bookData.hinh, bookData.ten, trangthai, bookData.loai, bookData.theloai_id, id_tacgia, bookData.id_users]);
                         data = {
                             errcode: 0,
                             message: 'Thêm sách đọc online thành công vui lòng chờ Admin duyệt'
