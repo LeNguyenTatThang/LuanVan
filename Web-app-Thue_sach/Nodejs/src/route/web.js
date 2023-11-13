@@ -6,8 +6,12 @@ import loginController from "../controllers/loginController";
 import bookController from "../controllers/bookController";
 import authorController from "../controllers/authorController";
 import auth from "../middelware/auth";
-import message from "../middelware/message";
+import upload from "../multer"
+
+
 let router = express.Router();
+
+
 
 let initWebRouter = (app) => {
     router.get('/', loginController.getLoginPage);
@@ -38,7 +42,7 @@ let initWebRouter = (app) => {
 
     router.get('/author', auth.isLogin, authorController.getAuthor);
     router.get('/add-author', auth.isLogin, authorController.getAddAuthor);
-    router.post('/post-author', auth.isLogin, authorController.postAuthor)
+    router.post('/post-author', auth.isLogin, upload.single('hinhtacgia'), authorController.postAuthor)
     return app.use("/", router)
 }
 export default initWebRouter;

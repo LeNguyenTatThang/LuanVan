@@ -116,6 +116,7 @@ const getApiListCategory = async (req, res) => {
     let name = req.query.name;
     let page = req.query.page ? req.query.page : 1;
     let categoryData = await categoryService.getAllCategory(page, name);
+    console.log(categoryData)
     return res.status(200).json({
         data: categoryData.rows,
         name: categoryData.name,

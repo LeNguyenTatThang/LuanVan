@@ -63,52 +63,52 @@
                                                                 <%=message %>
                                                             </td>
                                                         </div>
-                                                        <% }else { %>
                                                     </tbody>
-                                                    <tbody>
+                                                    <% }else { %>
+                                                        <tbody>
 
-                                                        <% for(let i=0; i < data.length; i++) { %>
-                                                            <tr>
-                                                                <td class="text-truncate">
-                                                                    <%= i+1 %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <div class="d-flex align-items-center">
-                                                                        <div class="avatar avatar-sm me-3">
-                                                                            <img src="../../public/img/avatars/1.png"
-                                                                                class="rounded-circle" />
+                                                            <% for(let i=0; i < data.length; i++) { %>
+                                                                <tr>
+                                                                    <td class="text-truncate">
+                                                                        <%= i+1 %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <div class="avatar avatar-sm me-3">
+                                                                                <img src="../../public/img/avatars/1.png"
+                                                                                    class="rounded-circle" />
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].ten %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].loai===0 ? "Thuê" : "Đọc online" %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].theloai %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].nguoidang %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].tentacgia %>
-                                                                </td>
-                                                                <td class="text-truncate">
-                                                                    <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="btnDeleteCategory"
-                                                                        href="/get-detailbook?id=<%= data[i].id %>">
-                                                                        <span
-                                                                            class="badge bg-label-warning rounded-pill">Duyệt</span></a>
-                                                                </td>
-                                                            </tr>
-                                                            <% } %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <%= data[i].ten %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <%= data[i].loai===0 ? "Thuê" : "Đọc online" %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <%= data[i].theloai %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <%= data[i].nguoidang %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <%= data[i].tentacgia %>
+                                                                    </td>
+                                                                    <td class="text-truncate">
+                                                                        <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="btnDeleteCategory"
+                                                                            href="/get-detailbook?id=<%= data[i].id %>">
+                                                                            <span
+                                                                                class="badge bg-label-warning rounded-pill">Duyệt</span></a>
+                                                                    </td>
+                                                                </tr>
+                                                                <% } %>
 
-                                                    </tbody>
-                                                    <% } %>
+                                                        </tbody>
+                                                        <% } %>
                                             </table>
                                             <div class="col-sm-12 col-md-6">
                                                 <div class="dataTables_paginate paging_simple_numbers">

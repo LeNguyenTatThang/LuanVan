@@ -11,8 +11,8 @@ require('dotenv').config();
 
 let app = express();
 app.use(cors({ origin: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.use(session({
     secret: 'keyboard cat',
@@ -23,6 +23,14 @@ app.use(flash());
 viewEngine(app);
 initWebRoutes(app);
 initApiRouter(app);
+
+app.use((req, res) => {
+    return res.render('404.ejs')
+})
+
+
+
+
 
 let port = process.env.PORT || 6969;
 

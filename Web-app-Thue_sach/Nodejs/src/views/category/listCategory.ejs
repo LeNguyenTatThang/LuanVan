@@ -45,126 +45,128 @@
                     <div class="content-wrapper">
                         <!-- Content -->
                         <div class="container-xxl flex-grow-1 container-p-y">
-                            <% let message=[]%>
-                                <% if(errFoByID.length>0){ %>
-                                    <div class="alert alert-success">
-                                        <%= errFoByID %>
-                                    </div>
-                                    <%}%>
+                            <% let arrMsg=[] %>
+                                <% msgPutCatetory.forEach(function(msg){ %>
+                                    <% arrMsg.push(msg) %>
+                                        <% })%>
+                                            <% let arrErr=[] %>
+                                                <% errPutCatetory.forEach(function(err){ %>
+                                                    <% arrErr.push(err) %>
+                                                        <% })%>
+                                                            <!-- Button trigger modal -->
 
-                                        <% let arrMsg=[] %>
-                                            <% msgPutCatetory.forEach(function(msg){ %>
-                                                <% arrMsg.push(msg) %>
-                                                    <% })%>
-                                                        <% let arrErr=[] %>
-                                                            <% errPutCatetory.forEach(function(err){ %>
-                                                                <% arrErr.push(err) %>
-                                                                    <% })%>
-
-                                                                        <!-- Button trigger modal -->
-
-                                                                        <h4 class="py-3 mb-4"><span
-                                                                                class="text-muted fw-light">Danh sách
-                                                                                thể
-                                                                                loại</span>
-                                                                        </h4>
-                                                                        <div class="py-3 mb-4">
-                                                                            <div class="col-sm-10">
-                                                                                <a href="/add-category"
-                                                                                    class="btn btn-primary">Thêm thể
-                                                                                    loại</a>
-                                                                            </div>
+                                                            <h4 class="py-3 mb-4"><span class="text-muted fw-light">Danh
+                                                                    sách
+                                                                    thể
+                                                                    loại</span>
+                                                            </h4>
+                                                            <div class="py-3 mb-4">
+                                                                <div class="col-sm-10">
+                                                                    <a href="/add-category" class="btn btn-primary">Thêm
+                                                                        thể
+                                                                        loại</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row gy-4">
+                                                                <!-- Data Tables -->
+                                                                <div class="col-12">
+                                                                    <div class="card">
+                                                                        <div>
+                                                                            <form action="">
+                                                                                <input value="<%= name %>" type="text"
+                                                                                    name="name" />
+                                                                                <button type="submit">tìm</button>
+                                                                            </form>
                                                                         </div>
-                                                                        <div class="row gy-4">
-                                                                            <!-- Data Tables -->
-                                                                            <div class="col-12">
-                                                                                <div class="card">
-                                                                                    <div>
-                                                                                        <form action="">
-                                                                                            <input value="<%= name %>"
-                                                                                                type="text"
-                                                                                                name="name" />
-                                                                                            <button
-                                                                                                type="submit">tìm</button>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                    <div class="table-responsive">
-                                                                                        <table class="table">
-                                                                                            <thead class="table-light">
+                                                                        <div class="table-responsive">
+                                                                            <table class="table">
+                                                                                <thead class="table-light">
+                                                                                    <tr>
+                                                                                        <th class="text-truncate">
+                                                                                            STT</th>
+                                                                                        <th class="text-truncate">
+                                                                                            Tên</th>
+                                                                                        <th class="text-truncate">
+                                                                                            Trạng Thái
+                                                                                        </th>
+                                                                                        <th class="text-truncate">
+                                                                                            Action</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <%if(errcode==1) {%>
+                                                                                    <tbody>
+                                                                                        <div>
+                                                                                            <td class="text-truncate">
+                                                                                                <%=message %>
+                                                                                            </td>
+                                                                                        </div>
+                                                                                    </tbody>
+                                                                                    <% }else { %>
+                                                                                        <tbody>
+                                                                                            <% for(let i=0; i <
+                                                                                                data.length; i++) { %>
                                                                                                 <tr>
-                                                                                                    <th
+                                                                                                    <td
                                                                                                         class="text-truncate">
-                                                                                                        STT</th>
-                                                                                                    <th
+                                                                                                        <%= i+1 %>
+                                                                                                    </td>
+                                                                                                    <td
                                                                                                         class="text-truncate">
-                                                                                                        Tên</th>
-                                                                                                    <th
+                                                                                                        <%= data[i].ten
+                                                                                                            %>
+                                                                                                    </td>
+                                                                                                    <td
                                                                                                         class="text-truncate">
-                                                                                                        Trạng Thái
-                                                                                                    </th>
-                                                                                                    <th
-                                                                                                        class="text-truncate">
-                                                                                                        Action</th>
+                                                                                                        <%= data[i].trangthai
+                                                                                                            %>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <a class="btnDeleteCategory"
+                                                                                                            data-id="<%= data[i].id %>"
+                                                                                                            href="/delete-category/<%= data[i].id %>">
+                                                                                                            <span
+                                                                                                                class="badge bg-label-warning rounded-pill">Xóa</span></a>
+                                                                                                        <a
+                                                                                                            href="/get-catetoryFoByID?id=<%= data[i].id %>">
+                                                                                                            <span
+                                                                                                                class="badge bg-label-warning rounded-pill">
+                                                                                                                Sửa</span></a>
+                                                                                                    </td>
                                                                                                 </tr>
-                                                                                            </thead>
-                                                                                            <%if(errcode==1) {%>
-                                                                                                <tbody>
-                                                                                                    <div>
-                                                                                                        <td
-                                                                                                            class="text-truncate">
-                                                                                                            <%=message
-                                                                                                                %>
-                                                                                                        </td>
-                                                                                                    </div>
-                                                                                                    <% }else { %>
-                                                                                                </tbody>
-                                                                                                <tbody>
-
-                                                                                                    <% for(let i=0; i <
-                                                                                                        data.length;
-                                                                                                        i++) { %>
-                                                                                                        <tr>
-                                                                                                            <td
-                                                                                                                class="text-truncate">
-                                                                                                                <%= i+1
-                                                                                                                    %>
-                                                                                                            </td>
-                                                                                                            <td
-                                                                                                                class="text-truncate">
-                                                                                                                <%= data[i].ten
-                                                                                                                    %>
-                                                                                                            </td>
-                                                                                                            <td
-                                                                                                                class="text-truncate">
-                                                                                                                <%= data[i].trangthai
-                                                                                                                    %>
-                                                                                                            </td>
-                                                                                                            <td>
-                                                                                                                <a class="btnDeleteCategory"
-                                                                                                                    data-id="<%= data[i].id %>"
-                                                                                                                    href="/delete-category/<%= data[i].id %>">
-                                                                                                                    <span
-                                                                                                                        class="badge bg-label-warning rounded-pill">Xóa</span></a>
-                                                                                                                <a
-                                                                                                                    href="/get-catetoryFoByID?id=<%= data[i].id %>">
-                                                                                                                    <span
-                                                                                                                        class="badge bg-label-warning rounded-pill">
-                                                                                                                        Sửa</span></a>
-                                                                                                            </td>
-                                                                                                        </tr>
-                                                                                                        <% } %>
-
-                                                                                                </tbody>
                                                                                                 <% } %>
-                                                                                        </table>
-                                                                                        <div class="col-sm-12 col-md-6">
-                                                                                            <div
-                                                                                                class="dataTables_paginate paging_simple_numbers">
-                                                                                                <ul class="pagination">
-                                                                                                    <%if(name) {%>
+
+                                                                                        </tbody>
+                                                                                        <tbody>
+
+                                                                                        </tbody>
+                                                                                        <% } %>
+                                                                            </table>
+                                                                            <div class="col-sm-12 col-md-6">
+                                                                                <div
+                                                                                    class="dataTables_paginate paging_simple_numbers">
+                                                                                    <ul class="pagination">
+                                                                                        <%if(name) {%>
+                                                                                            <li>
+                                                                                                <a class="page-link"
+                                                                                                    href="/category?page=<%= page > 1 ? page - 1 : 1%>&name=<%= name%>">&laquo;</a>
+                                                                                            </li>
+                                                                                            <%for(i=1; i<=totalPage;
+                                                                                                i++){ %>
+                                                                                                <li
+                                                                                                    class="paginate_button page-item ">
+                                                                                                    <a class="page-link"
+                                                                                                        href="?page=<%=i %>&name=<%= name%>">
+                                                                                                        <%= i %>
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                                <%} %>
+                                                                                                    <li><a class="page-link"
+                                                                                                            href="/category?page=<%= page < totalPage ? page + 1 : totalPage%>&name=<%= name%>">&raquo;</a>
+                                                                                                    </li>
+                                                                                                    <%}else{%>
                                                                                                         <li>
                                                                                                             <a class="page-link"
-                                                                                                                href="/category?page=<%= page > 1 ? page - 1 : 1%>&name=<%= name%>">&laquo;</a>
+                                                                                                                href="/category?page=<%= page > 1 ? page - 1 : 1  %>">&laquo;</a>
                                                                                                         </li>
                                                                                                         <%for(i=1;
                                                                                                             i<=totalPage;
@@ -172,48 +174,26 @@
                                                                                                             <li
                                                                                                                 class="paginate_button page-item ">
                                                                                                                 <a class="page-link"
-                                                                                                                    href="?page=<%=i %>&name=<%= name%>">
+                                                                                                                    href="?page=<%=i %>">
                                                                                                                     <%= i
                                                                                                                         %>
                                                                                                                 </a>
                                                                                                             </li>
                                                                                                             <%} %>
                                                                                                                 <li><a class="page-link"
-                                                                                                                        href="/category?page=<%= page < totalPage ? page + 1 : totalPage%>&name=<%= name%>">&raquo;</a>
+                                                                                                                        href="/category?page=<%= page < totalPage ? page + 1 : totalPage  %>">&raquo;</a>
                                                                                                                 </li>
-                                                                                                                <%}else{%>
-                                                                                                                    <li>
-                                                                                                                        <a class="page-link"
-                                                                                                                            href="/category?page=<%= page > 1 ? page - 1 : 1  %>">&laquo;</a>
-                                                                                                                    </li>
-                                                                                                                    <%for(i=1;
-                                                                                                                        i<=totalPage;
-                                                                                                                        i++){
-                                                                                                                        %>
-                                                                                                                        <li
-                                                                                                                            class="paginate_button page-item ">
-                                                                                                                            <a class="page-link"
-                                                                                                                                href="?page=<%=i %>">
-                                                                                                                                <%= i
-                                                                                                                                    %>
-                                                                                                                            </a>
-                                                                                                                        </li>
-                                                                                                                        <%}
-                                                                                                                            %>
-                                                                                                                            <li><a class="page-link"
-                                                                                                                                    href="/category?page=<%= page < totalPage ? page + 1 : totalPage  %>">&raquo;</a>
-                                                                                                                            </li>
-                                                                                                                            <%}
-                                                                                                                                %>
-                                                                                                </ul>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-
+                                                                                                                <%} %>
+                                                                                    </ul>
                                                                                 </div>
                                                                             </div>
-                                                                            <!--/ Data Tables -->
+
                                                                         </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                <!--/ Data Tables -->
+                                                            </div>
                         </div>
                         <!-- / Content -->
 

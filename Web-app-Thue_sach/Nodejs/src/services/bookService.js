@@ -138,6 +138,7 @@ let createBook = (book) => {
                             errcode: 0,
                             message: 'Thêm sách đọc online thành công vui lòng chờ Admin duyệt'
                         }
+
                     }
                 }
             }
@@ -151,9 +152,10 @@ let createBook = (book) => {
 let checkuser = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const [rows, fields] = await pool.execute('SELECT loai FROM users where id= ?', [userId])
+            const [rows, fields] = await pool.execute('SELECT trangthai FROM users where id= ?', [userId])
             let user = rows[0];
-            if (user.loai == 2) {
+            console.log(user)
+            if (user.trangthai == 1) {
                 resolve(true);
             } else {
                 resolve(false);

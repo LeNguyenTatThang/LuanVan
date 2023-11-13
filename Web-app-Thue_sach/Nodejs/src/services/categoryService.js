@@ -69,7 +69,7 @@ let getAllCategory = async (page, name) => {
                 data = {
                     totalPage,
                     name,
-                    errcode: '1',
+                    errcode: 1,
                     message: 'không có dữ liệu'
                 }
             } else {
@@ -77,7 +77,7 @@ let getAllCategory = async (page, name) => {
                     rows,
                     totalPage,
                     name,
-                    errcode: '0',
+                    errcode: 0,
                     message: 'ok'
                 }
             }

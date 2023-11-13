@@ -16,12 +16,11 @@ let getApiLogin = async (req, res) => {
     let email = req.body.email;
     let matkhau = req.body.matkhau;
     if (!email || !matkhau) {
-        return res.status(200).json({
+        return res.status(400).json({
             errcode: 1,
             message: 'vui lòng nhập gmail và mật khẩu'
         })
     }
-
     let adminData = await loginService.handleAdminLogin(email, matkhau);
     return res.status(200).json({
         errcode: adminData.errcode,
@@ -31,19 +30,31 @@ let getApiLogin = async (req, res) => {
 }
 
 
-let getLogin = async (req, res) => {
-    let email = req.body.email;
-    let matkhau = req.body.matkhau;
-    let adminData = await axios.post('/api-adminlogin', { email, matkhau });
-    if (adminData.errcode === 0) {
-        req.session.adminData1 = adminData.admin.email;
-        req.flash('msgLogin', adminData.message)
-        return res.redirect('home');
+
+let getLogin = async (req, res, next) => {
+    try {
+        let email = req.body.email;
+        let matkhau = req.body.matkhau;
+        let adminData = await axios.post('/api-adminlogin', { email, matkhau })
+        if (adminData.errcode === 0) {
+            req.session.adminData1 = adminData.admin.email;
+            req.flash('msgLogin', adminData.message)
+            return res.redirect('home');
+        }
+        if (adminData.errcode !== 0) {
+            req.flash('errLogin', adminData.message)
+
+            return res.redirect('/');
+        }
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data) {
+                error.response.data.message
+            }
+        }
+        console.log(error.response)
     }
-    if (adminData.errcode !== 0) {
-        req.flash('errLogin', adminData.message)
-        return res.redirect('/');
-    }
+
 }
 
 

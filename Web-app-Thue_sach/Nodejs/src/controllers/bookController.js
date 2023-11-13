@@ -1,14 +1,14 @@
 import bookService from '../services/bookService'
 import axios from "../axios";
-
+const fs = require('fs/promises')
 
 const getbook = async (req, res) => {
     let page = req.query.page ? req.query.page : 1;
     let name = req.query.name;
     if (name) {
-        let data = await axios.get('/get-api-listBook?page=' + page + '&name=' + name)
+        let data = await bookService.getAllBook(page, name);
         return res.render('book/listBook.ejs', {
-            data: data.data,
+            data: data.rows,
             totalPage: data.totalPage,
             name: data.name,
             message: data.message,
@@ -16,9 +16,9 @@ const getbook = async (req, res) => {
             page: parseInt(page),
         })
     } else {
-        let data = await axios.get('/get-api-listBook?page=' + page)
+        let data = await bookService.getAllBook(page);
         return res.render('book/listBook.ejs', {
-            data: data.data,
+            data: data.rows,
             name: data.name,
             totalPage: data.totalPage,
             message: data.message,
@@ -38,38 +38,34 @@ const getDetailBook = async (req, res) => {
 const BrowseBooks = async (req, res) => {
     let id = req.body.id;
     console.log(id)
-    let data = await axios.put('/put-api-browseBook', { id })
+    await bookService.BrowseBooksService(id);
     return res.redirect('/book')
 }
 
-// api lay ds sach ben admin
-const getApiListBook = async (req, res) => {
-    let name = req.query.name;
-    let page = req.query.page ? req.query.page : 1;
-    let categoryData = await bookService.getAllBook(page, name);
-    return res.status(200).json({
-        data: categoryData.rows,
-        name: categoryData.name,
-        totalPage: categoryData.totalPage,
-        errcode: categoryData.errcode,
-        message: categoryData.message,
-        data: categoryData.rows ? categoryData.rows : 'không có dữ liệu'
-
-    })
-}
-
+//API
 
 //api them sach
-const postBook = async (req, res) => {
+const postBook = async (req, res, next) => {
     let book = req.body
+    if (req.file && req.file !== undefined) {
+        book.hinh = req.file.filename
+    }
     let bookData = await bookService.createBook(book)
-    return res.status(200).json({
-        errcode: bookData.errcode,
-        message: bookData.message
-    })
-
+    if (bookData.errcode === 0) {
+        return res.status(200).json({
+            status: 200,
+            message: bookData.message
+        })
+    } else {
+        fs.unlink('src/public/img/' + book.hinh)
+        return res.status(400).json({
+            status: 400,
+            message: bookData.message
+        })
+    }
 }
 
+//api ds sach
 const postApiListBookUser = async (req, res) => {
     let page = req.body.page ? req.body.page : 1;
     let book = await bookService.ListBookUser(page)
@@ -84,7 +80,7 @@ const postApiListBookUser = async (req, res) => {
 }
 
 
-//api hiện form chi tiết sách của user và admin
+//api lấy id của sách
 const getApiDetailBooks = async (req, res) => {
     let id = req.query.id
     if (!id) {
@@ -102,25 +98,13 @@ const getApiDetailBooks = async (req, res) => {
     })
 }
 
-//api duyet sach
-const apiBrowseBooks = async (req, res) => {
-    let data = req.body.id;
-    console.log(data)
 
-    let databook = await bookService.BrowseBooksService(data);
-    return res.status(200).json({
-        message: databook.message,
-        errcode: databook.errcode
-    })
-}
 
 
 module.exports = {
     getbook,
     getDetailBook,
-    getApiListBook,
     postBook,
-    apiBrowseBooks,
     getApiDetailBooks,
     BrowseBooks,
     postApiListBookUser

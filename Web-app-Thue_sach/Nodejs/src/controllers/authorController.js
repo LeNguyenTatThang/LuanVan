@@ -1,13 +1,16 @@
 import axios from "../axios";
 import authorService from "../services/authorService"
+import author from '../models/author.model'
+const fs = require('fs/promises')
+
 
 const getAuthor = async (req, res) => {
     let page = req.query.page ? req.query.page : 1;
     let name = req.query.name;
     if (name) {
-        let data = await axios.get('/get-api-listAuthor?page=' + page + '&name=' + name)
+        let data = await author.getAll(page, name);
         return res.render('author/listAuthor.ejs', {
-            data: data.data,
+            data: data.rows,
             totalPage: data.totalPage,
             name: data.name,
             message: data.message,
@@ -16,9 +19,9 @@ const getAuthor = async (req, res) => {
 
         })
     } else {
-        let data = await axios.get('get-api-listAuthor?page=' + page)
+        let data = await author.getAll(page, name);
         return res.render('author/listAuthor.ejs', {
-            data: data.data,
+            data: data.rows,
             name: data.name,
             totalPage: data.totalPage,
             message: data.message,
@@ -38,67 +41,45 @@ const getAddAuthor = async (req, res) => {
 
 const postAuthor = async (req, res) => {
     let author = req.body
+    if (req.file && req.file !== undefined) {
+        author.hinhtacgia = req.file.filename
+    }
+    console.log(author.hinhtacgia, author.tentacgia)
     if (!author.tentacgia) {
         let message = "vui lòng nhập tên tác giả cần thêm"
+        if (req.file && req.file !== undefined) {
+            fs.unlink('src/public/img/' + author.hinhtacgia)
+        }
         req.flash('errPostAuthor', message)
         return res.redirect('/add-author')
     } else {
-        let data = await axios.post('/post-api-author', author)
+        let data = await authorService.createAuthor(author);
         if (data.errcode == 0) {
             req.flash('msgPostAuthor', data.message)
             return res.redirect('/add-author')
+
         } else {
-            req.flash('errPostAuthor', data.message)
+            fs.unlink('src/public/img/' + author.hinhtacgia)
+            req.flash('errPostAuthor', error.data.message)
             return res.redirect('/add-author')
         }
     }
 }
 
-// api thêm tac giả
-const postApiAuthor = async (req, res) => {
-    let author = req.body;
-    if (!author.tentacgia) {
-        return res.status(500).json({
-            message: 'vui lòng nhập thông tin'
-        })
-    }
-    let authorData = await authorService.createAuthor(author);
-    return res.status(200).json({
-        errcode: authorData.errcode,
-        message: authorData.message,
-    })
+const deleteAuthor = async (req, res) => {
+    // let id = req.query.id
+    // await authorService.delete()
 }
 
-// api lấy ds tác giả của trang admin
-const getApiListAuthor = async (req, res) => {
-    let name = req.query.name;
-    let page = req.query.page ? req.query.page : 1;
-    console.log(page)
-    let authorData = await authorService.getAllAuthor(page, name);
-    return res.status(200).json({
-        data: authorData.rows,
-        name: authorData.name,
-        totalPage: authorData.totalPage,
-        errcode: authorData.errcode,
-        message: authorData.message,
-        data: authorData.rows ? authorData.rows : 'không có dữ liệu'
 
-    })
-}
 
-// api tác giả và ds sách của tác giả
-const getApiAuthorBook = async (req, res) => {
-    let data = await authorService.AuthorBook()
-    return res.status(200).json({
-        data: data
-    })
-}
+
+
+
+
 
 module.exports = {
-    getApiAuthorBook,
-    getApiListAuthor,
     getAuthor,
     getAddAuthor,
-    postApiAuthor,
     postAuthor
 }

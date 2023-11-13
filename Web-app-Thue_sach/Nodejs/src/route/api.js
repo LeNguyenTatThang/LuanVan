@@ -6,6 +6,7 @@ import loginController from "../controllers/loginController";
 import bookController from "../controllers/bookController";
 import authorController from "../controllers/authorController"
 import auth from "../middelware/auth";
+import upload from "../multer"
 let router = express.Router();
 
 let initApiRouter = (app) => {
@@ -31,14 +32,8 @@ let initApiRouter = (app) => {
     //api sửa thể loại
     router.put('/put-api-category', categoryController.putApiCategory)
 
-    //api lấy ds phân trang tìm kiếm sách admin
-    router.get('/get-api-listBook', bookController.getApiListBook)
-
     //api lấy ds phân trang bên user
     router.post('/post-api-listBook', bookController.postApiListBookUser)
-
-    //api duyệt sách
-    router.put('/put-api-browseBook', bookController.apiBrowseBooks)
 
     // api đăng nhập user
     router.post('/api-userLogin', userController.userApiLogin);
@@ -49,24 +44,78 @@ let initApiRouter = (app) => {
     //sach
 
     //api thêm sách
-    router.post('/post-api-book', bookController.postBook)
+    router.post('/post-api-book', upload.single('hinh'), bookController.postBook)
 
     //api chi tiết sách trang user và admin
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
 
-    //tac gia
 
 
-    //api tacgia và ds sách của tác giả
-    router.get('/get-api-authorBook', authorController.getApiAuthorBook)
-
-    //api lấy danh sách tác giả
-    router.get('/get-api-listAuthor', authorController.getApiListAuthor)
-
-    //api thêm tác giả
-    router.post('/post-api-author', authorController.postApiAuthor)
 
 
+
+
+
+    router.post("/register", upload.single("photo"), (req, res) => {
+        const { fname } = req.body;
+        const { filename } = req.file;
+
+
+        if (!fname || !filename) {
+            res.status(422).json({ status: 422, message: "fill all the details" })
+        }
+
+        try {
+
+            let date = moment(new Date()).format("YYYY-MM-DD hh:mm:ss");
+
+            conn.query("INSERT INTO usersdata SET ?", { username: fname, userimg: filename, date: date }, (err, result) => {
+                if (err) {
+                    console.log("error")
+                } else {
+                    console.log("data added")
+                    res.status(201).json({ status: 201, data: req.body })
+                }
+            })
+        } catch (error) {
+            res.status(422).json({ status: 422, error })
+        }
+    });
+
+
+    // get user data
+    router.get("/getdata", (req, res) => {
+        try {
+            conn.query("SELECT * FROM usersdata", (err, result) => {
+                if (err) {
+                    console.log("error")
+                } else {
+                    console.log("data get")
+                    res.status(201).json({ status: 201, data: result })
+                }
+            })
+        } catch (error) {
+            res.status(422).json({ status: 422, error })
+        }
+    });
+
+
+    // delete user
+    router.delete("/:id", (req, res) => {
+        const { id } = req.params;
+        try {
+            conn.query(`DELETE FROM usersdata WHERE id ='${id}'`, (err, result) => {
+                if (err) {
+                    console.log("error")
+                } else {
+                    console.log("data delete")
+                    res.status(201).json({ status: 201, data: result })
+                }
+            })
+        } catch (error) {
+            res.status(422).json({ status: 422, error })
+        }
+    })
 
     return app.use("/", router)
 
