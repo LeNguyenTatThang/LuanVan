@@ -116,7 +116,7 @@ let handleUserLogin = (email, matkhau) => {
             console.log(matkhau);
             let isCheck = await checkEmail(email);
             if (isCheck) {
-                const [rows, fields] = await pool.execute('SELECT email,matkhau, loai FROM users where email= ?', [email])
+                const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau, trangthai FROM users where email= ?', [email])
                 let user = rows[0];
                 if (user) {
                     let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
