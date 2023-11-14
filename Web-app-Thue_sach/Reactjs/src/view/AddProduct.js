@@ -2,9 +2,9 @@ import iziToast from 'izitoast';
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom'
-import { addBook } from '../Service/UserService';
-
+import { useNavigate } from 'react-router-dom'
+import { addBook, apiListCate } from '../Service/UserService';
+import AsyncSelect from 'react-select/async';
 export default function AddProduct() {
 
     const navigate = useNavigate();
@@ -14,13 +14,14 @@ export default function AddProduct() {
             loai: "",
         }
     );
+
     const handleRead = (e) => {
         setBook(e.target.value);
     }
+
     const handleRead1 = async (e) => {
         let value = e.target.value
         let formData = { loai: value }
-        console.log(formData)
         setBook(formData)
     }
 
@@ -33,7 +34,7 @@ export default function AddProduct() {
     const [theloai_id, setTheloai_id] = useState(1);
     const [id_users, setId_user] = useState()
     const userData = useSelector((state) => state.user);
-
+    const [category, setCategory] = useState();
     useEffect(() => {
         if (!userData.isLogin) {
             navigate(-1);
@@ -41,6 +42,7 @@ export default function AddProduct() {
         if (userData.isLogin) {
             setId_user(userData.userInfo.id)
         }
+        getCategory();
 
     }, [])
 
@@ -52,57 +54,52 @@ export default function AddProduct() {
             data: e.target.files[0],
         }
         setHinh(img)
-
     }
 
+    const getCategory = async () => {
+        let cate = await apiListCate();
+        if (cate && cate.data && cate.status) {
+            setCategory(cate.data)
+        }
+    }
+    console.log("check cate>>>>", category)
     const handleSend = async (e) => {
-        // if (book.loai === '1') {
-        //     if (!ten || !gia || !tiencoc || !tentacgia) {
-        //         iziToast.error({
-        //             title: "Opzzz!!",
-        //             position: "topRight",
-        //             message: "khong duoc de trong"
-        //         })
-        //     }
-        // }
-        // else if (book.loai === '0') {
-        //     if (!tentacgia) {
-        //         iziToast.error({
-        //             title: "Opzzz!!",
-        //             position: "topRight",
-        //             message: "khong duoc de trong"
-        //         })
-        //     }
-        // }
-        // if (!ten || !gia || !tiencoc || !tentacgia) {
-        //     iziToast.error({
-        //         title: "Opzzz!!",
-        //         position: "topRight",
-        //         message: "khong duoc de trong"
-        //     })
-        // }
-        // if (book.loai === '') {
-        //     iziToast.error({
-        //         title: "Opzzz!!",
-        //         position: "topRight",
-        //         message: "Hay chon the loai sach dang"
-        //     })
-        // }
-        const formData = new FormData()
-        formData.append('file', hinh.data)
 
+        if (!ten || !hinh.data || !tentacgia) {
+            iziToast.error({
+                title: "Opzzz!!",
+                position: "topRight",
+                message: "Vui lòng không để trống"
+            });
+        }
+        if (book.loai === '') {
+            iziToast.info({
+                title: "Opzzz!!",
+                position: "topRight",
+                message: "Hãy chọn loại sách đăng"
+            });
+        }
+        let res = await addBook(hinh.data, ten, book.loai, theloai_id, gia, tiencoc, tentacgia, id_users);
 
-        let res = await addBook(formData, ten, book.loai, theloai_id, gia, tiencoc, tentacgia, id_users);
-
-        console.log("check res:", res);
         if (res && res.status === 200) {
             iziToast.success({
                 title: "Succes",
                 position: "topRight",
                 message: res.message
-            })
+            });
+            navigate('/add-book');
+        } else {
+            if (res && res.status === 400)
+                iziToast.error({
+                    title: "Opzzz!!",
+                    position: "topRight",
+                    message: "Bị lỗi rồi"
+                });
         }
+
     }
+
+
 
     return (
         <div>
@@ -129,10 +126,30 @@ export default function AddProduct() {
                                     <option value={1} >Sách đọc miễn phí</option>
                                 </select>
 
+                                {/* <AsyncSelect 
+                                cacheOptions
+                                defaultOptions
+                                value={selectedValue}
+                                getOptionLabel={e => e.ten}
+                                getOptionValue={e=> e.id}
+                                loadOptions={getCategory}
+                                onInputChange={handleInputChange}
+                                onChange={handleChangeCate}
+                                /> */}
+
+
                                 <select onChange={(e) => handleRead(e)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ">
-                                    <option value={0} >Thể loại 1</option>
-                                    <option value={1}>Thể loại 2</option>
+                                    {category && category.length > 0 &&
+                                        category.map((item, index) => {
+                                            return (
+                                                //<option key={`category-${index}`} value={item.id} label={item.ten}></option>
+                                                <option key={`category-${index}`} value={item.id} >{item.ten}</option>
+                                            )
+                                        })
+                                    }
+
                                 </select>
+
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Hình ảnh</label>
                                     <input type="file" name='hinh' className="file-input w-full max-w-xs"

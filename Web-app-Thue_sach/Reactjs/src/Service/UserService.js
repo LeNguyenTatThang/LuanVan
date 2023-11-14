@@ -10,7 +10,17 @@ const apiRegister = (ten, email, matkhau,) => {
     return axios.post("/api-userRegister", { ten, email, matkhau });
 }
 const addBook = (hinh, ten, loai, theloai_id, gia, tiencoc, tentacgia, id_users) => {
-    return axios.post("/post-api-book", { hinh, ten, loai, theloai_id, gia, tiencoc, tentacgia, id_users });
+
+    return axios.post("/post-api-book", { hinh, ten, loai, theloai_id, gia, tiencoc, tentacgia, id_users },
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
+}
+const apiListCate = () => {
+    return axios.get("/get-api-category");
 }
 
-export { fetchAllUser, loginApi, apiRegister, addBook };
+export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate };
