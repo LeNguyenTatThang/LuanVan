@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { addBook, apiListCate } from '../Service/UserService';
-import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 export default function AddProduct() {
 
     const navigate = useNavigate();
@@ -99,6 +99,20 @@ export default function AddProduct() {
 
     }
 
+    const [data, setData] = useState()
+    let a = [{
+        value: '1',
+        label: 'Nhất'
+    },
+    {
+        value: '2',
+        label: 'Thắng'
+    }
+    ]
+    setData(a)
+    const handleChangeCate = (e) => {
+        console.log(e)
+    }
 
 
     return (
@@ -126,16 +140,12 @@ export default function AddProduct() {
                                     <option value={1} >Sách đọc miễn phí</option>
                                 </select>
 
-                                {/* <AsyncSelect 
-                                cacheOptions
-                                defaultOptions
-                                value={selectedValue}
-                                getOptionLabel={e => e.ten}
-                                getOptionValue={e=> e.id}
-                                loadOptions={getCategory}
-                                onInputChange={handleInputChange}
-                                onChange={handleChangeCate}
-                                /> */}
+                                <Select
+                                    options={data}
+                                    onChange={(e) => {
+                                        handleChangeCate(e)
+                                    }}
+                                />
 
 
                                 <select onChange={(e) => handleRead(e)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ">

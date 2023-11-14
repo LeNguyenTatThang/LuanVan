@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import image from './bookstore.jpg';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -8,7 +8,33 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/autoplay';
+import Select from 'react-select';
+
+
 export default function HomePage() {
+    const [data, setData] = useState()
+    let a = [{
+        id: '1',
+        name: 'Nhất'
+    },
+    {
+        id: '2',
+        name: 'Thắng'
+    },
+    {
+        id: '3',
+        name: 'Thung Lung'
+    }
+    ]
+    const array = a.map((res)=>{
+        return {
+            label: res.name,
+            value: res.id
+        }
+    })
+    const handleChangeCate = (e) => {
+        console.log(e)
+    }
     return (
         <>
             <Swiper
@@ -43,7 +69,12 @@ export default function HomePage() {
                     </div>
                     <div className='text-gray-400 hover:text-red-700'>Xem tất cả</div>
                 </div>
-
+                <Select
+                    options={array}
+                    onChange={(e) => {
+                        handleChangeCate(e)
+                    }}
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
 
                     <div className='w-full bg-white shadow rounded border border-transparent'>
