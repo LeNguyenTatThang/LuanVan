@@ -1,5 +1,4 @@
-import pool from "../config/connectDB";
-import loginService from "../services/loginService";
+import admin from '../models/admin.model'
 import axios from "../axios";
 
 
@@ -21,7 +20,7 @@ let getApiLogin = async (req, res) => {
             message: 'vui lòng nhập gmail và mật khẩu'
         })
     }
-    let adminData = await loginService.handleAdminLogin(email, matkhau);
+    let adminData = await admin.handleAdminLogin(email, matkhau);
     return res.status(200).json({
         errcode: adminData.errcode,
         message: adminData.errMessage,
@@ -67,7 +66,7 @@ let dataAccount = async (req, res) => {
             message: 'missing inputs parmeter'
         })
     }
-    let detailAdmin = await loginService.detailAcount(adminID)
+    let detailAdmin = await admin.detailAcount(adminID)
     return res.status(200).json({
         admin: detailAdmin.admin
     })

@@ -5,6 +5,7 @@ import initWebRoutes from './route/web';
 import initApiRouter from './route/api';
 import session from "express-session";
 import cors from 'cors';
+import auth from "./middelware/auth";
 var flash = require('connect-flash');
 require('dotenv').config();
 
@@ -24,7 +25,7 @@ viewEngine(app);
 initWebRoutes(app);
 initApiRouter(app);
 
-app.use((req, res) => {
+app.use(auth.isLogin, (req, res) => {
     return res.render('404.ejs')
 })
 

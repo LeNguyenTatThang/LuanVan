@@ -12,8 +12,8 @@ category.create = function (data) {
             console.log(data)
             let categories = await checkCategories(data.ten)
             if (categories === true) {
-                const [rows] = await pool.execute('insert into theloai(ten, mota, trangthai) values (?, ?, ?)',
-                    [data.ten, data.mota, data.trangthai]);
+                const [rows] = await pool.execute('insert into theloai(ten, trangthai) values (?, ?)',
+                    [data.ten, data.trangthai]);
                 categoryData.errcode = 0;
                 categoryData.message = 'Thêm thể loại thành công'
 
@@ -125,20 +125,22 @@ category.getId = function (id) {
 category.update = function (data) {
     return new Promise(async (resolve, reject) => {
         try {
+            let data1 = data.ten.trim();
+            let data2 = data1.replace(/\s+/g, ' ');
             let dataCaterory = {}
-            const [rows, fields] = await pool.execute('SELECT * FROM theloai where id= ?', [data.id])
-            let check = rows[0]
-            if (check) {
-                await pool.execute('update theloai set ten = ?, mota = ?, trangthai = ? where id = ?',
-                    [data.ten, data.mota, data.trangthai, data.id]);
+            const [checkTen, fields] = await pool.execute('SELECT id FROM theloai where ten = ? and id != ?', [data2, data.id])
+            let kt = checkTen[0]
+            if (kt) {
+                dataCaterory = {
+                    errcode: 2,
+                    message: 'tên thể loại này đã tồn tại'
+                }
+            } else {
+                await pool.execute('update theloai set ten = ?, trangthai = ? where id = ?',
+                    [data2, data.trangthai, data.id]);
                 dataCaterory = {
                     errcode: 0,
                     message: 'cập nhật thành công'
-                }
-            } else {
-                dataCaterory = {
-                    errcode: 1,
-                    message: 'cập nhật thất bại'
                 }
             }
             resolve(dataCaterory)

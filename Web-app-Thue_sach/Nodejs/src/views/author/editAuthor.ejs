@@ -1,0 +1,109 @@
+<%- include('../page/header')%>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Sửa tác giả
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <form action="/update-author" method="POST" enctype="multipart/form-data">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <div class="card-body">
+                                            <div>
+                                                <input type="hidden" name="id" value="<%= data.id %>" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Tên</label>
+                                                <input type="text" name="tentacgia" class="form-control"
+                                                    aria-describedby="helpId" value="<%= data.tentacgia%>">
+                                            </div>
+                                            <div>
+                                                <input type="hidden" name="hinhtacgia" value="<%= data.hinhtacgia %>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="">gioithieu</label>
+                                                <input type="text" name="gioithieu" class="form-control"
+                                                    value="<%= data.gioithieu%>" aria-describedby="helpId">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Trạng thái</label>
+                                                <div>
+                                                    <select class="form-control" name="trangthai">
+                                                        <% let options=["1","0"]; %>
+                                                            <% for ( let i=0; i < options.length; i++ ){ %>
+                                                                <% let isSelected=(data.trangthai==options[i] )
+                                                                    ? "selected" : "" ; %>
+                                                                    <option value="<%= options[i]%>" <%=isSelected %>>
+                                                                        <%= options[i]==="1" ? "Hiện" : "Ẩn" %>
+                                                                    </option>
+                                                                    <% } %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Hình</label>
+                                                <input type="file" name="hinhtacgia" onchange="showImage(this)"
+                                                    class="form-control" aria-describedby="helpId">
+                                            </div>
+                                            <div class="form-group">
+                                                <img id="change-image" width="300" height="300"
+                                                    src="/img/<%= data.hinhtacgia %>" alt="">
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
+                                                Lại</button>
+                                            <a name="" id="" class="btn btn-default float-right" href="/author"><i
+                                                    class="fa fa-arrow-left" aria-hidden="true"></i> Quay Lại</a>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="">Mô tả</label>
+                                                <textarea type="text" name="mota" class="form-control"
+                                                    aria-describedby="helpId"
+                                                    id="summernote"><%= data.mota %></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <!-- /.box-footer-->
+
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <%- include('../page/footer')%>
+            <script>
+                function showImage(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#change-image').attr('src', e.target.result).height(300).width(300)
+                        };
+                        reader.readAsDataURL(input.files[0])
+                    }
+                }
+            </script>
+
+            </body>
+
+            </html>
+            <!-- /.content-wrapper -->

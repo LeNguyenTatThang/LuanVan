@@ -43,8 +43,10 @@ let initWebRouter = (app) => {
     //tac gia
     router.get('/author', auth.isLogin, authorController.getAuthor);
     router.get('/add-author', auth.isLogin, authorController.getAddAuthor);
-    router.post('/post-author/', auth.isLogin, upload.single('hinhtacgia'), authorController.postAuthor)
+    router.post('/post-author', auth.isLogin, upload.single('hinhtacgia'), authorController.postAuthor)
     router.get('/delete-author/:id', auth.isLogin, authorController.deleteAuthor)
+    router.get('/get-authorFoByID', auth.isLogin, authorController.getIdAuthor)
+    router.post('/update-author', auth.isLogin, upload.single('hinhtacgia'), authorController.updateAuthor)
 
     return app.use("/", router)
 }

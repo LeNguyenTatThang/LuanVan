@@ -52,17 +52,21 @@ author.create = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let authorData = {};
-            console.log(data.tentacgia)
-            let author = await checkAuthor(data.tentacgia)
-            if (author === true) {
-                await pool.execute('insert into tacgia(hinhtacgia, tentacgia, mota, gioithieu) values (?, ?, ?, ?)',
-                    [data.hinhtacgia, data.tentacgia, data.mota, data.gioithieu]);
-                authorData.errcode = 0;
-                authorData.message = 'Thêm tác giả thành công'
-
+            if (!data.tentacgia) {
+                authorData.errcode = 2;
+                authorData.message = 'vui lòng nhập tên tác giả';
             } else {
-                authorData.errcode = 1;
-                authorData.message = 'tác giả này đã tồn tại';
+                let author = await checkAuthor(data.tentacgia)
+                if (author === true) {
+                    await pool.execute('insert into tacgia(hinhtacgia, tentacgia, mota, gioithieu) values (?, ?, ?, ?)',
+                        [data.hinhtacgia, data.tentacgia, data.mota, data.gioithieu]);
+                    authorData.errcode = 0;
+                    authorData.message = 'Thêm tác giả thành công'
+
+                } else {
+                    authorData.errcode = 1;
+                    authorData.message = 'tác giả này đã tồn tại';
+                }
             }
             resolve(authorData)
         } catch (e) {
@@ -110,6 +114,59 @@ author.delete = (id) => {
             resolve(data)
         } catch (e) {
             reject(e)
+        }
+    })
+}
+
+author.getId = function (id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            const [rows, fields] = await pool.execute('SELECT * FROM tacgia where id= ?', [id])
+            let dataAuthor = rows[0];
+            if (dataAuthor) {
+                data = {
+                    errcode: 0,
+                    dataAuthor,
+                    message: 'ok',
+                }
+            } else {
+                data = {
+                    errcode: 1,
+                    message: 'id không tồn tại',
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+author.update = (data, hinhmoi) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // let data1 = data.tentacgia.trim();
+            // let data2 = data1.replace(/\s+/g, ' ');
+            let dataCaterory = {}
+            const [checkTen, fields] = await pool.execute('SELECT id FROM tacgia where tentacgia = ? and id != ?', [data.tentacgia, data.id])
+            let kt = checkTen[0]
+            if (kt) {
+                dataCaterory = {
+                    errcode: 2,
+                    message: 'tên tác giả này đã tồn tại'
+                }
+            } else {
+                await pool.execute('update tacgia set tentacgia = ?,hinhtacgia = ?, mota = ?, gioithieu = ?, trangthai = ? where id = ?',
+                    [data.tentacgia, hinhmoi, data.mota, data.gioithieu, data.trangthai, data.id]);
+                dataCaterory = {
+                    errcode: 0,
+                    message: 'cập nhật thành công'
+                }
+            }
+            resolve(dataCaterory)
+        } catch (e) {
+            reject(e);
         }
     })
 }

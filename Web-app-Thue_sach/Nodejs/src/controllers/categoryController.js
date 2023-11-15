@@ -12,8 +12,8 @@ const getCategory = async (req, res) => {
             message: data.message,
             errcode: data.errcode,
             page: parseInt(page),
-            msgPutCatetory: req.flash('msgPutCatetory'),
-            errPutCatetory: req.flash('errPutCatetory'),
+            msgCatetory: req.flash('msgCatetory'),
+            errCatetory: req.flash('errCatetory'),
             errFoByID: req.flash('errFoByID')
         })
     } else {
@@ -24,8 +24,8 @@ const getCategory = async (req, res) => {
             totalPage: data.totalPage,
             message: data.message,
             errcode: data.errcode,
-            msgPutCatetory: req.flash('msgPutCatetory'),
-            errPutCatetory: req.flash('errPutCatetory'),
+            msgCatetory: req.flash('msgCatetory'),
+            errCatetory: req.flash('errCatetory'),
             errFoByID: req.flash('errFoByID'),
             page: parseInt(page)
         })
@@ -83,11 +83,10 @@ const deleteCategory = async (req, res) => {
     let id = req.params.id;
     let data = await category.delete(id);
     if (data.errcode == 0) {
-        res.locals.message = data.message
+        req.flash('msgCatetory', data.message)
         return res.redirect('/category')
     } else {
-        res.locals.message = data.message
-        console.log(res.locals.message)
+        req.flash('errCatetory', data.message)
         return res.redirect('/category')
     }
 }
@@ -98,10 +97,10 @@ const putCatetory = async (req, res) => {
     let categoryData = req.body
     let data = await category.update(categoryData);
     if (data.errcode == 0) {
-        req.flash('msgPutCatetory', data.message)
+        req.flash('msgCatetory', data.message)
         return res.redirect('/category')
     } else {
-        req.flash('errPutCatetory', data.message)
+        req.flash('errCatetory', data.message)
         return res.redirect('/category')
     }
 }

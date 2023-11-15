@@ -1,171 +1,107 @@
-<!DOCTYPE html>
-
-<html lang="en" class="light-style layout-menu-fixed layout-compact" dir="ltr" data-theme="theme-default"
-    data-assets-path="" data-template="vertical-menu-template-free">
-
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
-    <title>Thuê Sách</title>
-
-    <meta name="description" content="" />
-    <%- include('../index.ejs') %>
-
-</head>
-
-<body>
-    <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">
-        <div class="layout-container">
-            <!-- Menu -->
-            <%- include('../page/nav.ejs') %>
-                <!-- / Menu -->
-
-                <!-- Layout container -->
-                <div class="layout-page">
-                    <!-- Navbar -->
-                    <!-- / Navbar -->
-                    <!-- Content wrapper -->
-                    <div class="content-wrapper">
-
-                        <!-- Content -->
-                        <div class="container-xxl flex-grow-1 container-p-y">
-                            <% let arrMsg=[] %>
-                                <% msgPostAuthor.forEach(function(msg){ %>
-                                    <% arrMsg.push(msg) %>
-                                        <% })%>
-                                            <% let arrErr=[] %>
-                                                <% errPostAuthor.forEach(function(err){ %>
-                                                    <% arrErr.push(err) %>
-                                                        <% })%>
-                                                            <h4 class="py-3 mb-4"><span class="text-muted fw-light">Thêm
-                                                                    Tác giả</span>
-                                                            </h4>
-                                                            <div class="row">
-                                                                <!-- Basic Layout -->
-                                                                <div class="col-xxl">
-                                                                    <div class="card mb-4">
-
-                                                                        <div class="card-body">
-                                                                            <form action="/post-author" method="POST"
-                                                                                enctype="multipart/form-data">
-                                                                                <div class="row mb-3">
-                                                                                    <label
-                                                                                        class="col-sm-2 col-form-label"
-                                                                                        for="basic-default-name">Tên</label>
-                                                                                    <div class="col-sm-10">
-                                                                                        <input type="text"
-                                                                                            class="form-control"
-                                                                                            id="basic-default-name"
-                                                                                            placeholder="tên tác giả"
-                                                                                            name="tentacgia" />
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label
-                                                                                        class="col-sm-2 col-form-label"
-                                                                                        for="basic-default-company">Giới
-                                                                                        thiệu
-                                                                                    </label>
-                                                                                    <div class="col-sm-10">
-                                                                                        <input type="text"
-                                                                                            class="form-control"
-                                                                                            id="basic-default-company"
-                                                                                            placeholder="giới thiệu về tác giả"
-                                                                                            name="gioithieu" />
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label
-                                                                                        class="col-sm-2 col-form-label"
-                                                                                        for="basic-default-company">Hình
-                                                                                    </label>
-                                                                                    <div class="col-sm-10">
-                                                                                        <input type="file"
-                                                                                            class="form-control"
-                                                                                            id="basic-default-company"
-                                                                                            name="hinhtacgia" />
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label
-                                                                                        class="col-sm-2 col-form-label"
-                                                                                        for="basic-default-company">Mô
-                                                                                        tả</label>
-                                                                                    <div class="col-sm-10">
-                                                                                        <input type="text"
-                                                                                            class="form-control"
-                                                                                            id="basic-default-company"
-                                                                                            placeholder="Mô tả về tác giả"
-                                                                                            name="mota" />
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label
-                                                                                        class="col-sm-2 col-form-label"
-                                                                                        for="basic-default-email">Trạng
-                                                                                        Thái</label>
-                                                                                    <div class="col-sm-2 ">
-                                                                                        <select class="form-control"
-                                                                                            name="trangthai">
-                                                                                            <option value="0">Bình
-                                                                                                thường</option>
-                                                                                            <option value="1">Nổi bật
-                                                                                            </option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row justify-content-end">
-                                                                                    <div class="col-sm-10">
-                                                                                        <button type="submit"
-                                                                                            class="btn btn-primary">Thêm</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-
-
-
-
+<%- include('../page/header')%>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Thêm tác giả
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <form action="/post-author" method="POST" enctype="multipart/form-data">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="">Tên</label>
+                                                <input type="text" name="tentacgia" class="form-control"
+                                                    aria-describedby="helpId">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">gioithieu</label>
+                                                <input type="text" name="gioithieu" class="form-control"
+                                                    aria-describedby="helpId">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Trạng thái</label>
+                                                <div>
+                                                    <select class="form-control" name="trangthai">
+                                                        <option value="0">Ẩn</option>
+                                                        <option value="1">Hiện</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Hình</label>
+                                                <input type="file" name="hinhtacgia" onchange="showImage(this)"
+                                                    class="form-control" aria-describedby="helpId">
+                                            </div>
+                                            <div class="form-group">
+                                                <img id="change-image" width="300" height="300" src=" " alt="">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
+                                                Lại</button>
+                                            <a name="" id="" class="btn btn-default float-right" href="/author"><i
+                                                    class="fa fa-arrow-left" aria-hidden="true"></i> Quay Lại</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="">Mô tả</label>
+                                                <textarea type="text" name="mota" class="form-control"
+                                                    aria-describedby="helpId" id="summernote"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <!-- / Content -->
-
-                        <!-- Footer -->
-                        <%- include('../page/footer.ejs') %>
-                            <!-- / Footer -->
-                            <div class="content-backdrop fade"></div>
-                            <!-- Content wrapper -->
                     </div>
-                    <!-- / Layout page -->
                 </div>
-
-                <!-- Overlay -->
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
         </div>
-        <div class="layout-overlay layout-menu-toggle"></div>
-    </div>
-    <!-- / Layout wrapper -->
+        <% let arrMsg=[] %>
+            <% msgPostAuthor.forEach(function(msg){ %>
+                <% arrMsg.push(msg) %>
+                    <% })%>
+                        <% let arrErr=[] %>
+                            <% errPostAuthor.forEach(function(err){ %>
+                                <% arrErr.push(err) %>
+                                    <% })%>
+                                        <%- include('../page/footer')%>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    let msg = '<%= arrMsg%>';
+                                                    let err = '<%= arrErr%>';
+                                                    if (msg != '') {
+                                                        toastr.success(msg, { timeOut: 5000 })
+                                                    }
+                                                    if (err != '') {
+                                                        toastr.error(err, { timeOut: 5000 })
+                                                    }
+                                                })
+                                            </script>
+                                            <script>
+                                                function showImage(input) {
+                                                    if (input.files && input.files[0]) {
+                                                        var reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            $('#change-image').attr('src', e.target.result).height(300).width(300)
+                                                        };
+                                                        reader.readAsDataURL(input.files[0])
+                                                    }
+                                                }
+                                            </script>
+                                            </body>
 
-
-    <%- include('../page/layout.ejs') %>
-        <script>
-            $(document).ready(function () {
-                let toasName = '<%= arrMsg%>';
-                let err = '<%= arrErr%>';
-                if (toasName != '') {
-                    toastr.success(toasName, { timeOut: 5000 })
-                }
-                if (err != '') {
-                    toastr.error(err, { timeOut: 5000 })
-                }
-            })
-        </script>
-</body>
-
-</html>
+                                            </html>
+                                            <!-- /.content-wrapper -->

@@ -73,15 +73,15 @@ const postBook = async (req, res, next) => {
 
 //api ds sach
 const postApiListBookUser = async (req, res) => {
-    let page = req.body.page ? req.body.page : 1;
-    let book = await book.getTrangthai1(page)
+    let page = req.query.page ? req.query.page : 1;
+    let bookData = await book.getTrangthai1(page)
     return res.status(200).json({
-        data: book.rows,
-        name: book.name,
-        totalPage: book.totalPage,
-        errcode: book.errcode,
-        message: book.message,
-        data: book.rows ? book.rows : 'không có dữ liệu'
+        data: bookData.rows,
+        name: bookData.name,
+        totalPage: bookData.totalPage,
+        errcode: bookData.errcode,
+        message: bookData.message,
+        data: bookData.rows ? bookData.rows : 'không có dữ liệu'
     })
 }
 

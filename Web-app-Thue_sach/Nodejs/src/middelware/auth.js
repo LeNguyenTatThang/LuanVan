@@ -26,11 +26,9 @@ const isLogout = async (req, res, next) => {
                     res.redirect('/home');
                 }
                 res.clearCookie();
-                res.redirect('/');
+                return res.redirect('/');
             });
-
         }
-        next();
     } catch (error) {
         console.log(error)
 

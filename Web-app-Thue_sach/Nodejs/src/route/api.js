@@ -22,7 +22,7 @@ let initApiRouter = (app) => {
 
 
     //api lấy ds phân trang bên user
-    router.post('/post-api-listBook', bookController.postApiListBookUser)
+    router.get('/get-api-listBook', bookController.postApiListBookUser)
 
     // api đăng nhập user
     router.post('/api-userLogin', userController.userApiLogin);
