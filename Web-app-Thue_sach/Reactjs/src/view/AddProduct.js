@@ -99,17 +99,13 @@ export default function AddProduct() {
 
     }
 
-    const [data, setData] = useState()
-    let a = [{
-        value: '1',
-        label: 'Nhất'
-    },
-    {
-        value: '2',
-        label: 'Thắng'
-    }
-    ]
-    setData(a)
+    const array = category?.map((res) => {
+        return {
+            label: res.ten,
+            value: res.id
+        }
+    })
+
     const handleChangeCate = (e) => {
         console.log(e)
     }
@@ -129,36 +125,26 @@ export default function AddProduct() {
                             <div className="space-y-4 md:space-y-6">
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Tên sách</label>
-                                    <input type="text" name="ten" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
+                                    <input type="text" name="ten" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder='Nhập tên sách' required=""
                                         value={ten}
                                         onChange={(event) => { setTen(event.target.value) }} />
                                 </div>
                                 <select onChange={(e) => handleRead1(e)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder='thuesach@gmail.com' ">
-                                    <option  >Chon loai sach</option>
+                                    <option  >Chọn kiểu sách đăng</option>
 
                                     <option value={0}>Sách cho thuê</option>
                                     <option value={1} >Sách đọc miễn phí</option>
                                 </select>
 
                                 <Select
-                                    options={data}
+                                    placeholder="Chọn thể loại"
+                                    options={array}
+
                                     onChange={(e) => {
                                         handleChangeCate(e)
                                     }}
                                 />
 
-
-                                <select onChange={(e) => handleRead(e)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ">
-                                    {category && category.length > 0 &&
-                                        category.map((item, index) => {
-                                            return (
-                                                //<option key={`category-${index}`} value={item.id} label={item.ten}></option>
-                                                <option key={`category-${index}`} value={item.id} >{item.ten}</option>
-                                            )
-                                        })
-                                    }
-
-                                </select>
 
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Hình ảnh</label>

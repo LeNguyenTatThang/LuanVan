@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOG_OUT } from '../app/userReducer';
 import iziToast from 'izitoast';
+import Cart from './Cart';
 export default function Navbar() {
     const userData = useSelector((state) => state.user);
 
@@ -63,56 +64,61 @@ export default function Navbar() {
                             <>
                                 {userData.isLogin === true ? <>
 
-                                    <div className="dropdown dropdown-hover">
-                                        <label tabindex="0" className='cursor-pointer' >
-                                            <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
-                                                <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 " fill="none" viewBox="0 0 23 23" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
-                                                <span className="flex-1 ml-3 whitespace-nowrap">{userData.userInfo.ten} </span>
-                                            </div>
-                                        </label>
-                                        <ul tabindex="0" className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                            <li><Link to='/add-book'>
-                                                <div className="flex items-center p-2 text-gray-900 rounded-lg">
-                                                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"></path>
+                                    <div className='flex col-2 justify-between items-center'>
+                                        <div className="dropdown dropdown-hover w-44 text-clamp-1">
+                                            <label tabindex="0" className='cursor-pointer' >
+                                                <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
+                                                    <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 " fill="none" viewBox="0 0 23 23" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
-                                                    <span className="flex-1 ml-3 whitespace-nowrap">Thêm sách mới </span>
-                                                </div></Link></li>
-                                            <li><Link to='/profiles'>
-                                                <div className="flex items-center p-2 text-gray-900 rounded-lg group cursor-pointer">
-                                                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"></path>
-                                                    </svg>
-                                                    <span className="flex-1 ml-3 whitespace-nowrap">Xem tài khoản </span>
-                                                </div></Link></li>
-                                            <li><Link to='/#'>
-                                                <div className="flex items-center p-2 text-gray-900 rounded-lg">
-                                                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
-                                                        <path d="M16 14V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 0 0 0-2h-1v-2a2 2 0 0 0 2-2ZM4 2h2v12H4V2Zm8 16H3a1 1 0 0 1 0-2h9v2Z"></path>
-                                                    </svg>
-                                                    <span className="flex-1 ml-3 whitespace-nowrap">Quản lý sách</span>
-                                                </div></Link></li>
-                                            <li><Link to='/#'>
-                                                <div className="flex items-center p-2 text-gray-900 rounded-lg">
-                                                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                                                    </svg>
-
-                                                    <span className="flex-1 ml-3 whitespace-nowrap">Hỗ trợ </span>
-                                                </div></Link></li>
-
-                                            <li><div onClick={() => handleLogout()}>
-                                                <div className="flex items-center p-2 text-gray-900 rounded-lg group cursor-pointer">
-                                                    <svg className="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"></path>
-                                                    </svg>
-                                                    <span className="flex-1 ml-3 whitespace-nowrap">Logout </span>
+                                                    <span className="flex-1 ml-3 whitespace-nowrap">{userData.userInfo.ten} </span>
                                                 </div>
-                                            </div>
-                                            </li>
-                                        </ul>
+                                            </label>
+                                            <ul tabindex="0" className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                                <li><Link to='/add-book'>
+                                                    <div className="flex items-center p-2 text-gray-900 rounded-lg">
+                                                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"></path>
+                                                        </svg>
+                                                        <span className="flex-1 ml-3 whitespace-nowrap">Thêm sách mới </span>
+                                                    </div></Link></li>
+                                                <li><Link to='/profiles'>
+                                                    <div className="flex items-center p-2 text-gray-900 rounded-lg group cursor-pointer">
+                                                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"></path>
+                                                        </svg>
+                                                        <span className="flex-1 ml-3 whitespace-nowrap">Xem tài khoản </span>
+                                                    </div></Link></li>
+                                                <li><Link to='/#'>
+                                                    <div className="flex items-center p-2 text-gray-900 rounded-lg">
+                                                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                                            <path d="M16 14V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 0 0 0-2h-1v-2a2 2 0 0 0 2-2ZM4 2h2v12H4V2Zm8 16H3a1 1 0 0 1 0-2h9v2Z"></path>
+                                                        </svg>
+                                                        <span className="flex-1 ml-3 whitespace-nowrap">Quản lý sách</span>
+                                                    </div></Link></li>
+                                                <li><Link to='/#'>
+                                                    <div className="flex items-center p-2 text-gray-900 rounded-lg">
+                                                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                                        </svg>
+
+                                                        <span className="flex-1 ml-3 whitespace-nowrap">Hỗ trợ </span>
+                                                    </div></Link></li>
+
+                                                <li><div onClick={() => handleLogout()}>
+                                                    <div className="flex items-center p-2 text-gray-900 rounded-lg group cursor-pointer">
+                                                        <svg className="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"></path>
+                                                        </svg>
+                                                        <span className="flex-1 ml-3 whitespace-nowrap">Logout </span>
+                                                    </div>
+                                                </div>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                        <Cart />
+
                                     </div>
 
                                 </> : <>
