@@ -26,11 +26,11 @@ export default function AddProduct() {
 
 
     const [ten, setTen] = useState();
-    const [hinh, setHinh] = useState({ preview: '', data: '' });
+    const [hinh, setHinh] = useState({ data: '' });
     const [gia, setGia] = useState();
     const [tiencoc, setTiencoc] = useState();
     const [tentacgia, setTentacgia] = useState();
-    const [theloai_id, setTheloai_id] = useState(1);
+    const [theloai_id, setTheloai_id] = useState();
     const [id_users, setId_user] = useState()
     const userData = useSelector((state) => state.user);
 
@@ -49,9 +49,11 @@ export default function AddProduct() {
     const handleChange = (e) => {
         const img = {
             preview: URL.createObjectURL(e.target.files[0]),
-            data: e.target.files[0],
+            data: e.target.files,
         }
-        setHinh(img)
+
+        setHinh(img.data[0])
+        console.log('hhhhhhhh', hinh)
 
     }
 
@@ -88,11 +90,8 @@ export default function AddProduct() {
         //         message: "Hay chon the loai sach dang"
         //     })
         // }
-        const formData = new FormData()
-        formData.append('file', hinh.data)
 
-
-        let res = await addBook(formData, ten, book.loai, theloai_id, gia, tiencoc, tentacgia, id_users);
+        let res = await addBook(hinh, ten, book.loai, theloai_id, tentacgia, id_users);
 
         console.log("check res:", res);
         if (res && res.status === 200) {
@@ -122,6 +121,7 @@ export default function AddProduct() {
                                         value={ten}
                                         onChange={(event) => { setTen(event.target.value) }} />
                                 </div>
+                                {JSON.stringify(book.loai)}
                                 <select onChange={(e) => handleRead1(e)} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder='thuesach@gmail.com' ">
                                     <option  >Chon loai sach</option>
 

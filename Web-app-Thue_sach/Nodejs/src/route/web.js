@@ -39,6 +39,7 @@ let initWebRouter = (app) => {
     router.get('/book', auth.isLogin, bookController.getbook);
     router.get('/get-detailbook', auth.isLogin, bookController.getDetailBook);
     router.post('/post-browsebook', auth.isLogin, bookController.BrowseBooks);
+    router.get('/get-broweBook', auth.isLogin, bookController.getbrowebook)
 
     //tac gia
     router.get('/author', auth.isLogin, authorController.getAuthor);

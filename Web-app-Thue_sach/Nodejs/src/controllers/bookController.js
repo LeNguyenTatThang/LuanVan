@@ -28,6 +28,32 @@ const getbook = async (req, res) => {
     }
 }
 
+const getbrowebook = async (req, res) => {
+    let page = req.query.page ? req.query.page : 1;
+    let name = req.query.name;
+    if (name) {
+        let data = await book.getsachduyet(page, name);
+        return res.render('book/listbrowebook.ejs', {
+            data: data.rows,
+            totalPage: data.totalPage,
+            name: data.name,
+            message: data.message,
+            errcode: data.errcode,
+            page: parseInt(page),
+        })
+    } else {
+        let data = await book.getsachduyet(page);
+        return res.render('book/listbrowebook.ejs', {
+            data: data.rows,
+            name: data.name,
+            totalPage: data.totalPage,
+            message: data.message,
+            errcode: data.errcode,
+            page: parseInt(page)
+        })
+    }
+}
+
 const getDetailBook = async (req, res) => {
     let id = req.query.id;
     let data = await book.getId(id)
@@ -113,6 +139,7 @@ module.exports = {
     postBook,
     getApiDetailBooks,
     BrowseBooks,
-    postApiListBookUser
+    postApiListBookUser,
+    getbrowebook
 }
 

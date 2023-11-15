@@ -9,8 +9,13 @@ const loginApi = (email, matkhau) => {
 const apiRegister = (ten, email, matkhau,) => {
     return axios.post("/api-userRegister", { ten, email, matkhau });
 }
-const addBook = (hinh, ten, loai, theloai_id, gia, tiencoc, tentacgia, id_users) => {
-    return axios.post("/post-api-book", { hinh, ten, loai, theloai_id, gia, tiencoc, tentacgia, id_users });
+const addBook = (hinh, ten, loai, theloai_id, tentacgia, id_users) => {
+
+    return axios.post("/post-api-book", { hinh, ten, loai, theloai_id, tentacgia, id_users }, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 }
 
 export { fetchAllUser, loginApi, apiRegister, addBook };
