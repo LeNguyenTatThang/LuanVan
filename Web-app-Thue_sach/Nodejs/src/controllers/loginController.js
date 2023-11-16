@@ -121,17 +121,17 @@ const updateAccount = async (req, res) => {
                     throw error
                 }
             }
-            req.flash('msgAuthor', data.message)
+            req.flash('msgAdmin', data.message)
             return res.redirect('/home')
         } else {
             if (req.file) {
                 fs.unlink('src/public/img/' + hinhmoi)
             }
-            req.flash('errAuthor', data.message)
+            req.flash('errAdmin', data.message)
             return res.redirect('/home')
         }
     } catch (error) {
-        req.flash('errAuthor', 'lỗi hệ thống')
+        req.flash('errAdmin', 'lỗi hệ thống')
         return res.redirect('/home')
     }
 }

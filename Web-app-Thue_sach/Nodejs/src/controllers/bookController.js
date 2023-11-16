@@ -114,20 +114,27 @@ const postApiListBookUser = async (req, res) => {
 
 //api lấy id của sách
 const getApiDetailBooks = async (req, res) => {
-    let id = req.query.id
-    if (!id) {
+    try {
+        let id = req.query.id
+        let data = await book.getId(id)
+        if (data.errcode == 0) {
+            return res.status(200).json({
+                data: data.book ? data.book : 'ko',
+                status: 200,
+                message: data.message,
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: 'id không tồn tại'
+            })
+        }
+    } catch (error) {
         return res.status(500).json({
-            errcode: 1,
-            message: 'id không tồn tại'
+            status: 500,
+            message: 'lỗi hệ thống'
         })
     }
-    let data = await book.getId(id)
-    return res.status(200).json({
-        data: data.book ? data.book : 'ko',
-        errcode: data.errcode,
-        message: data.message,
-
-    })
 }
 
 

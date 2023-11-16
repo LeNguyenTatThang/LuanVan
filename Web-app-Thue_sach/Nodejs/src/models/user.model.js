@@ -106,4 +106,48 @@ user.registerUser = async (user) => {
     })
 }
 
+user.getAll = (page, name) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let limit = '5';
+            let sql = "SELECT hinh,ten,email,loai FROM users";
+            let sqlTotal = "SELECT COUNT(*) as total FROM users"
+            if (name) {
+                sqlTotal += " WHERE ten LIKE '%" + name + "%' "
+            }
+
+            const [counts] = await pool.execute(sqlTotal)
+            let totalRow = counts[0].total
+            let totalPage = Math.ceil(totalRow / limit)
+            page = page > 0 ? Math.floor(page) : 1;
+            page = page <= totalPage ? Math.floor(page) : totalPage;
+            let start = (page - 1) * limit;
+            start = start > 0 ? start : 0;
+            if (name) {
+                sql += " WHERE ten LIKE '%" + name + "%' "
+            }
+            const [rows, fields] = await pool.execute(sql + ' ' + 'order by id ASC LIMIT ' + start + ',' + limit)
+            if (rows.length === 0) {
+                data = {
+                    totalPage,
+                    name,
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    totalPage,
+                    name,
+                    errcode: '0',
+                    message: 'ok'
+                }
+            } resolve(data)
+        } catch {
+            reject(data)
+        }
+    })
+}
+
 module.exports = user

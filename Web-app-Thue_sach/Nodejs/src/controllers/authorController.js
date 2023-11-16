@@ -1,5 +1,5 @@
 import author from '../models/author.model'
-const fs = require('fs/promises')
+const fs = require('fs')
 
 
 const getAuthor = async (req, res) => {
@@ -121,11 +121,9 @@ const updateAuthor = async (req, res, next) => {
             if (req.file && authorData.hinhtacgia) {
                 try {
                     fs.unlink('src/public/img/' + authorData.hinhtacgia, function (err) {
-                        if (err) throw err;
-                        console.log('xóa file!');
                     });
                 } catch (error) {
-                    next();
+                    throw error
                 }
             }
             req.flash('msgAuthor', data.message)

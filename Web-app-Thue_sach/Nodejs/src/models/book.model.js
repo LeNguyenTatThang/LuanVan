@@ -244,7 +244,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT hinh,sach.ten,sach.id, sach.trangthai,sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
+            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id, sach.trangthai,sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {

@@ -31,7 +31,7 @@
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle" src="img/<%= detailAdmin.hinh %>"
+                                    <img class="img-user img-fluid img-circle" src="img/<%= detailAdmin.hinh %>"
                                         alt="User profile picture">
                                 </div>
 
@@ -65,7 +65,8 @@
                                     </li>
                                 </ul>
                                 <div>
-                                    <a href="#  " class="btn btn-primary">Cập nhật thông tin</a>
+                                    <a href="/edit-Account?id=<%= adminData.admin.id %>" class="btn btn-primary">Cập
+                                        nhật thông tin</a>
                                     <a name="" id="" class="btn btn-default float-right" href="/home"><i
                                             class="fa fa-arrow-left" aria-hidden="true"></i> Quay Lại</a>
                                 </div>

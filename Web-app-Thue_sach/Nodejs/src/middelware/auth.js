@@ -1,11 +1,9 @@
-
+import admin from '../models/admin.model'
 const isLogin = async (req, res, next) => {
     try {
         if (req.session.adminData1) {
-            res.locals.adminData = req.session.adminData1;
-
+            res.locals.adminData = await admin.detailAcount(req.session.adminData1.email)
         } else {
-
             res.redirect('/');
         }
         next();
