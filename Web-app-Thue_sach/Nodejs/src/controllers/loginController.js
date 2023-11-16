@@ -1,6 +1,6 @@
 import admin from '../models/admin.model'
 import axios from "../axios";
-
+const fs = require('fs')
 
 let getLoginPage = async (req, res) => {
     return res.render('auth/login.ejs', {
@@ -36,7 +36,7 @@ let getLogin = async (req, res, next) => {
         let matkhau = req.body.matkhau;
         let adminData = await axios.post('/api-adminlogin', { email, matkhau })
         if (adminData.errcode === 0) {
-            req.session.adminData1 = adminData.admin.email;
+            req.session.adminData1 = adminData.admin;
             req.flash('msgLogin', adminData.message)
             return res.redirect('home');
         }
@@ -83,11 +83,65 @@ let getDetailAccount = async (req, res) => {
     }
 }
 
+let editAccount = async (req, res) => {
+    try {
+        let id = req.query.id
+        console.log('dddddddddddddđ', id)
+        let data = await admin.getId(id)
+        if (data.errcode == 0) {
+            data = data.dataAdmin
+            console.log(data)
+            return res.render('auth/editAccount.ejs', { data: data })
+        } else {
+            return res.redirect('/home')
+        }
+
+    } catch (error) {
+
+    }
+}
+
+const updateAccount = async (req, res) => {
+    try {
+        let adminData = req.body
+        let hinhmoi = {}
+        if (req.file || req.file !== undefined) {
+            hinhmoi = req.file.filename
+        } else {
+            hinhmoi = adminData.hinh
+        }
+        console.log('hinh cu ', adminData.hinh)
+        let data = await admin.update(adminData, hinhmoi)
+        if (data.errcode == 0) {
+            if (req.file && adminData.hinh) {
+                try {
+                    fs.unlink('src/public/img/' + adminData.hinh, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
+            req.flash('msgAuthor', data.message)
+            return res.redirect('/home')
+        } else {
+            if (req.file) {
+                fs.unlink('src/public/img/' + hinhmoi)
+            }
+            req.flash('errAuthor', data.message)
+            return res.redirect('/home')
+        }
+    } catch (error) {
+        req.flash('errAuthor', 'lỗi hệ thống')
+        return res.redirect('/home')
+    }
+}
 
 module.exports = {
     getLoginPage,
     getLogin,
     getDetailAccount,
     getApiLogin,
-    dataAccount
+    dataAccount,
+    editAccount,
+    updateAccount
 }

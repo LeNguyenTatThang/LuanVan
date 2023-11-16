@@ -106,7 +106,7 @@ const getIdAuthor = async (req, res) => {
     }
 }
 
-const updateAuthor = async (req, res) => {
+const updateAuthor = async (req, res, next) => {
     try {
         let authorData = req.body
         console.log(authorData)
@@ -119,10 +119,14 @@ const updateAuthor = async (req, res) => {
         let data = await author.update(authorData, hinhmoi)
         if (data.errcode == 0) {
             if (req.file && authorData.hinhtacgia) {
-                fs.unlink('src/public/img/' + authorData.hinhtacgia, function (err) {
-                    if (err) throw err;
-                    console.log('xóa file!');
-                });
+                try {
+                    fs.unlink('src/public/img/' + authorData.hinhtacgia, function (err) {
+                        if (err) throw err;
+                        console.log('xóa file!');
+                    });
+                } catch (error) {
+                    next();
+                }
             }
             req.flash('msgAuthor', data.message)
             return res.redirect('/author')
