@@ -22,5 +22,8 @@ const addBook = (hinh, ten, loai, theloai_id, gia, tiencoc, tentacgia, id_users)
 const apiListCate = () => {
     return axios.get("/get-api-category");
 }
+const apiListBook = async (page) => {
+    return await axios.get(`/get-api-listBook?page=${page}`);
+}
 
-export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate };
+export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate, apiListBook };
