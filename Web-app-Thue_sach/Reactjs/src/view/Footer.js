@@ -25,7 +25,7 @@ export default function Footer() {
                     </ul>
                 </div>
                 <hr className="my-6 sm:mx-auto  border-gray-700 lg:my-8 " />
-                <span className=" text-sm text-gray-500 sm:text-center  flex justify-center">Thuê sách © 2023 <div className="hover:underline"> &nbsp;Thuê sách</div>. Lê Nguyễn Tất Thắng - Vũ Tuấn Nghĩa</span>
+                <span className=" text-sm text-gray-500 sm:text-center  flex justify-center">Thuê sách © 2023 <div className="hover:underline"> &nbsp;Design by &nbsp;</div> Lê Nguyễn Tất Thắng - Vũ Tuấn Nghĩa</span>
             </div>
         </footer>
     )

@@ -12,36 +12,12 @@ import Select from 'react-select';
 
 
 export default function HomePage() {
-    const [data, setData] = useState()
-    let a = [{
-        id: '1',
-        name: 'Nhất'
-    },
-    {
-        id: '2',
-        name: 'Thắng'
-    },
-    {
-        id: '3',
-        name: 'Thung Lung'
-    }
-    ]
-    const array = a.map((res)=>{
-        return {
-            label: res.name,
-            value: res.id
-        }
-    })
-    const handleChangeCate = (e) => {
-        console.log(e)
-    }
+
     return (
         <>
             <Swiper
                 spaceBetween={50}
-                // slidesPerView={1}
                 loop={true}
-                // pagination={{ clickable: true }}
                 speed={1500}
                 modules={[Autoplay]}
                 autoplay={{
@@ -69,12 +45,7 @@ export default function HomePage() {
                     </div>
                     <div className='text-gray-400 hover:text-red-700'>Xem tất cả</div>
                 </div>
-                <Select
-                    options={array}
-                    onChange={(e) => {
-                        handleChangeCate(e)
-                    }}
-                />
+
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
 
                     <div className='w-full bg-white shadow rounded border border-transparent'>
@@ -287,7 +258,6 @@ export default function HomePage() {
                     <div className='text-gray-400 hover:text-red-700'>Xem tất cả</div>
                 </div>
 
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
 
                     <div className="rounded overflow-hidden shadow-lg flex flex-col">
@@ -449,7 +419,6 @@ export default function HomePage() {
                     <br />
 
                 </div>
-
 
             </div>
         </>
