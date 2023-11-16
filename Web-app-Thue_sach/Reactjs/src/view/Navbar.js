@@ -65,8 +65,8 @@ export default function Navbar() {
                                 {userData.isLogin === true ? <>
 
                                     <div className='flex col-2 justify-between items-center'>
-                                        <div className="dropdown dropdown-hover w-44 text-clamp-1">
-                                            <label tabindex="0" className='cursor-pointer' >
+                                        <div className="dropdown dropdown-hover ">
+                                            <label tabindex="0" className='cursor-pointer w-44 text-clamp-1' >
                                                 <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
                                                     <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 " fill="none" viewBox="0 0 23 23" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

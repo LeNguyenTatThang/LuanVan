@@ -13,11 +13,6 @@ export default function Login() {
 
     useEffect(() => {
         if (userData.isLogin) {
-            iziToast.error({
-                title: 'Opzz',
-                position: 'topRight',
-                message: 'Ban da dang nhap'
-            })
             navigate('/');
         }
     }, [userData])
