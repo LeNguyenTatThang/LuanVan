@@ -19,7 +19,7 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Danh sách thể loại
+                    Danh sách tài khoản
                 </h1>
 
             </section>
@@ -47,9 +47,7 @@
                                             <th class="text-truncate">STT</th>
                                             <th class="text-truncate">Hình</th>
                                             <th class="text-truncate">Tên</th>
-                                            <th class="text-truncate">Giới thiệu</th>
-                                            <th class="text-truncate">Trạng thái</th>
-                                            <th class="text-truncate text-right">Action</th>
+                                            <th class="text-truncate">Loại</th>
                                         </tr>
                                     </thead>
                                     <%if(errcode==1) {%>
@@ -70,29 +68,16 @@
                                                         <td scope="row">
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar avatar-sm me-3">
-                                                                    <img src="/img/<%= data.hinhtacgia %>"
-                                                                        class="img-list" />
+                                                                    <img src="/img/<%= data.hinh %>" class="img-list" />
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td scope="row">
-                                                            <%= data.tentacgia %>
+                                                            <%= data.ten %>
                                                         </td>
+
                                                         <td scope="row">
-                                                            <%= data.gioithieu %>
-                                                        </td>
-                                                        <td scope="row">
-                                                            <%= data.trangthai===0 ? "Ẩn" : "Hiện" %>
-                                                        </td>
-                                                        <td class="text-right">
-                                                            <a class="btn btn-sm btn-danger btnDelete"
-                                                                data-id="<%= data.id %>"
-                                                                href="/delete-author/<%= data.id %>"><i
-                                                                    class="fa fa-trash"></i>
-                                                                Xóa</a>
-                                                            <a class="btn btn-sm btn-primary"
-                                                                href="/get-authorFoByID?id=<%= data.id %>"><i
-                                                                    class="fa fa-edit"></i> Sửa</a>
+                                                            <%= data.loai===0 ? "Admin" : "User" %>
                                                         </td>
                                                     </tr>
                                                     <% }) %>

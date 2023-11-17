@@ -1,5 +1,25 @@
 <%- include('../page/header')%>
     <%- include('../page/aside')%>
+        <script>
+            import { io } from "socket.io-client";
+            const socket = io("http://localhost:8000/")
+            let socketData = [];
+            socket.on("connect", () => {
+                socket.on("test1", (data) => {
+                    if (data) {
+                        console.log(JSON.stringify(data))
+                        socketData = data
+                    }
+                })
+                socket.on("test", (data) => {
+                    if (data) {
+                        console.log(JSON.stringify(data))
+                        socketData = data.data
+                    }
+                })
+
+            })
+        </script>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -28,6 +48,7 @@
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
+
                                             <th class="text-truncate">STT</th>
                                             <th class="text-truncate">Hình</th>
                                             <th class="text-truncate">Tên</th>
@@ -56,7 +77,7 @@
                                                         </td>
                                                         <td scope="row">
                                                             <div class="avatar avatar-sm me-3">
-                                                                <img src="" />
+                                                                <img src="/img/<%= data[i].hinh %>" class="img-list" />
                                                             </div>
                                                         </td>
                                                         <td scope="row">
@@ -74,8 +95,24 @@
                                                         <td scope="row">
                                                             <%= data[i].tentacgia %>
                                                         </td>
-                                                        <td scope="row">
-                                                            <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+
+                                                        <td scope="row" class="changeTT" data-id="<%= data[i].id %>">
+
+                                                            <div>
+                                                                <select class="form-control" name="trangthai">
+                                                                    <% let options=["1","0"]; %>
+                                                                        <% for ( let a=0; a < options.length; a++ ){ %>
+                                                                            <% let
+                                                                                isSelected=(data[i].trangthai==options[a]
+                                                                                ) ? "selected" : "" ; %>
+                                                                                <option value="<%= options[a]%>"
+                                                                                    <%=isSelected %>>
+                                                                                    <%= options[a]==="1" ? "Hiện" : "Ẩn"
+                                                                                        %>
+                                                                                </option>
+                                                                                <% } %>
+                                                                </select>
+                                                            </div>
                                                         </td>
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
@@ -148,4 +185,27 @@
             <!-- /.content -->
         </div>
         <%- include('../page/footer')%>
+            <script>
+                $(document).ready(function () {
+                    $(".changeTT").change(function () {
+                        const id = $(this).attr('data-id');
+                        $.ajax({
+                            url: 'http://localhost:8000/post-browsebook',
+                            method: "post",
+                            data: {
+                                id
+                            },
+                            dataType: "JSON",
+                            success: function () {
+                                alert('duyệt thành công')
+                            }
+                        });
+                        location.reload();
+                    })
+                });
+            </script>
+
+            </body>
+
+            </html>
             <!-- /.content-wrapper -->

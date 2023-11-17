@@ -39,7 +39,7 @@ let initApiRouter = (app) => {
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
 
 
-
+    router.get('/get-api-bookAdmin', bookController.apilistBook)
 
 
 

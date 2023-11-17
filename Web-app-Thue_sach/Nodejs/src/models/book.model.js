@@ -1,6 +1,6 @@
 import pool from "../config/connectDB";
 
-const book = {}
+const book = function () { }
 
 // hien thi ds sach chua dc duyet ben admin
 book.getTrangthai0 = async (page, name) => {
@@ -105,13 +105,13 @@ book.getTrangthai1 = (page) => {
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai= 1"
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1"
-            const [counts] = await pool.execute(sqlTotal)
+            let [counts] = await pool.execute(sqlTotal)
             let totalRow = counts[0].total
             let totalPage = Math.ceil(totalRow / limit)
             page = page > 0 ? Math.floor(page) : 1;
             page = page <= totalPage ? Math.floor(page) : totalPage;
             let start = (page - 1) * limit;
-            const [rows, fields] = await pool.execute(sql + ' ' + 'order by sach.ten ASC LIMIT ' + start + ',' + limit)
+            let [rows, fields] = await pool.execute(sql + ' ' + 'order by sach.ten ASC LIMIT ' + start + ',' + limit)
             if (rows.length === 0) {
                 data = {
                     totalPage,
@@ -287,12 +287,17 @@ book.updateTrangthai = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataBook = {};
-            let trangthai = 1;
+            let trangthai = {};
             console.log("sv", id)
             const [rows, fields] = await pool.execute('SELECT * FROM sach where id= ?', [id])
             let check = rows[0]
             console.log(check)
             if (check) {
+                if (check.trangthai == 1) {
+                    trangthai = 0
+                } else {
+                    trangthai = 1
+                }
                 await pool.execute('update sach set trangthai = ? where id = ?',
                     [trangthai, id]);
                 dataBook = {

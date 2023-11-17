@@ -56,7 +56,7 @@
                                                         </td>
                                                         <td scope="row">
                                                             <div class="avatar avatar-sm me-3">
-                                                                <img src="" />
+                                                                <img src="/img/<%= data[i].hinh %>" class="img-list" />
                                                             </div>
                                                         </td>
                                                         <td scope="row">
@@ -75,7 +75,24 @@
                                                             <%= data[i].tentacgia %>
                                                         </td>
                                                         <td scope="row">
-                                                            <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                            <%= data[i].tentacgia %>
+                                                        </td>
+                                                        <td scope="row" class="changeTT" data-id="<%= data[i].id %>">
+                                                            <div>
+                                                                <select class="form-control">
+                                                                    <% let options=["1","0"]; %>
+                                                                        <% for ( let a=0; a < options.length; a++ ){ %>
+                                                                            <% let
+                                                                                isSelected=(data[i].trangthai==options[a]
+                                                                                ) ? "selected" : "" ; %>
+                                                                                <option value="<%= options[a]%>"
+                                                                                    <%=isSelected %>>
+                                                                                    <%= options[a]==="1" ? "Hiện" : "Ẩn"
+                                                                                        %>
+                                                                                </option>
+                                                                                <% } %>
+                                                                </select>
+                                                            </div>
                                                         </td>
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
@@ -148,4 +165,23 @@
             <!-- /.content -->
         </div>
         <%- include('../page/footer')%>
+            <script>
+                $(document).ready(function () {
+                    $(".changeTT").change(function () {
+                        const id = $(this).attr('data-id');
+                        $.ajax({
+                            url: 'http://localhost:8000/post-browsebook',
+                            method: "post",
+                            data: {
+                                id
+                            },
+                            dataType: "JSON",
+                            success: function () {
+                                alert('duyệt thành công')
+                            }
+                        });
+                        location.reload()
+                    })
+                });
+            </script>
             <!-- /.content-wrapper -->

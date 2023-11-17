@@ -1,4 +1,4 @@
-
+import axios from "../axios";
 import book from '../models/book.model'
 import fs from 'fs/promises'
 
@@ -6,8 +6,34 @@ const getbook = async (req, res) => {
     let page = req.query.page ? req.query.page : 1;
     let name = req.query.name;
     if (name) {
-        let data = await book.getTrangthai0(page, name);
+        let data = await axios('/get-api-bookAdmin?name=' + name + '&page=' + page)
         return res.render('book/listBook.ejs', {
+            data: data.data,
+            totalPage: data.totalPage,
+            name: data.name,
+            message: data.message,
+            errcode: data.errcode,
+            page: parseInt(page),
+        })
+    } else {
+        let data = await axios('/get-api-bookAdmin?page=' + page)
+        return res.render('book/listBook.ejs', {
+            data: data.data,
+            name: data.name,
+            totalPage: data.totalPage,
+            message: data.message,
+            errcode: data.errcode,
+            page: parseInt(page)
+        })
+    }
+}
+
+const apilistBook = async (req, res) => {
+    let page = req.query.page ? req.query.page : 1;
+    let name = req.query.name;
+    if (name) {
+        let data = await book.getTrangthai0(page, name);
+        return res.status(200).json({
             data: data.rows,
             totalPage: data.totalPage,
             name: data.name,
@@ -17,13 +43,13 @@ const getbook = async (req, res) => {
         })
     } else {
         let data = await book.getTrangthai0(page);
-        return res.render('book/listBook.ejs', {
+        return res.status(200).json({
             data: data.rows,
-            name: data.name,
             totalPage: data.totalPage,
+            name: data.name,
             message: data.message,
             errcode: data.errcode,
-            page: parseInt(page)
+            page: parseInt(page),
         })
     }
 }
@@ -147,6 +173,7 @@ module.exports = {
     getApiDetailBooks,
     BrowseBooks,
     postApiListBookUser,
-    getbrowebook
+    getbrowebook,
+    apilistBook
 }
 

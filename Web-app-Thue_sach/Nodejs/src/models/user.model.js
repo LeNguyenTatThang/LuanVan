@@ -45,7 +45,7 @@ user.handleUserLogin = (email, matkhau) => {
 
 
 // kiểm tra email
-user.checkEmail = (email) => {
+let checkEmail = (email) => {
     return new Promise(async (resolve, reject) => {
         try {
             const [rows, fields] = await pool.execute('SELECT * FROM users where email= ?', [email])
