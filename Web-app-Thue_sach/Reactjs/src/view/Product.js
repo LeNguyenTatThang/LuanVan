@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate';
 import { apiListBook } from '../Service/UserService';
+import { useDispatch, useSelector } from 'react-redux';
+import { ADD_TO_CART } from '../app/userCard';
+
 
 export default function Product() {
     const [listBook, setListBook] = useState();
     const [totalPage, setTotalPage] = useState();
+    const dispatch = useDispatch()
     useEffect(() => {
         getListBook();
     }, [])
@@ -21,6 +25,12 @@ export default function Product() {
     const handlePageClick = (event) => {
         getListBook(+event.selected + 1);
 
+    }
+    const userData = useSelector((state) => state.shop.product);
+    console.log(userData)
+    const handleAdd = (_item) => {
+        // var item = { ...userData };
+        // dispatch(ADD_TO_CART(_item.id));
     }
     return (
         <>
@@ -48,7 +58,7 @@ export default function Product() {
                                         </div>
                                         <div
                                             className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
-                                            {item.loai === 0 ? <><div className='cursor-pointer'>Đọc</div></> : <><div className='cursor-pointer'>Thuê</div></>}
+                                            {item.loai === 0 ? <><div className='cursor-pointer' onClick={(e) => handleAdd(item)}>Thuê</div></> : <><div className='cursor-pointer'>Đọc</div></>}
                                         </div>
                                     </div>
                                     <div className="py-2 mb-auto">

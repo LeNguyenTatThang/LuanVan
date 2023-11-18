@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userReducer';
+import userCard from './userCard';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from '@reduxjs/toolkit'
 import {
@@ -16,11 +17,12 @@ import persistStore from 'redux-persist/es/persistStore';
 
 const persistConfig = {
     key: 'root',
-    storage: storage,
-    blacklist: ['apiProductSlice'],
+    version: 1,
+    storage,
 }
 const rootReducer = combineReducers({
-    user: userReducer
+    user: userReducer,
+    shop: userCard
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({

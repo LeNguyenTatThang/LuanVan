@@ -25,7 +25,6 @@ export default function AddProduct() {
         setBook(formData)
     }
 
-
     const [ten, setTen] = useState();
     const [hinh, setHinh] = useState({ preview: '', data: '' });
     const [gia, setGia] = useState();
@@ -62,7 +61,7 @@ export default function AddProduct() {
             setCategory(cate.data)
         }
     }
-    console.log("check cate>>>>", category)
+
     const handleSend = async (e) => {
 
         if (!ten || !hinh.data || !tentacgia) {

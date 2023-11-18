@@ -1,6 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
+
+    const navigate = useNavigate();
+
+    const userData = useSelector((state) => state.user);
+
+    useEffect(() => {
+        if (!userData.isLogin) {
+            navigate('/');
+        }
+    }, [userData])
+
+    const dispatch = useDispatch();
     return (
         <>
 
@@ -12,7 +26,7 @@ export default function Profile() {
                             <div className="text-center my-4">
                                 <img className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4" src="https://randomuser.me/api/portraits/women/21.jpg" alt="" />
                                 <div className="py-2">
-                                    <h3 className="font-bold text-2xl mb-1">Cait Genevieve</h3>
+                                    <h3 className="font-bold text-2xl mb-1">{userData.userInfo.ten}</h3>
                                     <div className="inline-flex text-gray-700 items-center">
                                         <svg className="h-5 w-5 text-gray-400 mr-1" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -21,6 +35,7 @@ export default function Profile() {
                                         </svg>
                                         New York, NY
                                     </div>
+                                    <div className=" text-gray-800 items-center"> {userData.userInfo.email}</div>
                                 </div>
                             </div>
                             <div className="flex gap-2 px-2">

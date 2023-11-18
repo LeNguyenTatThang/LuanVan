@@ -14,6 +14,7 @@ import Authur from './view/Authur';
 import Profile from './view/Profile';
 import Review from './view/Review';
 import AddProduct from './view/AddProduct';
+import CustomerCard from './view/CustomerCard';
 
 
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/testimg" element={<div className="p-4 sm:ml-64"> <TestIMG /> </div>} />
         <Route path="/testapi" element={<div className="p-4 sm:ml-64">  </div>} />
         <Route path="/add-book" element={<div className="p-4 sm:ml-64"> <AddProduct /> </div>} />
+        <Route path="/customer-card" element={<div className="p-4 sm:ml-64"> <CustomerCard /> </div>} />
         <Route path="*" element={<div className="p-4 sm:ml-64"><Page404 /></div>} />
       </Routes>
       <div className="p-4 sm:ml-64"> <Footer /> </div>

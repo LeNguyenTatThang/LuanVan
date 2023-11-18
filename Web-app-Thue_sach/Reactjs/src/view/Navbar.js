@@ -117,6 +117,7 @@ export default function Navbar() {
                                             </ul>
 
                                         </div>
+
                                         <Cart />
 
                                     </div>
