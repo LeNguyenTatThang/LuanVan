@@ -26,11 +26,11 @@ export default function Product() {
         getListBook(+event.selected + 1);
 
     }
-    const userData = useSelector((state) => state.shop.product);
+    const userData = useSelector((state) => state.shop.card);
     console.log(userData)
     const handleAdd = (_item) => {
         // var item = { ...userData };
-        // dispatch(ADD_TO_CART(_item.id));
+        dispatch(ADD_TO_CART(_item));
     }
     return (
         <>
