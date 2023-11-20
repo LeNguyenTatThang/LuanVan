@@ -21,7 +21,6 @@ const userCard = createSlice({
             const inCart = state.cart.find((item) =>
                 item.id === product.id ? true : false
             );
-
             return {
                 ...state,
                 cart: inCart
@@ -38,7 +37,7 @@ const userCard = createSlice({
             return {
                 ...state,
                 cart: state.cart.filter((item) => (
-                    item.size + item._id !== product.size + product._id
+                    item.id !== product.id
 
                 )),
             };
