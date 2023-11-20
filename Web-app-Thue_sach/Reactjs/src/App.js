@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 
 import './App.css';
 import Footer from './view/Footer';
@@ -15,6 +16,7 @@ import Profile from './view/Profile';
 import Review from './view/Review';
 import AddProduct from './view/AddProduct';
 import CustomerCard from './view/CustomerCard';
+import Detail_book from './view/Detail_book';
 
 
 
@@ -34,9 +36,9 @@ function App() {
         <Route path="/review" element={<div className="p-4 sm:ml-64"><Review /> </div>} />
         <Route path="/signup" element={<div className="p-4 sm:ml-64"> <Register /> </div>} />
         <Route path="/testimg" element={<div className="p-4 sm:ml-64"> <TestIMG /> </div>} />
-        <Route path="/testapi" element={<div className="p-4 sm:ml-64">  </div>} />
         <Route path="/add-book" element={<div className="p-4 sm:ml-64"> <AddProduct /> </div>} />
         <Route path="/customer-card" element={<div className="p-4 sm:ml-64"> <CustomerCard /> </div>} />
+        <Route path="/detail-book/:id" element={<div className="p-4 sm:ml-64"> <Detail_book /> </div>} />
         <Route path="*" element={<div className="p-4 sm:ml-64"><Page404 /></div>} />
       </Routes>
       <div className="p-4 sm:ml-64"> <Footer /> </div>

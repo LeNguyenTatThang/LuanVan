@@ -3,23 +3,25 @@ import ReactPaginate from 'react-paginate';
 import { apiListBook } from '../Service/UserService';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_TO_CART } from '../app/userCard';
+import { Link } from 'react-router-dom';
 
 
 export default function Product() {
     const [listBook, setListBook] = useState();
+
     const [totalPage, setTotalPage] = useState();
+
     const dispatch = useDispatch()
     useEffect(() => {
         getListBook();
     }, [])
+
     const getListBook = async (page) => {
         let res = await apiListBook(page);
         if (res && res.data) {
             setListBook(res.data);
             setTotalPage(res.totalPage)
         }
-
-        console.log(">>>>>>check res", res)
     }
 
     const handlePageClick = (event) => {
@@ -27,11 +29,14 @@ export default function Product() {
 
     }
     const userData = useSelector((state) => state.shop.card);
+
     console.log(userData)
+
     const handleAdd = (_item) => {
         // var item = { ...userData };
         dispatch(ADD_TO_CART(_item));
     }
+
     return (
         <>
             <select className="select w-auto h-10">
@@ -62,10 +67,13 @@ export default function Product() {
                                         </div>
                                     </div>
                                     <div className="py-2 mb-auto">
+
                                         <div className="px-6 flex flex-row items-center justify-between">
-                                            <div className="font-medium text-lg cursor-pointer hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">
-                                                <span>{item.ten}</span>
-                                            </div>
+                                            <Link to={`/detail-book/${item.id}`} >
+                                                <div className="font-medium text-lg cursor-pointer hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">
+                                                    <span >{item.ten}</span>
+                                                </div>
+                                            </Link>
                                         </div>
                                         <div className='px-4 py-2'><span className="text-xs">Người đăng: <span className='text-lime-600 text-sm'>{item.nguoidang}</span></span></div>
                                         <p className="text-gray-500 text-sm px-4">

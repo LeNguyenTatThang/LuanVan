@@ -26,4 +26,8 @@ const apiListBook = async (page) => {
     return await axios.get(`/get-api-listBook?page=${page}`);
 }
 
-export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate, apiListBook };
+const detailBookUser = async (id) => {
+    return await axios.get(`/get-api-detailBook?id=${id}`);
+}
+
+export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate, apiListBook, detailBookUser };
