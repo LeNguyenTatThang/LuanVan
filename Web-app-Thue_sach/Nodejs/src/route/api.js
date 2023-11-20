@@ -41,70 +41,9 @@ let initApiRouter = (app) => {
 
     router.get('/get-api-bookAdmin', bookController.apilistBook)
 
+    //tac gia
+    router.get('/get-api-randomAuthor', authorController.apiRandomAuthor)
 
-
-
-
-    router.post("/register", upload.single("photo"), (req, res) => {
-        const { fname } = req.body;
-        const { filename } = req.file;
-
-
-        if (!fname || !filename) {
-            res.status(422).json({ status: 422, message: "fill all the details" })
-        }
-
-        try {
-
-            let date = moment(new Date()).format("YYYY-MM-DD hh:mm:ss");
-
-            conn.query("INSERT INTO usersdata SET ?", { username: fname, userimg: filename, date: date }, (err, result) => {
-                if (err) {
-                    console.log("error")
-                } else {
-                    console.log("data added")
-                    res.status(201).json({ status: 201, data: req.body })
-                }
-            })
-        } catch (error) {
-            res.status(422).json({ status: 422, error })
-        }
-    });
-
-
-    // get user data
-    router.get("/getdata", (req, res) => {
-        try {
-            conn.query("SELECT * FROM usersdata", (err, result) => {
-                if (err) {
-                    console.log("error")
-                } else {
-                    console.log("data get")
-                    res.status(201).json({ status: 201, data: result })
-                }
-            })
-        } catch (error) {
-            res.status(422).json({ status: 422, error })
-        }
-    });
-
-
-    // delete user
-    router.delete("/:id", (req, res) => {
-        const { id } = req.params;
-        try {
-            conn.query(`DELETE FROM usersdata WHERE id ='${id}'`, (err, result) => {
-                if (err) {
-                    console.log("error")
-                } else {
-                    console.log("data delete")
-                    res.status(201).json({ status: 201, data: result })
-                }
-            })
-        } catch (error) {
-            res.status(422).json({ status: 422, error })
-        }
-    })
 
     return app.use("/", router)
 
