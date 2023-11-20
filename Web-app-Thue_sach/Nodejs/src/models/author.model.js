@@ -199,5 +199,29 @@ author.getRandom = function () {
     })
 }
 
+author.getRandomBook = function (id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = 'SELECT sach.id, ten, hinh FROM sach INNER JOIN tacgia ON sach.id_tacgia = tacgia.id WHERE tacgia.id = ? ORDER BY RAND() LIMIT 3; '
+            const [rows, err] = await pool.execute(sql, [id])
+            if (rows.length > 0) {
+                data = {
+                    errcode: 0,
+                    rows,
+                    message: 'ok',
+                }
+            } else {
+                data = {
+                    errcode: 1,
+                    message: 'không có data',
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 module.exports = author;

@@ -98,7 +98,7 @@ const getIdAuthor = async (req, res) => {
             });
         } else {
             req.flash('errAuthor', data.message)
-            return res.render('/author')
+            return res.redirect('/author')
         }
     } catch (e) {
         req.flash('errAuthor', 'lỗi hệ thống')
@@ -165,6 +165,30 @@ const apiRandomAuthor = async (req, res) => {
     }
 }
 
+const apiRandomBook = async (req, res) => {
+    try {
+        let id_tacgia = req.body.id_tacgia
+        let data = await author.getRandomBook(id_tacgia)
+        if (data.errcode == 0) {
+            return res.status(200).json({
+                data: data.rows,
+                status: 200,
+                message: data.message,
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: data.message,
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi hệ thống'
+        })
+    }
+
+}
 
 module.exports = {
     getAuthor,
@@ -173,5 +197,6 @@ module.exports = {
     deleteAuthor,
     getIdAuthor,
     updateAuthor,
-    apiRandomAuthor
+    apiRandomAuthor,
+    apiRandomBook
 }
