@@ -143,6 +143,9 @@ author.getId = function (id) {
     })
 }
 
+
+
+
 author.update = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -170,5 +173,31 @@ author.update = (data, hinhmoi) => {
         }
     })
 }
+
+author.getRandom = function () {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = 'SELECT * FROM tacgia WHERE tacgia.trangthai = 1 ORDER BY RAND() LIMIT 4'
+            const [rows, err] = await pool.execute(sql)
+            if (rows.length > 0) {
+                data = {
+                    errcode: 0,
+                    rows,
+                    message: 'ok',
+                }
+            } else {
+                data = {
+                    errcode: 1,
+                    message: 'không có data',
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 
 module.exports = author;

@@ -1,25 +1,17 @@
 <%- include('../page/header')%>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const socket = io();
+            socket.on('updateData', function (data) {
+                console.log('Received updateData event:', data);
+                const dataList = document.getElementById('dataList');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            });
+        });
+    </script>
     <%- include('../page/aside')%>
-        <script>
-            import { io } from "socket.io-client";
-            const socket = io("http://localhost:8000/")
-            let socketData = [];
-            socket.on("connect", () => {
-                socket.on("test1", (data) => {
-                    if (data) {
-                        console.log(JSON.stringify(data))
-                        socketData = data
-                    }
-                })
-                socket.on("test", (data) => {
-                    if (data) {
-                        console.log(JSON.stringify(data))
-                        socketData = data.data
-                    }
-                })
-
-            })
-        </script>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -32,7 +24,7 @@
             <!-- Main content -->
             <section class="content">
                 <!-- Default box -->
-                <div class="row">
+                <div class="row" id="dataList">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -48,7 +40,6 @@
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-
                                             <th class="text-truncate">STT</th>
                                             <th class="text-truncate">Hình</th>
                                             <th class="text-truncate">Tên</th>
@@ -159,21 +150,40 @@
                                                                     <span class="sr-only">Previous</span>
                                                                 </a>
                                                             </li>
-                                                            <%for(i=1; i<=totalPage; i++){ %>
-                                                                <li class="page-item"><a class="page-link"
-                                                                        href="?page=<%=i %>">
-                                                                        <%= i %>
-                                                                    </a></li>
-                                                                <%} %>
-                                                                    <li class="page-item">
-                                                                        <a class="page-link"
-                                                                            href="/book?page=<%= page < totalPage ? page + 1 : totalPage%>"
-                                                                            aria-label="Next">
-                                                                            <span aria-hidden="true">&raquo;</span>
-                                                                            <span class="sr-only">Next</span>
-                                                                        </a>
+                                                            <% for (let i=1; i <=totalPage; i++) { %>
+                                                                <% if (i===page) { %>
+                                                                    <li class="page-item active">
+                                                                        <span class="page-link">
+                                                                            <%= i %>
+                                                                        </span>
                                                                     </li>
-                                                                    <%} %>
+                                                                    <% } else if (i===1 || i===totalPage || (i>= page -
+                                                                        2 && i <= page + 2)) { %>
+                                                                            <li class="page-item">
+                                                                                <a class="page-link"
+                                                                                    href="/book?page=<%= i %>">
+                                                                                    <%= i %>
+                                                                                </a>
+                                                                            </li>
+                                                                            <% } else if (i===page - 3 || i===page + 3)
+                                                                                { %>
+                                                                                <li class="page-item disabled">
+                                                                                    <span class="page-link">...</span>
+                                                                                </li>
+                                                                                <% } %>
+                                                                                    <% } %>
+                                                                                        <li class="page-item">
+                                                                                            <a class="page-link"
+                                                                                                href="/book?page=<%= page < totalPage ? page + 1 : totalPage%>"
+                                                                                                aria-label="Next">
+                                                                                                <span
+                                                                                                    aria-hidden="true">&raquo;</span>
+                                                                                                <span
+                                                                                                    class="sr-only">Next</span>
+                                                                                            </a>
+                                                                                        </li>
+
+                                                                                        <%} %>
                                     </nav>
                                 </div>
                             </div>
@@ -204,6 +214,7 @@
                     })
                 });
             </script>
+
 
             </body>
 

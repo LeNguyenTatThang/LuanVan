@@ -142,6 +142,29 @@ const updateAuthor = async (req, res, next) => {
 
 }
 
+const apiRandomAuthor = async (req, res) => {
+    try {
+        let data = await author.getRandom()
+        if (data.errcode == 0) {
+            return res.status(200).json({
+                data: data.rows,
+                status: 200,
+                message: data.message,
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: data.message,
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi hệ thống'
+        })
+    }
+}
+
 
 module.exports = {
     getAuthor,
@@ -149,5 +172,6 @@ module.exports = {
     postAuthor,
     deleteAuthor,
     getIdAuthor,
-    updateAuthor
+    updateAuthor,
+    apiRandomAuthor
 }

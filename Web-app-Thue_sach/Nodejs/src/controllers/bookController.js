@@ -2,6 +2,7 @@ import axios from "../axios";
 import book from '../models/book.model'
 import fs from 'fs/promises'
 
+
 const getbook = async (req, res) => {
     let page = req.query.page ? req.query.page : 1;
     let name = req.query.name;
@@ -24,6 +25,8 @@ const getbook = async (req, res) => {
             message: data.message,
             errcode: data.errcode,
             page: parseInt(page)
+        }, function (err, html) {
+            res.send(html)
         })
     }
 }
@@ -110,6 +113,8 @@ const postBook = async (req, res, next) => {
     }
     let data = await book.create(bookData)
     if (data.errcode === 0) {
+        req.io.emit('updateData');
+        console.log('Event updateData emitted');
         return res.status(200).json({
             status: 200,
             message: data.message

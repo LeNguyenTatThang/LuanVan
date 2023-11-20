@@ -5,17 +5,15 @@ import initWebRoutes from './route/web';
 import initApiRouter from './route/api';
 import session from "express-session";
 import cors from 'cors';
-import auth from "./middelware/auth";
-
-import mysql from 'mysql2/promise';
-const MySQLEvents = require('@rodrigogs/mysql-events');
-
+import auth from "./middelware/auth"
 var flash = require('connect-flash');
 require('dotenv').config();
-
-
+const http = require('http');
+const socketIO = require('socket.io');
 let app = express();
 
+const server = http.createServer(app);
+const io = socketIO(server);
 
 app.use(cors({ origin: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -26,55 +24,44 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
 app.use(flash());
 viewEngine(app);
 initWebRoutes(app);
 initApiRouter(app);
 
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
 
-io.on('connection', async (socket) => {
-    const pool = mysql.createPool({
-        host: 'localhost',
-        user: 'root',
-        database: 'thuesach',
-    })
+io.on('connection', (socket) => {
+    console.log('User connected');
 
-    const instance = new MySQLEvents(pool, {
-        startAtEnd: true,
-    });
-    await instance.start();
+    socket.on('updateData', () => {
+        // MySQL query to get updated data
+        // Emit updated data to all connected clients
+        console.log('data', results)
+        io.emit('updateData', results);
 
-    instance.addTrigger({
-        name: 'checkSach',
-        expression: 'thuesach.sach',
-        statement: MySQLEvents.STATEMENTS.ALL,
-        onEvent: (event) => {
-            if (event) {
-                const [rows, err] = pool.execute(sql)
-                if (err) throw err;
-                console.log(rows)
-                io.emit('test', { data: rows })
-            }
-        },
     });
 
-    instance.on(MySQLEvents.EVENTS.CONNECTION_ERROR, console.error);
-    instance.on(MySQLEvents.EVENTS.ZONGJI_ERROR, console.error);
-
-    const sql = "selcect * from sach"
-    const [rows, err] = pool.execute(sql)
-    if (err) throw err;
-    socket.emit('test1', rows)
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
 });
+
+
 
 app.use(auth.isLogin, (req, res) => {
     return res.render('404.ejs')
 })
+
 
 let port = process.env.PORT || 6969;
 
 server.listen(port, () => {
     console.log("backend is runing:" + port)
 })
+
+
+

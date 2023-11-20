@@ -1,20 +1,26 @@
-
 import mysql from 'mysql2/promise';
-const MySQLEvents = require('@rodrigogs/mysql-events');
-
-const pool = mysql.createPool({
+const pool = ({
   host: 'localhost',
   user: 'root',
   database: 'thuesach',
-  waitForConnections: true,
-  connectionLimit: 10,
-  maxIdle: 10,
-  idleTimeout: 60000,
-  queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0
-
+  password: ''
 })
 
+var db;
 
-export default pool;
+function connectDB() {
+  if (!db) {
+    db = mysql.createPool(pool);
+    db.getConnection(function (err) {
+      if (!err) {
+        console.log(pool);
+        console.log('database connected success !');
+      } else {
+        console.log("Error database connect !!")
+      }
+    });
+  }
+  return db
+}
+
+module.exports = connectDB()
