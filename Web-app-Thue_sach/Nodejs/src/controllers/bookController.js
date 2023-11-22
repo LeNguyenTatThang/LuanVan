@@ -86,7 +86,10 @@ const getbrowebook = async (req, res) => {
 const getDetailBook = async (req, res) => {
     let id = req.query.id;
     let data = await book.getId(id)
-    return res.render('book/detailBook.ejs', { data: data.book });
+    return res.render('book/detailBook.ejs', {
+        data: data.book, msgBook: req.flash('msgBook'),
+        errBook: req.flash('errBook'),
+    });
 }
 
 const BrowseBooks = async (req, res) => {
@@ -94,6 +97,18 @@ const BrowseBooks = async (req, res) => {
     console.log(id)
     await book.updateTrangthai(id);
     return res.redirect('/book')
+}
+
+//từ chối duyệt và thông báo
+const BoosMessage = async (req, res) => {
+    try {
+        let data = req.body;
+        console.log
+        req.flash('msgBook', dataMsr.message)
+        return res.redirect(`/get-detailbook?id=${data.id}`)
+    } catch (error) {
+        req.flash('errBook', "lỗi hệ thống")
+    }
 }
 
 //API
@@ -179,6 +194,7 @@ module.exports = {
     BrowseBooks,
     postApiListBookUser,
     getbrowebook,
-    apilistBook
+    apilistBook,
+    BoosMessage
 }
 

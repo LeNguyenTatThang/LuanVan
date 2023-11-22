@@ -1,3 +1,4 @@
+import { DATE } from "sequelize";
 import pool from "../config/connectDB";
 
 const book = function () { }
@@ -316,4 +317,26 @@ book.updateTrangthai = (id) => {
         }
     })
 }
+
+book.message = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let DataMsr = {}
+            let ngaytao = new Date()
+            console.log(ngaytao)
+            let sql = "update sach set trangthai = ? where id = ?"
+            let sqlMsg = "insert into thongbao(noidung, id_sach, ngaytao) values (?, ?, ?)"
+            await pool.execute(sql, [data.trangthai, data.id])
+            await pool.execute(sqlMsg, [data.noidung, data.id, ngaytao])
+            DataMsr = {
+                errcode: 0,
+                message: 'thành công'
+            }
+            resolve(DataMsr)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = book;

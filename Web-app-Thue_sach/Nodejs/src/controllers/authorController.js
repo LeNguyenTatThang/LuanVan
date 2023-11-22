@@ -94,7 +94,9 @@ const getIdAuthor = async (req, res) => {
         let data = await author.getId(id)
         if (data.errcode == 0) {
             return res.render('author/editAuthor.ejs', {
-                data: data.dataAuthor
+                data: data.dataAuthor,
+                msgAuthor: req.flash('msgAuthor'),
+                errAuthor: req.flash('errAuthor'),
             });
         } else {
             req.flash('errAuthor', data.message)
@@ -109,7 +111,6 @@ const getIdAuthor = async (req, res) => {
 const updateAuthor = async (req, res, next) => {
     try {
         let authorData = req.body
-        console.log(authorData)
         let hinhmoi = {}
         if (req.file || req.file !== undefined) {
             hinhmoi = req.file.filename
@@ -127,17 +128,17 @@ const updateAuthor = async (req, res, next) => {
                 }
             }
             req.flash('msgAuthor', data.message)
-            return res.redirect('/author')
+            return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
         } else {
             if (req.file) {
                 fs.unlink('src/public/img/' + hinhmoi)
             }
             req.flash('errAuthor', data.message)
-            return res.redirect('/author')
+            return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
         }
     } catch (error) {
         req.flash('errAuthor', 'lỗi hệ thống')
-        return res.redirect('/author')
+        return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
     }
 
 }

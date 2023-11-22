@@ -31,18 +31,15 @@ let initWebRouter = (app) => {
 
     router.get('/user', auth.isLogin, userController.getUser);
 
-    // router.post('/post-user', userController.postUser);
-    // router.get('/add-user', userController.getAddUser);
-    // router.get('/delete-user', userController.deleteUser);
-    // router.get('/edit-user', userController.editPageUser);
-    // router.post('/put-user', userController.putUser);
-    // router.post('/api/login', userController.handlelogin);
+
     router.post('/post-login', loginController.getLogin);
 
+    //sach
     router.get('/book', auth.isLogin, bookController.getbook);
     router.get('/get-detailbook', auth.isLogin, bookController.getDetailBook);
     router.post('/post-browsebook', auth.isLogin, bookController.BrowseBooks);
     router.get('/get-broweBook', auth.isLogin, bookController.getbrowebook)
+    router.post('/post-Message', auth.isLogin, bookController.BoosMessage)
 
     //tac gia
     router.get('/author', auth.isLogin, authorController.getAuthor);

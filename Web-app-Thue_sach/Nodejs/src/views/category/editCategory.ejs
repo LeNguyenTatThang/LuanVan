@@ -57,9 +57,28 @@
             </section>
             <!-- /.content -->
         </div>
-        <%- include('../page/footer')%>
+        <% let arrMsg=[] %>
+            <% msgCatetory.forEach(function(msg){ %>
+                <% arrMsg.push(msg) %>
+                    <% })%>
+                        <% let arrErr=[] %>
+                            <% errCatetory.forEach(function(err){ %>
+                                <% arrErr.push(err) %>
+                                    <% })%>
+                                        <%- include('../page/footer')%>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    let msg = '<%= arrMsg%>';
+                                                    let err = '<%= arrErr%>';
+                                                    if (msg != '') {
+                                                        toastr.success(msg, { timeOut: 5000 })
+                                                    }
+                                                    if (err != '') {
+                                                        toastr.error(err, { timeOut: 5000 })
+                                                    }
+                                                })
+                                            </script>
+                                            </body>
 
-            </body>
-
-            </html>
-            <!-- /.content-wrapper -->
+                                            </html>
+                                            <!-- /.content-wrapper -->

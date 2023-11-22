@@ -5,7 +5,11 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Duyệt sách
+                    <%if(data.trangthai==0){%>
+                        Duyệt sách
+                        <% } else {%>
+                            Chi tiết sách
+                            <% } %>
                 </h1>
             </section>
             <!-- Main content -->
@@ -70,7 +74,7 @@
                                                             aria-hidden="true"></i> Quay Lại</a>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label for="">Mô tả</label>
@@ -84,6 +88,32 @@
                             </form>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <form action="/post-Message" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div>
+                                            <input type="hidden" name="id" value="<%= data.id %>" />
+                                        </div>
+                                        <div>
+                                            <input type="hidden" name="trangthai" value="0" />
+                                        </div>
+                                        <label for="">
+                                            <%if(data.trangthai==0){%>
+                                                Lý do không duyệt
+                                                <% } else {%>
+                                                    Lý do bị cấm
+                                                    <% } %>
+                                        </label>
+                                        <textarea name="noidung" id="summernote" cols="30" rows="10"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
+                                        lại</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.box-body -->
                 <!-- /.box-footer-->
@@ -92,20 +122,39 @@
             </section>
             <!-- /.content -->
         </div>
-        <%- include('../page/footer')%>
-            <script>
-                function showImage(input) {
-                    if (input.files && input.files[0]) {
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            $('#change-image').attr('src', e.target.result).height(300).width(300)
-                        };
-                        reader.readAsDataURL(input.files[0])
-                    }
-                }
-            </script>
+        <% let arrMsg=[] %>
+            <% msgBook.forEach(function(msg){ %>
+                <% arrMsg.push(msg) %>
+                    <% })%>
+                        <% let arrErr=[] %>
+                            <% errBook.forEach(function(err){ %>
+                                <% arrErr.push(err) %>
+                                    <% })%>
+                                        <%- include('../page/footer')%>
+                                            <script>
+                                                function showImage(input) {
+                                                    if (input.files && input.files[0]) {
+                                                        var reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            $('#change-image').attr('src', e.target.result).height(300).width(300)
+                                                        };
+                                                        reader.readAsDataURL(input.files[0])
+                                                    }
+                                                }
+                                            </script>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    let msg = '<%= arrMsg%>';
+                                                    let err = '<%= arrErr%>';
+                                                    if (msg != '') {
+                                                        toastr.success(msg, { timeOut: 5000 })
+                                                    }
+                                                    if (err != '') {
+                                                        toastr.error(err, { timeOut: 5000 })
+                                                    }
+                                                })
+                                            </script>
+                                            </body>
 
-            </body>
-
-            </html>
-            <!-- /.content-wrapper -->
+                                            </html>
+                                            <!-- /.content-wrapper -->

@@ -42,7 +42,9 @@ const getFromCatetoryByID = async (req, res) => {
     let data = await category.getId(id)
     if (data.errcode == 0) {
         return res.render('category/editCategory.ejs', {
-            data: data.dataCatetory
+            data: data.dataCatetory,
+            msgCatetory: req.flash('msgCatetory'),
+            errCatetory: req.flash('errCatetory'),
         });
     } else {
         return res.render('/category')
@@ -51,12 +53,24 @@ const getFromCatetoryByID = async (req, res) => {
 
 // thêm thể loại
 const postCatetory = async (req, res) => {
-    let categoryData = req.body
-    if (!categoryData.ten) {
-        let message = "vui lòng nhập thể loại cần thêm"
-        req.flash('errPostCatetory', message)
-        return res.redirect('/add-category')
-    } else {
+    try {
+        let categoryData = req.body
+        if (!categoryData.ten) {
+            let message = "vui lòng nhập thể loại cần thêm"
+            req.flash('errPostCatetory', message)
+            return res.redirect('/add-category')
+        }
+        if (categoryData.ten.length > 20) {
+            let message = "không nhập quá 20 kí tự"
+            req.flash('errPostCatetory', message)
+            return res.redirect('/add-category')
+        }
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        if (specialCharRegex.test(categoryData.ten)) {
+            let message = "Tên thể loại không được chứa kí tự đặc biệt.";
+            req.flash('errPostCatetory', message);
+            return res.redirect('/add-category');
+        }
         let data = await category.create(categoryData);
         if (data.errcode == 0) {
             req.flash('msgPostCatetory', data.message)
@@ -65,6 +79,10 @@ const postCatetory = async (req, res) => {
             req.flash('errPostCatetory', data.message)
             return res.redirect('/add-category')
         }
+    } catch (error) {
+        let message = "lỗi hệ thống"
+        req.flash('errPostCatetory', message)
+        return res.redirect('/add-category')
     }
 }
 
@@ -98,10 +116,10 @@ const putCatetory = async (req, res) => {
     let data = await category.update(categoryData);
     if (data.errcode == 0) {
         req.flash('msgCatetory', data.message)
-        return res.redirect('/category')
+        return res.redirect(`/get-catetoryFoByID?id=${categoryData.id}`)
     } else {
         req.flash('errCatetory', data.message)
-        return res.redirect('/category')
+        return res.redirect(`/get-catetoryFoByID?id=${categoryData.id}`)
     }
 }
 
