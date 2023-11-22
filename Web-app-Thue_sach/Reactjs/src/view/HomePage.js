@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import image from './bookstore.jpg';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -8,10 +8,20 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/autoplay';
+import { apiAuthurRandom } from '../Service/UserService';
 
 
 export default function HomePage() {
+    const [authur, setAuthur] = useState();
+    useEffect(() => {
+        getAuthor();
+    }, [])
 
+    const getAuthor = async () => {
+        let res = await apiAuthurRandom();
+        setAuthur(res.data)
+    }
+    console.log(authur)
     return (
         <>
             <Swiper
@@ -46,198 +56,63 @@ export default function HomePage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
-
-                    <div className='w-full bg-white shadow rounded border border-transparent'>
-                        <div className="w-full bg-white shadow rounded border border-transparent hover:border-blue-500 cursor-pointer">
-                            <div className='flex'>
-                                <div className="h-48 w-full checker-bg flex items-center justify-center p-2 text-gray-700">
-                                    <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center" src="https://zpsocial-f54-org.zadn.vn/0b0b325c6ba985f7dcb8.jpg" alt="image description" />
-                                    <div className='w-full h-auto px-2'>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://cdn.codegym.vn/wp-content/uploads/2023/06/Bia-sach-Lap-trinh-can-ban-Copy-Copy-02-scaled.jpg' className='w-12 h-14' />
+                    {authur && authur.length > 0 &&
+                        authur.map((item, index) => {
+                            return (
+                                <React.Fragment key={index}>
+                                    <div className='w-full bg-white shadow rounded border border-transparent'>
+                                        <div className="w-full bg-white shadow rounded border border-transparent hover:border-blue-500 cursor-pointer">
+                                            <div className='flex'>
+                                                <div className="h-52 w-full checker-bg flex items-center justify-center p-2 text-gray-700">
+                                                    <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center"
+                                                        src={`http://localhost:8000/img/${item.hinhtacgia}`}
+                                                        alt={`${item.hinhtacgia}`} />
+                                                    <div className='w-full h-auto px-2'>
+                                                        <div className='flex px-1 bg-white rounded-2'>
+                                                            <div className='col-4 pl-1'>
+                                                                <img src='https://cdn.codegym.vn/wp-content/uploads/2023/06/Bia-sach-Lap-trinh-can-ban-Copy-Copy-02-scaled.jpg' className='w-12 h-14' />
+                                                            </div>
+                                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
+                                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình căn bản</div>
+                                                                <div className='text-sm text-lime-600'>683</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='flex px-1 bg-white rounded-2 py-2'>
+                                                            <div className='col-4 pl-1'>
+                                                                <img src='https://itviec.com/blog/wp-content/uploads/2017/03/C-60-and-the-dotnet-46-framework.jpg' className='w-12 h-14' />
+                                                            </div>
+                                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
+                                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C #</div>
+                                                                <div className='text-sm text-lime-600'>683</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='flex px-1 bg-white rounded-2'>
+                                                            <div className='col-4 pl-1'>
+                                                                <img src='https://salt.tikicdn.com/cache/w400/ts/product/d2/44/d9/2f98c138f557e0f06974e79c1c77a122.jpg' className='w-12 h-14' />
+                                                            </div>
+                                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
+                                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C++</div>
+                                                                <div className='text-sm text-lime-600'>683</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình căn bản</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2 py-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://itviec.com/blog/wp-content/uploads/2017/03/C-60-and-the-dotnet-46-framework.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C #</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://salt.tikicdn.com/cache/w400/ts/product/d2/44/d9/2f98c138f557e0f06974e79c1c77a122.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C++</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <Link to='/authur'>
-                                <div className="p-4 border-t border-gray-200">
-                                    <div className="text-center">
-                                        <h1 className="font-medium text-lg  hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">ThS. Trần Quốc Trường</h1>
-                                    </div>
-                                    <p className="text-gray-400 text-sm my-1 text-center">Chuyên về lập trình C++, C #</p>
-                                </div>
-                            </Link>
-                        </div>
-
-
-                    </div>
-
-                    <div className='w-full bg-white shadow rounded border border-transparent'>
-                        <div className="w-full bg-white shadow rounded border border-transparent hover:border-blue-500 cursor-pointer">
-                            <div className='flex'>
-                                <div className="h-48 w-full checker-bg flex items-center justify-center p-2 text-gray-700">
-                                    <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center" src="https://zpsocial-f48-org.zadn.vn/76acfbec7f6a9034c97b.jpg" alt="image description" />
-                                    <div className='w-full h-auto px-2'>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://cdn.codegym.vn/wp-content/uploads/2023/06/Bia-sach-Lap-trinh-can-ban-Copy-Copy-02-scaled.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình căn bản</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2 py-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://itviec.com/blog/wp-content/uploads/2017/03/C-60-and-the-dotnet-46-framework.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C #</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://salt.tikicdn.com/cache/w400/ts/product/d2/44/d9/2f98c138f557e0f06974e79c1c77a122.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C++</div>
-                                                <div className='text-sm text-lime-600'>683</div>
+                                            <div className="p-4 border-t border-gray-200 h-24">
+                                                <div className="text-center">
+                                                    <h1 className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">{item.tentacgia}</h1>
+                                                </div>
+                                                <p className="text-gray-400 text-sm my-1 text-center">{item.gioithieu}</p>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="p-4 border-t border-gray-200">
-                                <div className="text-center">
-                                    <h1 className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">Lê Nguyễn Tất Thắng</h1>
-                                </div>
-                                <p className="text-gray-400 text-sm my-1 text-center">Chuyên về lập trình C++, C #</p>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
-                    <div className='w-full bg-white shadow rounded border border-transparent'>
-                        <div className="w-full bg-white shadow rounded border border-transparent hover:border-blue-500 cursor-pointer">
-                            <div className='flex'>
-                                <div className="h-48 w-full checker-bg flex items-center justify-center p-2 text-gray-700">
-                                    <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center" src="https://zpsocial-f52-org.zadn.vn/fca8d2825519bb47e208.jpg" alt="image description" />
-                                    <div className='w-full h-auto px-2'>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://cdn.codegym.vn/wp-content/uploads/2023/06/Bia-sach-Lap-trinh-can-ban-Copy-Copy-02-scaled.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình căn bản</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2 py-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://itviec.com/blog/wp-content/uploads/2017/03/C-60-and-the-dotnet-46-framework.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C #</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://zpsocial-f52-org.zadn.vn/fca8d2825519bb47e208.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C++</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="p-4 border-t border-gray-200">
-                                <div className="text-center">
-                                    <h1 className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">Vũ Tuấn Nghĩa</h1>
-                                </div>
-                                <p className="text-gray-400 text-sm my-1 text-center">Chuyên về lập trình C++, C #</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='w-full bg-white shadow rounded border border-transparent'>
-                        <div className="w-full bg-white shadow rounded border border-transparent hover:border-blue-500 cursor-pointer">
-                            <div className='flex'>
-                                <div className="h-48 w-full checker-bg flex items-center justify-center p-2 text-gray-700">
-                                    <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center" src="https://zpsocial-f50-org.zadn.vn/dcb1f0e35050be0ee741.jpg" alt="image description" />
-                                    <div className='w-full h-auto px-2'>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://cdn.codegym.vn/wp-content/uploads/2023/06/Bia-sach-Lap-trinh-can-ban-Copy-Copy-02-scaled.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình căn bản</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2 py-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://itviec.com/blog/wp-content/uploads/2017/03/C-60-and-the-dotnet-46-framework.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C #</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                        <div className='flex px-1 bg-white rounded-2'>
-                                            <div className='col-4 pl-1'>
-                                                <img src='https://salt.tikicdn.com/cache/w400/ts/product/d2/44/d9/2f98c138f557e0f06974e79c1c77a122.jpg' className='w-12 h-14' />
-                                            </div>
-                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>Lập trình C++</div>
-                                                <div className='text-sm text-lime-600'>683</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="p-4 border-t border-gray-200">
-                                <div className="text-center">
-                                    <h1 className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">ThS. Hồ Đình Khả</h1>
-                                </div>
-                                <p className="text-gray-400 text-sm my-1 text-center">Chuyên về lập trình C++, C #</p>
-                            </div>
-                        </div>
-                    </div>
-
+                                </React.Fragment>
+                            )
+                        })}
                 </div>
             </div>
 
-            <div className="max-w-screen-xl mx-auto p-2 sm:p-10 md:p-4">
+            <div className="max-w-screen-xl mx-auto p-2 pt-3 sm:p-10 md:p-4">
                 <div className="border-b mb-5 flex justify-between text-sm">
                     <div className="text-orange-500 flex items-center pb-2 pr-2 border-b-2 border-gray-700 uppercase">
                         <svg className="h-6 mr-3" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 455.005 455.005"

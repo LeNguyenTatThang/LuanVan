@@ -30,4 +30,8 @@ const detailBookUser = async (id) => {
     return await axios.get(`/get-api-detailBook?id=${id}`);
 }
 
-export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate, apiListBook, detailBookUser };
+const apiAuthurRandom = () => {
+    return axios.get('/get-api-randomAuthor');
+}
+
+export { fetchAllUser, loginApi, apiRegister, addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom };
