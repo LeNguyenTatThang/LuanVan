@@ -46,11 +46,16 @@ let initApiRouter = (app) => {
     //lay random sach 3 quyen theo tacgia
     router.post('/get-api-randomBook', authorController.apiRandomBook)
 
+
     //tạo phiếu thuê
     // có các thuộc tính(users_id, chutiem_id,tongtien,sach_id)
     router.post('/post-api-rental', rentalController.postRental)
 
-    return app.use("/", router)
+    //api update user
+    router.patch('/api/update-user', userController.apiUpdateUser)
 
+    //api lấy sách theo tác giả
+    router.get('/api/get-book-authur', authorController.apiGetBookAuthur)
+    return app.use("/", router)
 }
 export default initApiRouter;

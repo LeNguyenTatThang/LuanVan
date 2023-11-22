@@ -223,5 +223,19 @@ author.getRandomBook = function (id) {
         }
     })
 }
-
+author.BookAuthur = function (id_authur) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            const [rows] = await pool.execute('SELECT * FROM sach INNER JOIN tacgia ON sach.id_tacgia = tacgia.id WHERE tacgia.id = ?', [id_authur])
+            data = {
+                rows,
+                errcode: 0
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 module.exports = author;
