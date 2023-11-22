@@ -1,11 +1,10 @@
 import express from "express";
-import homeController from "../controllers/homeController";
 import categoryController from "../controllers/categoryController";
 import userController from "../controllers/userController";
 import loginController from "../controllers/loginController";
 import bookController from "../controllers/bookController";
-import authorController from "../controllers/authorController"
-import auth from "../middelware/auth";
+import authorController from "../controllers/authorController";
+import rentalController from "../controllers/rentalController";
 import upload from "../multer"
 let router = express.Router();
 
@@ -47,8 +46,11 @@ let initApiRouter = (app) => {
     //lay random sach 3 quyen theo tacgia
     router.post('/get-api-randomBook', authorController.apiRandomBook)
 
-    return app.use("/", router)
+    //tạo phiếu thuê
+    // có các thuộc tính(users_id, chutiem_id,tongtien,sach_id)
+    router.post('/post-api-rental', rentalController.postRental)
 
+    return app.use("/", router)
 
 }
 export default initApiRouter;
