@@ -40,8 +40,6 @@ const getAddAuthor = async (req, res) => {
     });
 
 }
-
-
 const postAuthor = async (req, res) => {
     try {
         let authorData = req.body
@@ -67,7 +65,6 @@ const postAuthor = async (req, res) => {
     }
 
 }
-
 
 const deleteAuthor = async (req, res) => {
     try {
@@ -191,6 +188,29 @@ const apiRandomBook = async (req, res) => {
 
 }
 
+const apiGetBookAuthur = async (req, res) => {
+    try {
+        let id_authur = req.body.id_tacgia
+        let data = await author.BookAuthur(id_authur)
+        if (data.errcode == 0) {
+            return res.status(200).json({
+                data: data.rows,
+                status: 200,
+                message: data.message,
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: data.message,
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi hệ thống'
+        })
+    }
+}
 module.exports = {
     getAuthor,
     getAddAuthor,
@@ -199,5 +219,6 @@ module.exports = {
     getIdAuthor,
     updateAuthor,
     apiRandomAuthor,
-    apiRandomBook
+    apiRandomBook,
+    apiGetBookAuthur
 }

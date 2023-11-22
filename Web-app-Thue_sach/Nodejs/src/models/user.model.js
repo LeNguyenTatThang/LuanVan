@@ -150,4 +150,21 @@ user.getAll = (page, name) => {
     })
 }
 
+user.UpdateUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        let userData = {};
+        try {
+            await pool.execute('update users set hinh = ?, ten = ?, diachi = ? where id=?',
+                [data.hinh, data.ten, data.diachi, data.id])
+            userData = {
+                errcode: 0
+            }
+            console.log("check user data update", userData)
+            resolve(userData)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = user
