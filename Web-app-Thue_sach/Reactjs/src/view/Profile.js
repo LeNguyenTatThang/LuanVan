@@ -24,7 +24,8 @@ export default function Profile() {
                     <div className="max-w-sm mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
                         <div className="border-b px-4 pb-6">
                             <div className="text-center my-4">
-                                <img className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4" src="https://randomuser.me/api/portraits/women/21.jpg" alt="" />
+                                <img className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4" src={`http://localhost:8000/img/${userData.userInfo.hinh}`}
+                                    alt={`${userData.userInfo.hinh}`} />
                                 <div className="py-2">
                                     <h3 className="font-bold text-2xl mb-1">{userData.userInfo.ten}</h3>
                                     <div className="inline-flex text-gray-700 items-center">
