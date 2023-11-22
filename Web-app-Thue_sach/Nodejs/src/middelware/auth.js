@@ -3,10 +3,10 @@ const isLogin = async (req, res, next) => {
     try {
         if (req.session.adminData1) {
             res.locals.adminData = await admin.detailAcount(req.session.adminData1.email)
+            next();
         } else {
             res.redirect('/');
         }
-        next();
     } catch (error) {
         console.log(error)
 

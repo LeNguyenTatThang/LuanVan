@@ -44,6 +44,8 @@ let initApiRouter = (app) => {
     //tac gia
     router.get('/get-api-randomAuthor', authorController.apiRandomAuthor)
 
+    //lay random sach 3 quyen theo tacgia
+    router.post('/get-api-randomBook', authorController.apiRandomBook)
 
     return app.use("/", router)
 
