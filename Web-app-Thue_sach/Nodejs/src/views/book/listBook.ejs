@@ -44,6 +44,7 @@
                                             <th class="text-truncate">Hình</th>
                                             <th class="text-truncate">Tên</th>
                                             <th class="text-truncate">Loại</th>
+                                            <th class="text-truncate">Tình Trạng</th>
                                             <th class="text-truncate">Thể Loại </th>
                                             <th class="text-truncate">Người Đăng</th>
                                             <th class="text-truncate">Tác Giả</th>
@@ -76,6 +77,9 @@
                                                         </td>
                                                         <td scope="row">
                                                             <%= data[i].loai===0 ? "Thuê" : "Đọc online" %>
+                                                        </td>
+                                                        <td scope="row">
+                                                            <%= data[i].tinhtrang===0 ? "Sách mới" : "Sách Cũ" %>
                                                         </td>
                                                         <td scope="row">
                                                             <%= data[i].theloai %>

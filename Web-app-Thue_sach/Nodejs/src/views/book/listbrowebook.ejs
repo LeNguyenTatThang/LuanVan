@@ -32,6 +32,7 @@
                                             <th class="text-truncate">Hình</th>
                                             <th class="text-truncate">Tên</th>
                                             <th class="text-truncate">Loại</th>
+                                            <th class="text-truncate">Tình Trạng</th>
                                             <th class="text-truncate">Thể Loại </th>
                                             <th class="text-truncate">Người Đăng</th>
                                             <th class="text-truncate">Tác Giả</th>
@@ -66,6 +67,9 @@
                                                             <%= data[i].loai===0 ? "Thuê" : "Đọc online" %>
                                                         </td>
                                                         <td scope="row">
+                                                            <%= data[i].tinhtrang===0 ? "Sách mới" : "Sách Cũ" %>
+                                                        </td>
+                                                        <td scope="row">
                                                             <%= data[i].theloai %>
                                                         </td>
                                                         <td scope="row">
@@ -97,7 +101,7 @@
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
                                                                 data-id="<%= data[i].id %>"
-                                                                href="/get-detailbook?id=<%= data[i].id %>">Duyệt</a>
+                                                                href="/get-detailbook?id=<%= data[i].id %>">Chi tiết</a>
                                                         </td>
                                                     </tr>
                                                     <% } %>

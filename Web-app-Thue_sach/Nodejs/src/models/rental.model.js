@@ -26,9 +26,9 @@ rental.create = function (data) {
             // let ngaytra = new Date(ngaytao.getTime() + data.ngaythue * 24 * 60 * 60 * 1000);
             let dataRental = {}
             let trangthai = 0;
-            let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, trangthai, maphieu) values (?,?,?,?,?)'
+            let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, diachi, ngaythue, trangthai, maphieu) values (?,?,?,?,?,?,?)'
             let sqlRental_Book = 'insert into phieuthue_sach(sach_id, phieuthue_id) VALUES (?, ?)'
-            const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, trangthai, maphieu])
+            const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu])
             let bookIds = data.sach_id
             let phieuthue_id = result.insertId;
             for (let bookId of bookIds) {

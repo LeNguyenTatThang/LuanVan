@@ -9,7 +9,7 @@ book.getTrangthai0 = async (page, name) => {
         try {
             let data = {};
             let limit = '5';
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai=0 "
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=0"
@@ -55,7 +55,7 @@ book.getsachduyet = async (page, name) => {
         try {
             let data = {};
             let limit = '5';
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai=1 "
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1"
@@ -102,7 +102,7 @@ book.getTrangthai1 = (page) => {
         try {
             let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai= 1"
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1"
@@ -139,13 +139,13 @@ book.create = (bookData) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql0 = 'insert into sach(hinh, ten , trangthai,loai,theloai_id, gia, tiencoc, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            let sql1 = 'insert into sach(hinh, ten , trangthai,loai,theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?)';
+            let sql0 = 'insert into sach(hinh, ten , trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            let sql1 = 'insert into sach(hinh, ten , trangthai, loai, theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?)';
             let trangthai = 0;
 
             if (bookData.loai == 0) {
 
-                if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users) {
+                if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang) {
                     data = {
                         errcode: 1,
                         message: 'không được để trống dữ liệu'
@@ -160,7 +160,7 @@ book.create = (bookData) => {
                     } else {
                         let dataAuthorID = await checkAuthor(bookData.tentacgia)
                         let id_tacgia = dataAuthorID;
-                        await pool.execute(sql0, [bookData.hinh, bookData.ten, trangthai, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
+                        await pool.execute(sql0, [bookData.hinh, bookData.ten, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
                         data = {
                             errcode: 0,
                             message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
@@ -245,7 +245,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id, sach.trangthai,sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
+            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id, sach.trangthai, tinhtrang, sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {

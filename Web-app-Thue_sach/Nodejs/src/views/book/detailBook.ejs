@@ -36,6 +36,16 @@
                                                 </span>
                                             </div>
                                             <div class="form-group">
+                                                <label for="">Tình trạng: </label>
+                                                <span for="">
+                                                    <% if(data.tinhtrang===1 ){%>
+                                                        Sách Mới
+                                                        <% }else{ %>
+                                                            Sách Cũ
+                                                            <% } %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="">thể loại: </label>
                                                 <span for="">
                                                     <%= data.theloai %>
