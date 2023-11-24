@@ -1,6 +1,6 @@
 import axios from "../axios";
 import book from '../models/book.model'
-import fs from 'fs/promises'
+const fs = require('fs');
 
 
 const getbook = async (req, res) => {
@@ -115,33 +115,33 @@ const BoosMessage = async (req, res) => {
 
 //api them sach
 const postBook = async (req, res, next) => {
-    let bookData = req.body
-    console.log(req.file)
-    if (req.file && req.file !== undefined) {
-        bookData.hinh = req.file.filename
-        console.log(bookData.hinh)
-    }
-    if (!req.file) {
-        return res.status(401).json({
-            status: 401,
-            message: 'không có hình'
-        })
-    }
-
-    let data = await book.create(bookData)
-    if (data.errcode === 0) {
-        req.io.emit('updateData');
-        console.log('Event updateData emitted');
-        return res.status(200).json({
-            status: 200,
-            message: data.message
-        })
-    } else {
-        // fs.unlink('src/public/img/' + bookData.hinh)
-        return res.status(400).json({
-            status: 400,
-            message: data.message
-        })
+    try {
+        let bookData = req.body
+        if (req.file && req.file !== undefined) {
+            bookData.hinh = req.file.filename
+        }
+        if (!req.file) {
+            return res.status(401).json({
+                status: 401,
+                message: 'không có hình hoặc sai định dạng'
+            })
+        }
+        let data = await book.create(bookData)
+        if (data.errcode === 0) {
+            req.io.emit('updateData');
+            console.log('Event updateData emitted');
+            return res.status(200).json({
+                status: 200,
+                message: data.message
+            })
+        } else {
+            fs.unlinkSync(bookData.hinh);
+            return res.status(402).json({
+                status: 402,
+                message: data.message
+            })
+        }
+    } catch (error) {
     }
 }
 

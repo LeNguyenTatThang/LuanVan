@@ -12,7 +12,7 @@ const postRental = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
@@ -35,7 +35,7 @@ const confirmRental = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
@@ -58,7 +58,7 @@ const deliveryRental = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
@@ -82,7 +82,7 @@ const received = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
@@ -105,7 +105,7 @@ const returned = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
@@ -128,11 +128,12 @@ const completed = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
 
+//api danh sách đơn hàng thuê
 const ListRent = async (req, res) => {
     try {
         let rentalData = req.body
@@ -150,13 +151,15 @@ const ListRent = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
 
+//api danh sách đơn hàng cho thuê
 const rentalOrders = async (req, res) => {
     try {
         let rentalData = req.body
@@ -174,9 +177,10 @@ const rentalOrders = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }

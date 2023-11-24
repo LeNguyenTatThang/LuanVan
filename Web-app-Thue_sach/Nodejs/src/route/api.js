@@ -5,6 +5,7 @@ import loginController from "../controllers/loginController";
 import bookController from "../controllers/bookController";
 import authorController from "../controllers/authorController";
 import rentalController from "../controllers/rentalController";
+import commentController from "../controllers/commentController";
 import upload from "../multer"
 let router = express.Router();
 
@@ -87,6 +88,15 @@ let initApiRouter = (app) => {
     //lấy danh sách đơn hàng cho thuê
     // có các thuộc tính(chutiem_id, trangthai)
     router.post('/api/RentOrder', rentalController.rentalOrders)
+
+
+    //bình luận
+    //api thêm bình luận
+    // có các thuộc tính(sach_id, users_id, noidung)
+    router.post('/api/createComment', commentController.createComment)
+
+    //api danh sach binh luận (cần có id của sách)
+    router.post('/api/listComment', commentController.listComment)
 
     return app.use("/", router)
 }

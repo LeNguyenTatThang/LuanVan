@@ -239,13 +239,15 @@ rental.upStatus5 = (data) => {
     })
 }
 
+//danh sach đơn hàng thuê
 rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select sach.ten, ngaynhan, ngaytra, tongtien from phieuthue'
+            let sqlRental = 'select sach.ten, ngaynhan, ngaytra,tiencoc, users.ten as nguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
+            sqlRental += ' INNER JOIN users on sach.id_users = users.id '
             sqlRental += 'Where users_id = ? and phieuthue.trangthai = ?'
             const [rows, fields] = await pool.execute(sqlRental, [data.users_id, data.trangthai])
             let dataRow = rows
@@ -268,14 +270,16 @@ rental.getRent = (data) => {
     })
 }
 
+//danh sach đơn hàng cho thuê
 rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select sach.ten, ngaynhan, ngaytra, tongtien from phieuthue'
+            let sqlRental = 'select sach.ten, users.ten as nguoithue, ngaynhan, ngaytra, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
-            sqlRental += 'Where chutiem_id = ? and phieuthue.trangthai = ?'
+            sqlRental += ' INNER JOIN users on phieuthue.users_id = users.id'
+            sqlRental += ' Where chutiem_id = ? and phieuthue.trangthai = ?'
             const [rows, fields] = await pool.execute(sqlRental, [data.chutiem_id, data.trangthai])
             let dataRow = rows
             if (dataRow.length > 0) {

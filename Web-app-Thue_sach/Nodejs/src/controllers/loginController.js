@@ -131,7 +131,7 @@ const updateAccount = async (req, res) => {
             return res.redirect('/home')
         }
     } catch (error) {
-        req.flash('errAdmin', 'lỗi hệ thống')
+        req.flash('errAdmin', 'lỗi Server')
         return res.redirect('/home')
     }
 }

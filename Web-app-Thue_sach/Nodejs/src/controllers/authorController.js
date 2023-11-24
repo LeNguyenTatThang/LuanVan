@@ -100,7 +100,7 @@ const getIdAuthor = async (req, res) => {
             return res.redirect('/author')
         }
     } catch (e) {
-        req.flash('errAuthor', 'lỗi hệ thống')
+        req.flash('errAuthor', 'lỗi Server')
         return res.redirect('/author')
     }
 }
@@ -134,7 +134,7 @@ const updateAuthor = async (req, res, next) => {
             return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
         }
     } catch (error) {
-        req.flash('errAuthor', 'lỗi hệ thống')
+        req.flash('errAuthor', 'lỗi Server')
         return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
     }
 
@@ -158,7 +158,7 @@ const apiRandomAuthor = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
@@ -182,7 +182,7 @@ const apiRandomBook = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 
@@ -207,7 +207,7 @@ const apiGetBookAuthur = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }

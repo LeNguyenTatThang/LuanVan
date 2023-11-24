@@ -3,18 +3,26 @@ import path from "path"
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        if (file.mimetype == "image/jpg" || file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-            cb(null, "src/public/img/");
-        } else {
-            cb(new Error('not image'));
-        }
+        cb(null, "src/public/img/");
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+    const allowedImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+    const isValidImage = allowedImageFormats.includes(file.mimetype);
+    if (isValidImage) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
 
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter
+});
 
 module.exports = upload;
