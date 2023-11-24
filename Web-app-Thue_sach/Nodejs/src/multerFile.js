@@ -3,10 +3,10 @@ import path from "path"
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        if (file.mimetype == "image/jpg" || file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-            cb(null, "src/public/img/");
+        if (file.mimetype == "file/txt") {
+            cb(null, "src/public/file/");
         } else {
-            cb(new Error('not image'));
+            cb(new Error('not file'));
         }
     },
     filename: function (req, file, cb) {
@@ -15,6 +15,4 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-
 module.exports = upload;

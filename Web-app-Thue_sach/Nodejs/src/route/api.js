@@ -37,6 +37,8 @@ let initApiRouter = (app) => {
     //api chi tiết sách trang user và admin
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
 
+    //api thêm chương cho truyện đọc online
+    router.post('/post-api-chapter', bookController.postChapter)
 
     router.get('/get-api-bookAdmin', bookController.apilistBook)
 

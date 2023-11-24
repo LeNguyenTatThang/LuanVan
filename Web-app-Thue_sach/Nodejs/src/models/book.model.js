@@ -102,7 +102,7 @@ book.getTrangthai1 = (page) => {
         try {
             let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai= 1"
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1"
@@ -323,7 +323,6 @@ book.message = (data) => {
         try {
             let DataMsr = {}
             let ngaytao = new Date()
-            console.log(ngaytao)
             let sql = "update sach set trangthai = ? where id = ?"
             let sqlMsg = "insert into thongbao(noidung, id_sach, ngaytao) values (?, ?, ?)"
             await pool.execute(sql, [data.trangthai, data.id])
@@ -333,6 +332,42 @@ book.message = (data) => {
                 message: 'thành công'
             }
             resolve(DataMsr)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+//thêm chươngg cho sách đọc
+book.createChap = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataChapter = {}
+            let sqlCheck = "select * from sach where id =? and loai = 1 "
+            let sqlChapter = "insert into noidungsach(chuong, noidung, sach_id) values (?, ?, ?)"
+            const [check] = await pool.execute(sqlCheck, [data.sach_id])
+            const dataCheck = check[0]
+            console.log(dataCheck)
+            if (dataCheck) {
+                const [result, fields] = await pool.execute(sqlChapter, [data.chuong, data.noidung, data.sach_id])
+                if (fields) {
+                    dataChapter = {
+                        errcode: 1,
+                        message: "Thất bại"
+                    }
+                } else {
+                    dataChapter = {
+                        errcode: 0,
+                        message: "Thành công"
+                    }
+                }
+            } else {
+                dataChapter = {
+                    errcode: 2,
+                    message: "không tìm thấy"
+                }
+            }
+            resolve(dataChapter)
         } catch (error) {
             reject(error)
         }

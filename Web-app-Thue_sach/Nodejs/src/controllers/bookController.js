@@ -116,16 +116,18 @@ const BoosMessage = async (req, res) => {
 //api them sach
 const postBook = async (req, res, next) => {
     let bookData = req.body
+    console.log(req.file)
     if (req.file && req.file !== undefined) {
         bookData.hinh = req.file.filename
         console.log(bookData.hinh)
     }
-    if (!req.file || req.file === undefined) {
+    if (!req.file) {
         return res.status(401).json({
             status: 401,
             message: 'không có hình'
         })
     }
+
     let data = await book.create(bookData)
     if (data.errcode === 0) {
         req.io.emit('updateData');
@@ -183,7 +185,26 @@ const getApiDetailBooks = async (req, res) => {
     }
 }
 
-
+const postChapter = async (req, res) => {
+    let data = req.body
+    let dataChapter = await book.createChap(data)
+    if (dataChapter.errcode === 0) {
+        return res.status(200).json({
+            status: 200,
+            message: dataChapter.message
+        })
+    } else if (dataChapter.errcode === 2) {
+        return res.status(404).json({
+            status: 404,
+            message: dataChapter.message
+        })
+    } else if (dataChapter.errcode === 1) {
+        return res.status(400).json({
+            status: 400,
+            message: dataChapter.message
+        })
+    }
+}
 
 
 module.exports = {
@@ -195,6 +216,7 @@ module.exports = {
     postApiListBookUser,
     getbrowebook,
     apilistBook,
-    BoosMessage
+    BoosMessage,
+    postChapter
 }
 
