@@ -31,8 +31,6 @@ rental.create = function (data) {
             const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, trangthai, maphieu])
             let bookIds = data.sach_id
             let phieuthue_id = result.insertId;
-            console.log('id sach ', bookIds)
-            console.log('id phiếu thuê ', phieuthue_id)
             for (let bookId of bookIds) {
                 await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
             }
@@ -40,6 +38,258 @@ rental.create = function (data) {
                 message: 'thành công'
             }
             console.log(dataRental)
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+//xác nhận cho thuê sách
+rental.upStatus1 = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let trangthai = 1;
+            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let check = await checkRental(data.id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
+                if (result) {
+                    dataRental = {
+                        errcode: 0,
+                        message: 'thành công'
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            console.log(dataRental)
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let checkRental = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT * FROM phieuthue where id= ?', [id])
+            let rental = rows[0];
+            if (rental) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
+
+//chờ giao sách
+rental.upStatus2 = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let trangthai = 2;
+            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let check = await checkRental(data.id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
+                if (result) {
+                    dataRental = {
+                        errcode: 0,
+                        message: 'thành công'
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            console.log(dataRental)
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+//xác nhận đã nhận 
+rental.upStatus3 = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {}
+            let trangthai = 3;
+            let ngaynhan = new Date();
+            let ngaytra = new Date(ngaynhan.getTime() + data.ngaythue * 24 * 60 * 60 * 1000);
+            let sqlRental = 'UPDATE phieuthue set trangthai = ?, ngaynhan = ?, ngaytra = ? WHERE id = ?'
+            let check = await checkRental(data.id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, ngaynhan, ngaytra, data.id])
+                if (result) {
+                    dataRental = {
+                        errcode: 0,
+                        message: 'thành công'
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+//chờ trả
+rental.upStatus4 = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let trangthai = 4;
+            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let check = await checkRental(data.id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
+                if (result) {
+                    dataRental = {
+                        errcode: 0,
+                        message: 'thành công'
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            console.log(dataRental)
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+//hoàn tất
+rental.upStatus5 = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let trangthai = 5;
+            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let check = await checkRental(data.id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
+                if (result) {
+                    dataRental = {
+                        errcode: 0,
+                        message: 'thành công'
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            console.log(dataRental)
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+rental.getRent = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let sqlRental = 'select sach.ten, ngaynhan, ngaytra, tongtien from phieuthue'
+            sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
+            sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
+            sqlRental += 'Where users_id = ? and phieuthue.trangthai = ?'
+            const [rows, fields] = await pool.execute(sqlRental, [data.users_id, data.trangthai])
+            let dataRow = rows
+            if (dataRow.length > 0) {
+                dataRental = {
+                    data: dataRow,
+                    errcode: 0,
+                    message: 'ok'
+                }
+            } else {
+                dataRental = {
+                    errcode: 1,
+                    message: 'không có data'
+                }
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+rental.getRentOrder = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let sqlRental = 'select sach.ten, ngaynhan, ngaytra, tongtien from phieuthue'
+            sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
+            sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
+            sqlRental += 'Where chutiem_id = ? and phieuthue.trangthai = ?'
+            const [rows, fields] = await pool.execute(sqlRental, [data.chutiem_id, data.trangthai])
+            let dataRow = rows
+            if (dataRow.length > 0) {
+                dataRental = {
+                    data: dataRow,
+                    errcode: 0,
+                    message: 'ok'
+                }
+            } else {
+                dataRental = {
+                    errcode: 1,
+                    message: 'không có data'
+                }
+            }
             resolve(dataRental)
         } catch (e) {
             reject(e);

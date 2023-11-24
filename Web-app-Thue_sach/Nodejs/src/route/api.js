@@ -46,16 +46,46 @@ let initApiRouter = (app) => {
     //lay random sach 3 quyen theo tacgia
     router.post('/get-api-randomBook', authorController.apiRandomBook)
 
-
-    //tạo phiếu thuê
-    // có các thuộc tính(users_id, chutiem_id,tongtien,sach_id)
-    router.post('/post-api-rental', rentalController.postRental)
-
     //api update user
     router.patch('/api/update-user', userController.apiUpdateUser)
 
     //api lấy sách theo tác giả
     router.get('/api/get-book-authur', authorController.apiGetBookAuthur)
+
+    //Phiếu thuê
+
+    //tạo phiếu thuê
+    // có các thuộc tính(users_id, chutiem_id,tongtien,sach_id)
+    router.post('/post-api-rental', rentalController.postRental)
+
+    //api cập nhật trạng thái phiếu thuê thành xác nhận cho thuê
+    // có các thuộc tính(id)
+    router.patch('/api/confirmRental', rentalController.confirmRental)
+
+    // api cập nhật trạng thái phiếu thuê thành chờ giao hàng
+    // có các thuộc tính(id)
+    router.patch('/api/deliveryRental', rentalController.deliveryRental)
+
+    // api xác nhận nhận hàng
+    //  // có các thuộc tính(id , ngày thuê)
+    router.patch('/api/receivedRental', rentalController.received)
+
+    //api trả hàng
+    // có các thuộc tính(id)
+    router.patch('/api/returnedRental', rentalController.returned)
+
+    //api hoàn tất
+    // có các thuộc tính(id)
+    router.patch('/api/completedRental', rentalController.completed)
+
+    //lấy danh sách đơn hàng thuê
+    // có các thuộc tính(users_id, trangthai)
+    router.post('/api/listRent', rentalController.ListRent)
+
+    //lấy danh sách đơn hàng cho thuê
+    // có các thuộc tính(chutiem_id, trangthai)
+    router.post('/api/RentOrder', rentalController.rentalOrders)
+
     return app.use("/", router)
 }
 export default initApiRouter;

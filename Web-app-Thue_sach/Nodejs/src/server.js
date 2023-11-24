@@ -35,8 +35,6 @@ initApiRouter(app);
 
 
 io.on('connection', (socket) => {
-    console.log('User connected');
-
     socket.on('updateData', () => {
         // MySQL query to get updated data
         // Emit updated data to all connected clients
@@ -46,7 +44,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
     });
 });
 
