@@ -29,7 +29,7 @@ rental.create = function (data) {
             let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, diachi, ngaythue, trangthai, maphieu) values (?,?,?,?,?,?,?)'
             let sqlRental_Book = 'insert into phieuthue_sach(sach_id, phieuthue_id) VALUES (?, ?)'
             const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu])
-            let bookIds = data.sach_id
+            let bookIds = Array.isArray(data.sach_id) ? data.sach_id : [data.sach_id];
             let phieuthue_id = result.insertId;
             for (let bookId of bookIds) {
                 await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
@@ -275,7 +275,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select sach.ten, users.ten as nguoithue, ngaynhan, ngaytra, tongtien from phieuthue'
+            let sqlRental = 'select sach.ten,users.ten as nguoithue, ngaynhan, ngaytra, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users on phieuthue.users_id = users.id'

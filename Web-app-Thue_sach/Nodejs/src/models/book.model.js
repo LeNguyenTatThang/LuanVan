@@ -338,7 +338,7 @@ book.message = (data) => {
     })
 }
 
-//thêm chươngg cho sách đọc
+//thêm chương cho sách đọc
 book.createChap = (data) => {
     return new Promise(async (resolve, reject) => {
         try {

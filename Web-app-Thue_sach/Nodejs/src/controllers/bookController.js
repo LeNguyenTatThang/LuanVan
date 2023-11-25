@@ -1,3 +1,4 @@
+import { log } from "console";
 import axios from "../axios";
 import book from '../models/book.model'
 const fs = require('fs');
@@ -107,7 +108,7 @@ const BoosMessage = async (req, res) => {
         req.flash('msgBook', dataMsr.message)
         return res.redirect(`/get-detailbook?id=${data.id}`)
     } catch (error) {
-        req.flash('errBook', "lỗi hệ thống")
+        req.flash('errBook', "lỗi Server")
     }
 }
 
@@ -180,28 +181,57 @@ const getApiDetailBooks = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             status: 500,
-            message: 'lỗi hệ thống'
+            message: 'lỗi Server'
         })
     }
 }
 
+//thêm chương cho sách đọc online
 const postChapter = async (req, res) => {
-    let data = req.body
-    let dataChapter = await book.createChap(data)
-    if (dataChapter.errcode === 0) {
-        return res.status(200).json({
-            status: 200,
-            message: dataChapter.message
-        })
-    } else if (dataChapter.errcode === 2) {
-        return res.status(404).json({
-            status: 404,
-            message: dataChapter.message
-        })
-    } else if (dataChapter.errcode === 1) {
-        return res.status(400).json({
-            status: 400,
-            message: dataChapter.message
+    try {
+        let data = req.body
+        let filePath
+        if (req.file) {
+            filePath = req.file.path;
+            const fileContent = fs.readFileSync(filePath, 'utf-8');
+            const words = fileContent.split(/\s+/)
+            const maxWords = 4000;
+            if (words.length > maxWords) {
+                return res.status(400).json({
+                    status: 400,
+                    message: `Số từ vượt quá giới hạn (${maxWords}).`
+                });
+            } else {
+                data.noidung = fileContent;
+                let dataChapter = await book.createChap(data)
+                if (dataChapter.errcode === 0) {
+                    return res.status(200).json({
+                        status: 200,
+                        message: dataChapter.message
+                    })
+                } else if (dataChapter.errcode === 2) {
+                    return res.status(404).json({
+                        status: 404,
+                        message: dataChapter.message
+                    })
+                } else if (dataChapter.errcode === 1) {
+                    return res.status(400).json({
+                        status: 400,
+                        message: dataChapter.message
+                    })
+                }
+            }
+        } else {
+            return res.status(400).json({
+                status: 401,
+                message: 'không có file hoặc sai dịnh dạng'
+            });
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
         })
     }
 }

@@ -2,17 +2,25 @@ import multer from "multer";
 import path from "path"
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        if (file.mimetype == "file/txt") {
-            cb(null, "src/public/file/");
-        } else {
-            cb(new Error('not file'));
-        }
-    },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage });
-module.exports = upload;
+const fileFilter = (req, file, cb) => {
+    const allowedTextFormats = ['text/plain'];
+    const isValidText = allowedTextFormats.includes(file.mimetype);
+    if (isValidText) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+const uploadTxt = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 1024 * 1024 * 5 }
+});
+
+module.exports = uploadTxt;

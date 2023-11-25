@@ -7,6 +7,7 @@ import authorController from "../controllers/authorController";
 import rentalController from "../controllers/rentalController";
 import commentController from "../controllers/commentController";
 import upload from "../multer"
+import uploadTxt from "../multerFile"
 let router = express.Router();
 
 let initApiRouter = (app) => {
@@ -39,7 +40,7 @@ let initApiRouter = (app) => {
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
 
     //api thêm chương cho truyện đọc online
-    router.post('/post-api-chapter', bookController.postChapter)
+    router.post('/post-api-chapter', uploadTxt.single('noidung'), bookController.postChapter)
 
     router.get('/get-api-bookAdmin', bookController.apilistBook)
 
