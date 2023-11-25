@@ -86,6 +86,18 @@ let initApiRouter = (app) => {
     // có các thuộc tính(users_id, trangthai)
     router.post('/api/listRent', rentalController.ListRent)
 
+    //lấy danh sách đơn hàng thuê trạng thái 1
+    router.post('/api/listRent1', rentalController.ListRent1)
+
+    //lấy danh sách đơn hàng thuê trạng thái 2
+    router.post('/api/listRent2', rentalController.ListRent2)
+
+    //lấy danh sách đơn hàng thuê trạng thái 3
+    router.post('/api/listRent3', rentalController.ListRent3)
+
+    //lấy danh sách đơn hàng thuê trạng thái 4
+    router.post('/api/listRent4', rentalController.ListRent4)
+
     //lấy danh sách đơn hàng cho thuê
     // có các thuộc tính(chutiem_id, trangthai)
     router.post('/api/RentOrder', rentalController.rentalOrders)

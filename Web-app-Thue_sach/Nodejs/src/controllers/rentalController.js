@@ -159,6 +159,110 @@ const ListRent = async (req, res) => {
     }
 }
 
+const ListRent1 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 1
+        let data = await rental.getRent(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const ListRent2 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 2
+        let data = await rental.getRent(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const ListRent3 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 3
+        let data = await rental.getRent(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const ListRent4 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 4
+        let data = await rental.getRent(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
 //api danh sách đơn hàng cho thuê
 const rentalOrders = async (req, res) => {
     try {
@@ -192,5 +296,9 @@ module.exports = {
     returned,
     received,
     ListRent,
-    rentalOrders
+    rentalOrders,
+    ListRent1,
+    ListRent2,
+    ListRent3,
+    ListRent4
 }
