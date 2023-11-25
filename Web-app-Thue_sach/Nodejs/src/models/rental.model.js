@@ -244,7 +244,7 @@ rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select sach.ten, ngaynhan, ngaytra,tiencoc, users.ten as nguoidang, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id, sach.ten, ngaynhan, ngaytra,tiencoc, users.ten as nguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users on sach.id_users = users.id '
@@ -275,7 +275,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select sach.ten,users.ten as nguoithue, ngaynhan, ngaytra, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id, sach.ten,users.ten as nguoithue, ngaynhan, ngaytra, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users on phieuthue.users_id = users.id'
