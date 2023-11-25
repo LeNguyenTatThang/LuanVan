@@ -98,49 +98,17 @@ let checkRental = (id) => {
 }
 
 
-//chờ giao sách
+
+
+
+//xác nhận đã nhận 
 rental.upStatus2 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let dataRental = {};
-            let trangthai = 2;
-            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
-            let check = await checkRental(data.id)
-            if (check) {
-                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
-                if (result) {
-                    dataRental = {
-                        errcode: 0,
-                        message: 'thành công'
-                    }
-                } else {
-                    dataRental = {
-                        errcode: 1,
-                        message: 'thất bại'
-                    }
-                }
-            } else {
-                dataRental = {
-                    errcode: 2,
-                    message: 'phiếu thuê không tồn tại'
-                }
-            }
-            console.log(dataRental)
-            resolve(dataRental)
-        } catch (e) {
-            reject(e);
-        }
-    })
-}
-
-//xác nhận đã nhận 
-rental.upStatus3 = (data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
             let dataRental = {}
-            let trangthai = 3;
+            let trangthai = 2;
             let ngaynhan = new Date();
-            let ngaytra = new Date(ngaynhan.getTime() + data.ngaythue * 24 * 60 * 60 * 1000);
+            let ngaytra = new Date(ngaynhan.getDate() + data.ngaythue * 24 * 60 * 60 * 1000);
             let sqlRental = 'UPDATE phieuthue set trangthai = ?, ngaynhan = ?, ngaytra = ? WHERE id = ?'
             let check = await checkRental(data.id)
             if (check) {
@@ -169,12 +137,12 @@ rental.upStatus3 = (data) => {
     })
 }
 
-//chờ trả
-rental.upStatus4 = (data) => {
+//đang thuê
+rental.upStatus3 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let trangthai = 4;
+            let trangthai = 3;
             let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
             let check = await checkRental(data.id)
             if (check) {
@@ -204,8 +172,8 @@ rental.upStatus4 = (data) => {
     })
 }
 
-//hoàn tất
-rental.upStatus5 = (data) => {
+//trờ trả
+rental.upStatus4 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};

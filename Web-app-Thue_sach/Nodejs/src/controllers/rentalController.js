@@ -40,34 +40,12 @@ const confirmRental = async (req, res) => {
     }
 }
 
-const deliveryRental = async (req, res) => {
-    try {
-        let rentalData = req.body
-        let data = await rental.upStatus2(rentalData)
-        if (data.errcode === 0) {
-            return res.status(200).json({
-                status: 200,
-                message: data.message
-            })
-        } else {
-            return res.status(400).json({
-                status: 400,
-                message: data.message
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({
-            status: 500,
-            message: 'lỗi Server'
-        })
-    }
-}
 
 const received = async (req, res) => {
     try {
         let rentalData = req.body
         console.log(rentalData)
-        let data = await rental.upStatus3(rentalData)
+        let data = await rental.upStatus2(rentalData)
         if (data.errcode === 0) {
             return res.status(200).json({
                 status: 200,
@@ -90,7 +68,7 @@ const received = async (req, res) => {
 const returned = async (req, res) => {
     try {
         let rentalData = req.body
-        let data = await rental.upStatus4(rentalData)
+        let data = await rental.upStatus3(rentalData)
         if (data.errcode === 0) {
             return res.status(200).json({
                 status: 200,
@@ -113,7 +91,7 @@ const returned = async (req, res) => {
 const completed = async (req, res) => {
     try {
         let rentalData = req.body
-        let data = await rental.upStatus5(rentalData)
+        let data = await rental.upStatus4(rentalData)
         if (data.errcode === 0) {
             return res.status(200).json({
                 status: 200,
@@ -288,10 +266,114 @@ const rentalOrders = async (req, res) => {
         })
     }
 }
+
+const rentalOrders1 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 1
+        let data = await rental.getRentOrder(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const rentalOrders2 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 2
+        let data = await rental.getRentOrder(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const rentalOrders3 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 3
+        let data = await rental.getRentOrder(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const rentalOrders4 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 4
+        let data = await rental.getRentOrder(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
 module.exports = {
     postRental,
     confirmRental,
-    deliveryRental,
     completed,
     returned,
     received,
@@ -300,5 +382,10 @@ module.exports = {
     ListRent1,
     ListRent2,
     ListRent3,
-    ListRent4
+    ListRent4,
+    rentalOrders1,
+    rentalOrders2,
+    rentalOrders3,
+    rentalOrders4
+
 }

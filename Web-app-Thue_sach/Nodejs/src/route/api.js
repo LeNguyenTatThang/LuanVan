@@ -66,10 +66,6 @@ let initApiRouter = (app) => {
     // có các thuộc tính(id)
     router.patch('/api/confirmRental', rentalController.confirmRental)
 
-    // api cập nhật trạng thái phiếu thuê thành chờ giao hàng
-    // có các thuộc tính(id)
-    router.patch('/api/deliveryRental', rentalController.deliveryRental)
-
     // api xác nhận nhận hàng
     //  // có các thuộc tính(id , ngày thuê)
     router.patch('/api/receivedRental', rentalController.received)
@@ -82,7 +78,7 @@ let initApiRouter = (app) => {
     // có các thuộc tính(id)
     router.patch('/api/completedRental', rentalController.completed)
 
-    //lấy danh sách đơn hàng thuê
+    //lấy danh sách đơn hàng thuê 
     // có các thuộc tính(users_id, trangthai)
     router.post('/api/listRent', rentalController.ListRent)
 
@@ -102,6 +98,17 @@ let initApiRouter = (app) => {
     // có các thuộc tính(chutiem_id, trangthai)
     router.post('/api/RentOrder', rentalController.rentalOrders)
 
+    //lấy danh sách đơn hàng cho thuê trạng thái 1(chờ gửi)
+    router.post('/api/RentOrder1', rentalController.rentalOrders1)
+
+    //lấy danh sách đơn hàng cho thuê trạng thái 2(đang thuê)
+    router.post('/api/RentOrder2', rentalController.rentalOrders2)
+
+    //lấy danh sách đơn hàng cho thuê trạng thái 3(trờ trả)
+    router.post('/api/RentOrder3', rentalController.rentalOrders3)
+
+    //lấy danh sách đơn hàng cho thuê trạng thái 4(hoàn tất)
+    router.post('/api/RentOrder4', rentalController.rentalOrders4)
 
     //bình luận
     //api thêm bình luận
