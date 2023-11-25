@@ -102,7 +102,7 @@ book.getTrangthai1 = (page) => {
         try {
             let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai= 1"
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1"
