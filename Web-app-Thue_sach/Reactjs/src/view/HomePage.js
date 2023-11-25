@@ -9,7 +9,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/autoplay';
 import { apiAuthurRandom } from '../Service/UserService';
-
+import avtAuthur from '../avatar-authur.png';
 
 export default function HomePage() {
     const [authur, setAuthur] = useState();
@@ -64,9 +64,18 @@ export default function HomePage() {
                                         <div className="w-full bg-white shadow rounded border border-transparent hover:border-blue-500 cursor-pointer">
                                             <div className='flex'>
                                                 <div className="h-52 w-full checker-bg flex items-center justify-center p-2 text-gray-700">
-                                                    <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center"
-                                                        src={`http://localhost:8000/img/${item.hinhtacgia}`}
-                                                        alt={`${item.hinhtacgia}`} />
+
+                                                    {item.hinhtacgia ? <>
+                                                        <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center"
+                                                            src={`http://localhost:8000/img/${item.hinhtacgia}`}
+                                                            alt={`${item.hinhtacgia}`} />
+                                                    </> : <>
+                                                        <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center"
+                                                            src={avtAuthur}
+                                                            alt="" />
+                                                    </>
+                                                    }
+
                                                     <div className='w-full h-auto px-2'>
                                                         <div className='flex px-1 bg-white rounded-2'>
                                                             <div className='col-4 pl-1'>

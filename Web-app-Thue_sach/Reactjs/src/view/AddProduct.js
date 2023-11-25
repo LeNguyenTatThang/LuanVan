@@ -27,6 +27,7 @@ export default function AddProduct() {
 
     const [ten, setTen] = useState();
     const [hinh, setHinh] = useState({ preview: '', data: '' });
+    const [tinhtrang, setTinhTrang] = useState();
     const [gia, setGia] = useState();
     const [tiencoc, setTiencoc] = useState();
     const [tentacgia, setTentacgia] = useState();
@@ -78,7 +79,7 @@ export default function AddProduct() {
                 message: "Hãy chọn loại sách đăng"
             });
         }
-        let res = await addBook(hinh.data, ten, book.loai, theloai_id, gia, tiencoc, tentacgia, id_users);
+        let res = await addBook(hinh.data, ten, book.loai, tinhtrang.value, theloai_id, gia, tiencoc, tentacgia, id_users);
 
         if (res && res.status === 200) {
             iziToast.success({
@@ -109,7 +110,14 @@ export default function AddProduct() {
         console.log(e)
     }
 
+    const options = [
+        { value: 1, label: 'Sách cũ' },
+        { value: 0, label: 'Sách mới' },
+    ];
 
+    const handleChangeTinhTrang = (selectedOption) => {
+        setTinhTrang(selectedOption);
+    };
     return (
         <div>
             <section className="bg-gray-50 ">
@@ -161,6 +169,18 @@ export default function AddProduct() {
 
                                 {book.loai === '0' ?
                                     <>
+                                        <div>
+                                            <label>Tình trạng sách:</label>
+                                            <Select
+                                                placeholder='Tình trạng sách'
+                                                value={tinhtrang}
+                                                onChange={handleChangeTinhTrang}
+                                                options={options}
+                                            />
+                                            {tinhtrang && (
+                                                <p>Bạn đã chọn: {tinhtrang.label}</p>
+                                            )}
+                                        </div>
                                         <div>
                                             <label className="block mb-2 text-sm font-medium text-gray-900 ">Giá tiền</label>
                                             <input type="number" name="gia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
