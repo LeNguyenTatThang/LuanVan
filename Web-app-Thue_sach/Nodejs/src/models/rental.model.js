@@ -244,11 +244,12 @@ rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, sach.ten, ngaynhan, ngaytra,tiencoc, users.ten as nguoidang, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach ,nguoithue_phieuthue.ten AS nguoithue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
-            sqlRental += ' INNER JOIN users on sach.id_users = users.id '
-            sqlRental += 'Where users_id = ? and phieuthue.trangthai = ?'
+            sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '
+            sqlRental += ' INNER JOIN users AS chutiem_sach on sach.id_users = chutiem_sach.id '
+            sqlRental += 'Where users_id = ? and phieuthue.trangthai = ? GROUP BY phieuthue_id'
             const [rows, fields] = await pool.execute(sqlRental, [data.users_id, data.trangthai])
             let dataRow = rows
             if (dataRow.length > 0) {
@@ -275,11 +276,12 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, sach.ten,users.ten as nguoithue, ngaynhan, ngaytra, tongtien from phieuthue'
-            sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
-            sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
-            sqlRental += ' INNER JOIN users on phieuthue.users_id = users.id'
-            sqlRental += ' Where chutiem_id = ? and phieuthue.trangthai = ?'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
+            sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
+            sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
+            sqlRental += ' INNER JOIN users AS chutiem_sach ON sach.id_users = chutiem_sach.id '
+            sqlRental += ' WHERE chutiem_id = ? AND phieuthue.trangthai = ? GROUP BY phieuthue_id'
             const [rows, fields] = await pool.execute(sqlRental, [data.chutiem_id, data.trangthai])
             let dataRow = rows
             if (dataRow.length > 0) {
