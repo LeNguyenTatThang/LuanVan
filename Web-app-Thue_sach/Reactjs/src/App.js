@@ -17,7 +17,6 @@ import Review from './view/Review';
 import AddProduct from './view/AddProduct';
 import CustomerCard from './view/CustomerCard';
 import Detail_book from './view/Detail_book';
-import Location from './view/location';
 import Manager from './view/Manager';
 
 
@@ -39,7 +38,6 @@ function App() {
         <Route path="/signup" element={<div className="p-4 sm:ml-64"> <Register /> </div>} />
         <Route path="/testimg" element={<div className="p-4 sm:ml-64"> <TestIMG /> </div>} />
         <Route path="/add-book" element={<div className="p-4 sm:ml-64"> <AddProduct /> </div>} />
-        <Route path="/location" element={<div className="p-4 sm:ml-64"> <Location /> </div>} />
         <Route path="/customer-card" element={<div className="p-4 sm:ml-64"> <CustomerCard /> </div>} />
         <Route path="/detail-book/:id" element={<div className="p-4 sm:ml-64"> <Detail_book /> </div>} />
         <Route path="/manager-book" element={<div className="p-4 sm:ml-64"> <Manager /> </div>} />

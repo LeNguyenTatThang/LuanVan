@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { REMOVE_FROM_CART } from '../app/userCard';
 import { useNavigate } from 'react-router-dom';
-import Location from './location';
 import Avt from '../avatar-authur.png';
+import axios from 'axios';
+import Select from 'react-select';
+import { callApiCreateRental } from '../Service/UserService';
+import iziToast from 'izitoast';
 export default function CustomerCard() {
 
     const card = useSelector((state) => state.shop.cart);
@@ -13,10 +16,12 @@ export default function CustomerCard() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        callAPI(host + "?depth=1");
         if (!userData.isLogin) {
             navigate('/');
         }
-    }, [userData])
+    }, [userData]);
+
 
     let TotalCart = 0;
 
@@ -27,10 +32,16 @@ export default function CustomerCard() {
     console.log(">>>check card: ", card)
     let chutiem_id = ''
     Object.keys(card).forEach(function (item) {
-        chutiem_id = card[item].nguoidang;
+        chutiem_id = card[item].id_users;
     });
     console.log(">>>check chutiem_id: ", chutiem_id)
 
+
+    let sach_id = Object.keys(card).flatMap(item => {
+        // Kiểm tra xem thuộc tính 'id' có phải là mảng không
+        return Array.isArray(card[item].id) ? { ...card[item].id } : [card[item].id];
+    });
+    console.log(">>>check sach_id: ", sach_id)
 
     const dispatch = useDispatch();
 
@@ -45,10 +56,116 @@ export default function CustomerCard() {
         setSelectedValue(value);
     };
 
-    const onClickXuatHoaDon = () => {
-        console.log("Xuất hóa đơn")
+    //xử lí location 
+    const host = "https://provinces.open-api.vn/api/";
+
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+    const [selectedProvince, setSelectedProvince] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const [selectedWard, setSelectedWard] = useState(null);
+    const [result, setResult] = useState('');
+
+    useEffect(() => {
+        // Hàm này sẽ được gọi mỗi khi có sự thay đổi ở selectedProvince, selectedDistrict, hoặc selectedWard
+        printResult();
+    }, [selectedProvince, selectedDistrict, selectedWard]);
+
+    const callAPI = (api) => {
+        axios.get(api)
+            .then((response) => {
+                setProvinces(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching provinces:", error);
+            });
     }
 
+    const callApiDistrict = (provinceCode) => {
+        const api = host + `p/${provinceCode}?depth=2`;
+        axios.get(api)
+            .then((response) => {
+                setDistricts(response.data.districts);
+            })
+            .catch((error) => {
+                console.error("Error fetching districts:", error);
+            });
+    }
+
+    const callApiWard = (districtCode) => {
+        const api = host + `d/${districtCode}?depth=2`;
+        axios.get(api)
+            .then((response) => {
+                setWards(response.data.wards);
+            })
+            .catch((error) => {
+                console.error("Error fetching wards:", error);
+            });
+    }
+
+    const printResult = () => {
+        if (selectedProvince && selectedDistrict && selectedWard) {
+            const resultString = `${selectedProvince.label} | ${selectedDistrict.label} | ${selectedWard.label}`;
+            setResult(resultString);
+        }
+    }
+
+    const handleProvinceChange = (selectedOption) => {
+        setSelectedProvince(selectedOption);
+        callApiDistrict(selectedOption.value);
+        printResult();
+    }
+
+    const handleDistrictChange = (selectedOption) => {
+        setSelectedDistrict(selectedOption);
+        callApiWard(selectedOption.value);
+        printResult();
+    }
+
+    const handleWardChange = (selectedOption) => {
+        setSelectedWard(selectedOption);
+        printResult();
+    }
+
+    console.log(result)
+    //Truyền các tham số: users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue
+    let users_id = userData.userInfo.id
+    console.log(users_id)
+    let tongtien = TotalCart
+    console.log(tongtien)
+    let diachi = result
+    console.log(diachi)
+    let ngaythue = selectedValue
+    console.log(ngaythue)
+
+    const onClickXuatHoaDon = async () => {
+        if (diachi === "") {
+            iziToast.error({
+                title: "Thiếu thông tin",
+                position: "topRight",
+                message: "Thiếu địa chỉ rồi"
+            });
+        } else {
+            let res = await callApiCreateRental(users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue)
+            if (res.status === 200) {
+                iziToast.success({
+                    title: res.message,
+                    position: "topRight",
+                    message: "Đã xác nhận đơn hàng, hãy chờ phản hồi từ chủ shop"
+                });
+            }
+            else {
+                iziToast.error({
+                    title: "Sách của bạn đã được thuê",
+                    position: "topRight",
+                    message: "Quay lại khi có sách nhé!!"
+                });
+            }
+        }
+
+    }
+    //console.log(">>check address: ", result)
     return (
         <>
             <div className="w-full flex flex-col md:flex-row gap-2">
@@ -131,7 +248,37 @@ export default function CustomerCard() {
                     </div>
 
                     <div className="mb-4">
-                        <Location />
+                        <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow-lg">
+                            <label className="block mb-2">
+                                Tỉnh/Thành phố:
+                                <Select
+                                    placeholder="Chọn tỉnh/thành phố"
+                                    value={selectedProvince}
+                                    onChange={handleProvinceChange}
+                                    options={provinces.map(province => ({ value: province.code, label: province.name }))}
+                                />
+                            </label>
+
+                            <label className="block mb-2">
+                                Quận/Huyện:
+                                <Select
+                                    placeholder="Chọn quận/huyện"
+                                    value={selectedDistrict}
+                                    onChange={handleDistrictChange}
+                                    options={districts.map(district => ({ value: district.code, label: district.name }))}
+                                />
+                            </label>
+
+                            <label className="block mb-2">
+                                Phường/Xã:
+                                <Select
+                                    placeholder='Chọn phường/xã'
+                                    value={selectedWard}
+                                    onChange={handleWardChange}
+                                    options={wards.map(ward => ({ value: ward.code, label: ward.name }))}
+                                />
+                            </label>
+                        </div>
                     </div>
 
                     {/* Thêm khoảng trắng giữa các phần nếu cần */}
