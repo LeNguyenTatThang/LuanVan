@@ -212,7 +212,7 @@ rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach ,nguoithue_phieuthue.ten AS nguoithue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach ,nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '
@@ -244,7 +244,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
