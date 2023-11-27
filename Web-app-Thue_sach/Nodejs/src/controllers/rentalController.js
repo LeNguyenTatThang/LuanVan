@@ -10,6 +10,7 @@ const postRental = async (req, res) => {
             message: data.message
         })
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
             message: 'lỗi Server'
@@ -33,6 +34,7 @@ const confirmRental = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
             message: 'lỗi Server'
@@ -58,6 +60,7 @@ const received = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
             message: 'lỗi Server'
@@ -81,6 +84,7 @@ const returned = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
             message: 'lỗi Server'
@@ -104,6 +108,7 @@ const completed = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
             message: 'lỗi Server'

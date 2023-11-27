@@ -104,10 +104,11 @@ const BrowseBooks = async (req, res) => {
 const BoosMessage = async (req, res) => {
     try {
         let data = req.body;
-        console.log
+        let dataMsr = await book.createMessage(data)
         req.flash('msgBook', dataMsr.message)
         return res.redirect(`/get-detailbook?id=${data.id}`)
     } catch (error) {
+        console.error(error)
         req.flash('errBook', "lỗi Server")
     }
 }
@@ -186,46 +187,46 @@ const getApiDetailBooks = async (req, res) => {
     }
 }
 
-//thêm chương cho sách đọc online
-const postChapter = async (req, res) => {
+const updateBook = async (req, res) => {
     try {
         let data = req.body
-        let filePath
+        console.log("dữ liệu", data)
+        console.log(req.file)
+        let hinhmoi
         if (req.file) {
-            filePath = req.file.path;
-            const fileContent = fs.readFileSync(filePath, 'utf-8');
-            const words = fileContent.split(/\s+/)
-            const maxWords = 4000;
-            if (words.length > maxWords) {
-                return res.status(400).json({
-                    status: 400,
-                    message: `Số từ vượt quá giới hạn (${maxWords}).`
-                });
-            } else {
-                data.noidung = fileContent;
-                let dataChapter = await book.createChap(data)
-                if (dataChapter.errcode === 0) {
-                    return res.status(200).json({
-                        status: 200,
-                        message: dataChapter.message
-                    })
-                } else if (dataChapter.errcode === 2) {
-                    return res.status(404).json({
-                        status: 404,
-                        message: dataChapter.message
-                    })
-                } else if (dataChapter.errcode === 1) {
-                    return res.status(400).json({
-                        status: 400,
-                        message: dataChapter.message
-                    })
+            hinhmoi = req.file.filename
+        } else {
+            hinhmoi = data.hinh
+        }
+        console.log('hinh', hinhmoi)
+        let dataBook = await book.update(data, hinhmoi)
+        console.log(dataBook)
+        if (dataBook.errcode == 0) {
+            if (req.file) {
+                try {
+                    fs.unlink('src/public/img/' + data.hinh, function (err) {
+                    });
+                } catch (error) {
+                    throw error
                 }
             }
+            return res.status(200).json({
+                status: 200,
+                message: dataBook.message
+            })
         } else {
+            if (req.file) {
+                try {
+                    fs.unlink('src/public/img/' + hinhmoi, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
             return res.status(400).json({
-                status: 401,
-                message: 'không có file hoặc sai dịnh dạng'
-            });
+                status: 400,
+                message: dataBook.message
+            })
         }
     } catch (error) {
         console.error(error)
@@ -235,6 +236,9 @@ const postChapter = async (req, res) => {
         })
     }
 }
+
+
+//api danh sach chuong cua sach
 
 
 module.exports = {
@@ -247,6 +251,6 @@ module.exports = {
     getbrowebook,
     apilistBook,
     BoosMessage,
-    postChapter
+    updateBook
 }
 

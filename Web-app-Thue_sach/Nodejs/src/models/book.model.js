@@ -318,14 +318,15 @@ book.updateTrangthai = (id) => {
     })
 }
 
-book.message = (data) => {
+book.createMessage = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let DataMsr = {}
             let ngaytao = new Date()
+            let trangthai = 3
             let sql = "update sach set trangthai = ? where id = ?"
             let sqlMsg = "insert into thongbao(noidung, id_sach, ngaytao) values (?, ?, ?)"
-            await pool.execute(sql, [data.trangthai, data.id])
+            await pool.execute(sql, [trangthai, data.id])
             await pool.execute(sqlMsg, [data.noidung, data.id, ngaytao])
             DataMsr = {
                 errcode: 0,
@@ -368,6 +369,44 @@ book.createChap = (data) => {
                 }
             }
             resolve(dataChapter)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+book.update = (data, hinhmoi) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log('data: ', data, "hinhmoi", hinhmoi)
+            let bookModel = {}
+            let sqlCheck = "SELECT sach.id FROM sach INNER JOIN phieuthue_sach ON sach.id = phieuthue_sach.sach_id"
+            sqlCheck += " INNER JOIN phieuthue ON phieuthue_sach.phieuthue_id = phieuthue.id"
+            sqlCheck += " WHERE sach.id =? AND (phieuthue.trangthai=4 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
+            let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?,gia=?, tiencoc=? WHERE id= ?"
+            const [check, fields] = await pool.execute(sqlCheck, [data.id])
+            console.log('Check:', check)
+            if (check.length > 0) {
+                bookModel = {
+                    errcode: 1,
+                    message: "không thể cập nhật quyển sách này"
+                }
+            }
+            else {
+                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.tinhtrang, data.gia, data.tiencoc, data.id])
+                if (result) {
+                    bookModel = {
+                        errcode: 0,
+                        message: "Cập nhập thành công"
+                    }
+                } else {
+                    bookModel = {
+                        errcode: 2,
+                        message: "cập nhật thất bại"
+                    }
+                }
+            }
+            resolve(bookModel)
         } catch (error) {
             reject(error)
         }
