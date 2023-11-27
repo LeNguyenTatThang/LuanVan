@@ -108,7 +108,8 @@ rental.upStatus2 = (data) => {
             let dataRental = {}
             let trangthai = 2;
             let ngaynhan = new Date();
-            let ngaytra = new Date(ngaynhan.getTime() + data.ngaythue * 24 * 60 * 60 * 1000);
+            let ngaythueInt = parseInt(data.ngaythue, 10);
+            let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
             let sqlRental = 'UPDATE phieuthue set trangthai = ?, ngaynhan = ?, ngaytra = ? WHERE id = ?'
             let check = await checkRental(data.id)
             if (check) {
