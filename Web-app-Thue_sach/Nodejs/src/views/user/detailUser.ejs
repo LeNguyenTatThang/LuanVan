@@ -49,15 +49,13 @@
                                     </li>
                                     <li class="list-group-item">
                                         <b>Loại: </b> <a class="float-right">
-                                            <% if(data.loai==0){%>
-                                                Admin
-                                                <%}%>
+                                            <%=data.loai===0 ? "Admin" :"User" %>
                                         </a>
                                     </li>
                                 </ul>
                                 <div>
-                                    <a href="/edit-Account?id=<%= data.id %>" class="btn btn-primary">Cập
-                                        nhật thông tin</a>
+                                    <a href="/edit-Account?id=<%= data.id %>" class="btn btn-danger">Cấm đăng sách</a>
+                                    <a href="/edit-Account?id=<%= data.id %>" class="btn btn-danger">Cấm bình luận</a>
                                     <a name="" id="" class="btn btn-default float-right" href="/user"><i
                                             class="fa fa-arrow-left" aria-hidden="true"></i> Quay Lại</a>
                                 </div>

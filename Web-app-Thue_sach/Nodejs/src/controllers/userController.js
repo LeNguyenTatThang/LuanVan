@@ -93,7 +93,7 @@ const Apiregister = async (req, res) => {
         }
         let userData = await user.registerUser(data);
         console.log("dữ liệu", userData)
-        const url = `localhost:8000/api/accountVerification/${userData.id_users}`;
+        const url = `http://localhost:3000/create-account-ok/${userData.id_users}`;
         await sendConfirmationEmail(data.email, url);
         if (userData.errcode == 0) {
             return res.status(200).json({
