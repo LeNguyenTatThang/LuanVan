@@ -45,7 +45,7 @@ function App() {
         <Route path="/detail-book/:id" element={<div className="p-4 sm:ml-64"> <Detail_book /> </div>} />
         <Route path="/manager-book" element={<div className="p-4 sm:ml-64"> <Manager /> </div>} />
         <Route path="/chatbox" element={<div className="p-4 sm:ml-64"> <ChatBox /> </div>} />
-        <Route path="/create-account-ok" element={<div className="p-4 sm:ml-64"> <RegistrationSuccess /> </div>} />
+        <Route path="/create-account-ok/:id" element={<div className="p-4 sm:ml-64"> <RegistrationSuccess /> </div>} />
         <Route path="/detailchapter" element={<div className="p-4 sm:ml-64"> <DetailChapter /> </div>} />
         <Route path="*" element={<div className="p-4 sm:ml-64"><Page404 /></div>} />
       </Routes>

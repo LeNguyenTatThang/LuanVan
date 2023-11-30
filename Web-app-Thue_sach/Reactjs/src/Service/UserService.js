@@ -111,6 +111,9 @@ const callApiChapter = (id, sachId) => {
         },
     });
 }
+const callApiMail = (id) => {
+    return axios.patch(`/api/accountVerification/${id}`);
+}
 export {
     fetchAllUser, loginApi, apiRegister,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom,
@@ -122,4 +125,5 @@ export {
     apiConfirmRentThree,
     apiCompleted,
     callApiChapter,
+    callApiMail,
 };
