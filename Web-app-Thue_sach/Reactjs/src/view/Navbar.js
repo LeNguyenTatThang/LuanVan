@@ -54,7 +54,7 @@ export default function Navbar() {
                             </div></Link>
                         </li>
                         <li>
-                            <Link to="/chats"><div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
+                            <Link to="/chat"><div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
                                 <svg className="flex-shrink-0 w-5 h-5  transition duration-75  text-gray-400 group-hover:text-white" width="24" height="24" viewBox="0 0 23 23" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" />  <path d="M12 20l-3 -3h-2a3 3 0 0 1 -3 -3v-6a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-2l-3 3" />  <line x1="8" y1="9" x2="16" y2="9" />  <line x1="8" y1="13" x2="14" y2="13" /></svg>
                                 <span className="flex-1 ml-3 whitespace-nowrap">Chat</span>

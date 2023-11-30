@@ -87,7 +87,13 @@ export default function AddProduct() {
                 position: "topRight",
                 message: res.message
             });
-            navigate('/add-book');
+            setTentacgia('')
+            setTen('')
+            setHinh(null)
+            setTinhTrang('')
+            setGia('')
+            setTiencoc('')
+            setTheloai_id('')
         } else {
             if (res && res.status === 400)
                 iziToast.error({

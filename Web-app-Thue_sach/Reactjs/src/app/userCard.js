@@ -42,86 +42,18 @@ const userCard = createSlice({
                 )),
             };
         },
-        ADJUST_ITEM_QTY: (state, action) => {
-            const product = action.payload;
-            return {
-                ...state,
-                cart: state.cart.map((item) =>
-                    item.size + item._id === product.size + product._id
-                        ? { ...item, qty: + product.qty }
-                        : item
-                ),
-            };
+        REMOVE_ALL: (state, action) => {
+            state.product = null;
+            return state
         },
-        LOAD_CURRENT_ITEM: (state, action) => {
-            const product = action.payload;
-            return {
-                ...state,
-                product: product,
-            };
-        },
-        ALL_SIZE_PRODUCT: (state, action) => {
-            const size = action.payload;
-            return {
-                ...state,
-                size: size,
-            };
-        },
-        LOAD_CATEGORY: (state, action) => {
-            const category = action.payload;
-            return {
-                ...state,
-                category: category,
-            };
-        },
-        LOAD_PRODUCTS: (state, action) => {
-            const products = action.payload;
-            return {
-                ...state,
-                products: products,
-            };
-        },
-        LOAD_SEARCH: (state, action) => {
-            const search = action.payload;
-            return {
-                ...state,
-                search: search,
-            };
-        },
-        CLEAR_CART: (state) => {
-            return {
-                ...state,
-                cart: []
-            }
-        },
-        CLEAR_INFO: (state) => {
-            return {
-                ...state,
-                info: null
-            }
-        },
-        LOAD_INFO: (state, action) => {
-            const info = action.payload;
-            return {
-                ...state,
-                info: info,
-            };
-        },
+
     },
 });
 
 export const {
     ADD_TO_CART,
     REMOVE_FROM_CART,
-    ADJUST_ITEM_QTY,
-    ALL_SIZE_PRODUCT,
-    LOAD_PRODUCTS,
-    LOAD_SEARCH,
-    LOAD_CURRENT_ITEM,
-    LOAD_CATEGORY,
-    CLEAR_INFO,
-    LOAD_INFO,
-    CLEAR_CART,
+    REMOVE_ALL
 } = userCard.actions;
 
 export default userCard.reducer;

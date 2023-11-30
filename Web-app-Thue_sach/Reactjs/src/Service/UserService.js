@@ -46,8 +46,8 @@ const apiPostRentOne = (users_id) => {
     return axios.post('/api/listRent1', { users_id });
 }
 //call api xác nhận lấy hàng của người thuê
-const apiConfirmRentOne = (id) => {
-    return axios.patch('/api/receivedRental', { id });
+const apiConfirmRentOne = (id, ngaythue) => {
+    return axios.patch('/api/receivedRental', { id, ngaythue });
 }
 //call api show để thấy sách đang được thuê
 const apiPostRentTwo = (users_id) => {
@@ -101,6 +101,16 @@ const callApiComment = (id) => {
 const apiSendComment = (sach_id, users_id, noidung) => {
     return axios.post('/api/createComment', { sach_id, users_id, noidung })
 }
+
+//api get chapter book
+const callApiChapter = (id, sachId) => {
+    return axios.get('/api/chapter/detailchapter', {
+        params: {
+            id: id,
+            sach_id: sachId,
+        },
+    });
+}
 export {
     fetchAllUser, loginApi, apiRegister,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom,
@@ -111,4 +121,5 @@ export {
     apiRentOrder, apiRentOrderOne, apiRentOrderTwo, apiOrderThree, apiOrderFour,
     apiConfirmRentThree,
     apiCompleted,
+    callApiChapter,
 };

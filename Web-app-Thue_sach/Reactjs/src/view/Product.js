@@ -3,17 +3,26 @@ import ReactPaginate from 'react-paginate';
 import { apiListBook } from '../Service/UserService';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_TO_CART } from '../app/userCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import iziToast from 'izitoast';
 
 
 export default function Product() {
+
+    const card = useSelector((state) => state.shop.cart);
+
+    const login = useSelector((state) => state.user);
+
     const [listBook, setListBook] = useState();
 
     const [totalPage, setTotalPage] = useState();
 
+
+
     const dispatch = useDispatch()
     useEffect(() => {
         getListBook();
+        console.log(login)
     }, [])
 
     const getListBook = async (page) => {
@@ -32,9 +41,40 @@ export default function Product() {
 
     console.log(userData)
 
+    const navigate = useNavigate();
+
     const handleAdd = (_item) => {
         // var item = { ...userData };
-        dispatch(ADD_TO_CART(_item));
+        if (!login.isLogin) {
+            iziToast.warning({
+                title: "Vui lòng đăng nhập!",
+                position: "center",
+                buttons: [
+                    ['<button>Tới trang đăng nhập</button>', function (instance, toast) {
+                        navigate('/signin');
+                    }, true], // true to focus
+                    ['<button>Ở lại trang</button>', function (instance, toast) {
+                        instance.hide({
+                            transitionOut: 'fadeOutUp',
+                            onClosing: function (instance, toast, closedBy) {
+                                console.info('closedBy: ' + closedBy); // The return will be: 'closedBy: buttonName'
+                            }
+                        }, toast, 'buttonName');
+                    }]
+                ],
+                onOpening: function (instance, toast) {
+                    console.info('callback abriu!');
+                },
+                onClosing: function (instance, toast, closedBy) {
+                    console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
+                }
+            });
+
+        } else {
+            dispatch(ADD_TO_CART(_item));
+        }
+
+
     }
 
     return (
@@ -63,7 +103,21 @@ export default function Product() {
                                         </div>
                                         <div
                                             className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
-                                            {item.loai === 0 ? <><div className='cursor-pointer' onClick={(e) => handleAdd(item)}>Thuê</div></> : <><div className='cursor-pointer'>Đọc</div></>}
+                                            {item.loai === 0 ? (
+                                                <>
+                                                    {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
+                                                        <div className="text-green-500">Đã thêm</div>
+                                                    ) : (
+                                                        <div className="cursor-pointer" onClick={(e) => handleAdd(item)}>
+                                                            Thuê
+                                                        </div>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="cursor-pointer">Đọc</div>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="py-2 mb-auto">

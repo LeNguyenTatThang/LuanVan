@@ -39,11 +39,7 @@ export default function Detail_book() {
           title: "Bạn đã đăng một bình luận",
           position: "bottomRight"
         });
-
-        // Thêm bình luận mới vào danh sách bình luận
         setComments([...comments, send.data]);
-
-        // Xóa nội dung bình luận từ trạng thái sau khi đăng
         setNoidung('');
       }
     } catch (error) {
@@ -64,6 +60,25 @@ export default function Detail_book() {
             alt={`${detail.hinh}`}
             className="w-full h-auto rounded"
           />
+          <div>
+            <p>Đánh giá:</p>
+            <div className="flex">
+              {Array.from({ length: detail.danhgia }).map((_, index) => (
+                <span
+                  key={index}
+                  role="img"
+                  aria-label="star"
+                  className="mr-1"
+                  style={{ fontSize: '35px', color: 'gold' }}
+                >
+                  &#9733;
+                </span>
+              ))}
+            </div>
+          </div>
+
+
+
         </div>
         {/* Phần chi tiết sách (bao gồm phần bình luận) bên phải */}
         <div className="w-1/2">
@@ -112,56 +127,58 @@ export default function Detail_book() {
             Lượt bình luận ({comments.length})
           </h2>
         </div>
+        {!userData.isLogin ? <>Bạn cần đăng nhập để bình luận và xem bình luận</> : <>
+          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
+            <label htmlFor="comment">Bình luận:</label>
+            <textarea
+              id="noidung"
+              rows="6"
+              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
+              placeholder="Viết bình luận..."
+              value={noidung}
+              onChange={(e) => setNoidung(e.target.value)}
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-500 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-700"
+            onClick={handleCommentSubmit}
+          >
+            Gửi bình luận
+          </button>
+          <div className="my-4" />
+          {comments.map((comment, index) => (
+            <React.Fragment key={index}>
+              <article
+                className={`p-6 text-base shadow-xl rounded-lg ${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
+                  }`}
+              >
+                <footer className="flex justify-between items-center mb-2">
+                  <div className="flex items-center">
+                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                      <img
+                        className="mr-2 w-6 h-6 rounded-full"
+                        src={comment.hinh}
+                        alt={comment.hinh}
+                      />
+                      {comment.ten}
+                    </p>
+                    <p className="text-sm text-gray-600 ">
+                      {dayjs(comment.ngaytao).format(' DD-MM-YYYY')}
+                    </p>
+                  </div>
+                </footer>
+                <p className="text-gray-500 ">{comment.noidung}</p>
+                {/* Các nút trả lời hoặc báo cáo */}
+              </article>
+              {index !== comments.length - 1 && (
+                <div className="my-4" />
+              )}
+            </React.Fragment>
+          ))}
+        </>}
 
 
-        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
-          <label htmlFor="comment">Bình luận:</label>
-          <textarea
-            id="noidung"
-            rows="6"
-            className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-            placeholder="Viết bình luận..."
-            value={noidung}
-            onChange={(e) => setNoidung(e.target.value)}
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-500 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-700"
-          onClick={handleCommentSubmit}
-        >
-          Gửi bình luận
-        </button>
-        <div className="my-4" />
-        {comments.map((comment, index) => (
-          <React.Fragment key={index}>
-            <article
-              className={`p-6 text-base shadow-xl rounded-lg ${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-                }`}
-            >
-              <footer className="flex justify-between items-center mb-2">
-                <div className="flex items-center">
-                  <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                    <img
-                      className="mr-2 w-6 h-6 rounded-full"
-                      src={comment.hinh}
-                      alt={comment.hinh}
-                    />
-                    {comment.ten}
-                  </p>
-                  <p className="text-sm text-gray-600 ">
-                    {dayjs(comment.ngaytao).format(' DD-MM-YYYY')}
-                  </p>
-                </div>
-              </footer>
-              <p className="text-gray-500 ">{comment.noidung}</p>
-              {/* Các nút trả lời hoặc báo cáo */}
-            </article>
-            {index !== comments.length - 1 && (
-              <div className="my-4" />
-            )}
-          </React.Fragment>
-        ))}
       </div>
 
     </>
