@@ -13,7 +13,7 @@ user.handleUserLogin = (email, matkhau) => {
             console.log(matkhau);
             let isCheck = await user.checkEmail(email);
             if (isCheck) {
-                const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau, trangthai FROM users where email= ?', [email])
+                const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau FROM users where email= ?', [email])
                 let user = rows[0];
                 if (user) {
                     let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
@@ -119,8 +119,7 @@ user.registerUser = async (users) => {
             let matkhau = await hashUsePassword(users.matkhau)
             console.log(matkhau)
             let loai = 1;
-            let hoatdong = 0;
-            const [result] = await pool.execute('insert into users(ten, email, matkhau, loai, hoatdong) values (?, ?, ?, ?, ?)',
+            const [result] = await pool.execute('insert into users(ten, email, matkhau, loai) values (?, ?, ?, ?)',
                 [users.ten, users.email, matkhau, loai, hoatdong]);
             let id_users = result.insertId
             console.log('mã', id_users)
