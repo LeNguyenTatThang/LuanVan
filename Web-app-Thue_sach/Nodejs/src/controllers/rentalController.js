@@ -1,14 +1,23 @@
 import rental from '../models/rental.model'
+const schedule = require('node-schedule');
 
+//api tạo phiếu thuê
 const postRental = async (req, res) => {
     try {
         let rentalData = req.body
-        console.log('data', rentalData)
         let data = await rental.create(rentalData)
-        return res.status(200).json({
-            status: 200,
-            message: data.message
-        })
+        if (data.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+
     } catch (error) {
         console.error(error)
         return res.status(500).json({
@@ -18,6 +27,7 @@ const postRental = async (req, res) => {
     }
 }
 
+//xác nhận cho thuê
 const confirmRental = async (req, res) => {
     try {
         let rentalData = req.body
@@ -42,13 +52,17 @@ const confirmRental = async (req, res) => {
     }
 }
 
-
+//xác nhận nhận hàng 
 const received = async (req, res) => {
     try {
         let rentalData = req.body
         console.log(rentalData)
         let data = await rental.upStatus2(rentalData)
         if (data.errcode === 0) {
+            const job = schedule.scheduleJob('*/5 * * * *', async () => {
+                // io.emit('nearDueDate', { rentalId: data.id, messageRentail: 'Cảnh báo: Còn hai ngày đến ngày trả' });
+                console.log('sắp tới ngày trả hàng')
+            });
             return res.status(200).json({
                 status: 200,
                 message: data.message
@@ -68,6 +82,7 @@ const received = async (req, res) => {
     }
 }
 
+//chờ trả
 const returned = async (req, res) => {
     try {
         let rentalData = req.body
@@ -92,6 +107,7 @@ const returned = async (req, res) => {
     }
 }
 
+//hoàn tất quá trình thuê
 const completed = async (req, res) => {
     try {
         let rentalData = req.body
@@ -142,6 +158,7 @@ const ListRent = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng chờ gửi 
 const ListRent1 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -168,6 +185,7 @@ const ListRent1 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng đang thuê
 const ListRent2 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -194,6 +212,7 @@ const ListRent2 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng chờ trả
 const ListRent3 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -220,6 +239,7 @@ const ListRent3 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng hoàn tất
 const ListRent4 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -272,6 +292,7 @@ const rentalOrders = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng cho thuê chờ xác nhận
 const rentalOrders1 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -298,6 +319,7 @@ const rentalOrders1 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng cho thuê đang thuê
 const rentalOrders2 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -324,6 +346,7 @@ const rentalOrders2 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng cho thuê đang chờ trả
 const rentalOrders3 = async (req, res) => {
     try {
         let rentalData = req.body
@@ -350,6 +373,7 @@ const rentalOrders3 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng cho thuê hoàn tất
 const rentalOrders4 = async (req, res) => {
     try {
         let rentalData = req.body

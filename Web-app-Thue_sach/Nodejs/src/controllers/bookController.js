@@ -1,78 +1,39 @@
-import { log } from "console";
+
 import axios from "../axios";
 import book from '../models/book.model'
 const fs = require('fs');
 
+const book1 = async (req, res) => {
+    return res.render('book/book.ejs')
+}
 
 const getbook = async (req, res) => {
-    let page = req.query.page ? req.query.page : 1;
-    let name = req.query.name;
-    if (name) {
-        let data = await axios('/get-api-bookAdmin?name=' + name + '&page=' + page)
+    try {
+        let page = req.query.page ? req.query.page : 1;
+        let name = req.query.name;
+        let trangthaiduyet = "choduyet"
+        let data;
+        data = await book.getApprovalStatus(page, name, trangthaiduyet);
         return res.render('book/listBook.ejs', {
-            data: data.data,
-            totalPage: data.totalPage,
-            name: data.name,
-            message: data.message,
-            errcode: data.errcode,
-            page: parseInt(page),
-        })
-    } else {
-        let data = await axios('/get-api-bookAdmin?page=' + page)
-        return res.render('book/listBook.ejs', {
-            data: data.data,
+            data: data.rows,
             name: data.name,
             totalPage: data.totalPage,
             message: data.message,
             errcode: data.errcode,
             page: parseInt(page)
-        }, function (err, html) {
-            res.send(html)
         })
-    }
-}
-
-const apilistBook = async (req, res) => {
-    let page = req.query.page ? req.query.page : 1;
-    let name = req.query.name;
-    if (name) {
-        let data = await book.getTrangthai0(page, name);
-        return res.status(200).json({
-            data: data.rows,
-            totalPage: data.totalPage,
-            name: data.name,
-            message: data.message,
-            errcode: data.errcode,
-            page: parseInt(page),
-        })
-    } else {
-        let data = await book.getTrangthai0(page);
-        return res.status(200).json({
-            data: data.rows,
-            totalPage: data.totalPage,
-            name: data.name,
-            message: data.message,
-            errcode: data.errcode,
-            page: parseInt(page),
-        })
+    } catch (error) {
+        console.error(error)
     }
 }
 
 const getbrowebook = async (req, res) => {
-    let page = req.query.page ? req.query.page : 1;
-    let name = req.query.name;
-    if (name) {
-        let data = await book.getsachduyet(page, name);
-        return res.render('book/listbrowebook.ejs', {
-            data: data.rows,
-            totalPage: data.totalPage,
-            name: data.name,
-            message: data.message,
-            errcode: data.errcode,
-            page: parseInt(page),
-        })
-    } else {
-        let data = await book.getsachduyet(page);
+    try {
+        let page = req.query.page ? req.query.page : 1;
+        let name = req.query.name;
+        let trangthaiduyet = "duocduyet"
+        let data;
+        data = await book.getApprovalStatus(page, name, trangthaiduyet);
         return res.render('book/listbrowebook.ejs', {
             data: data.rows,
             name: data.name,
@@ -81,6 +42,8 @@ const getbrowebook = async (req, res) => {
             errcode: data.errcode,
             page: parseInt(page)
         })
+    } catch (error) {
+        console.error(error)
     }
 }
 
@@ -94,10 +57,16 @@ const getDetailBook = async (req, res) => {
 }
 
 const BrowseBooks = async (req, res) => {
-    let id = req.body.id;
-    console.log(id)
-    await book.updateTrangthai(id);
-    return res.redirect('/book')
+    try {
+        let id = req.body.id;
+        let trangthaiduyet = req.body.trangthaiduyet
+        console.log(trangthaiduyet)
+        await book.updateApprovalStatus(id, trangthaiduyet);
+        return res.redirect('/book1')
+    } catch (error) {
+        console.error(error)
+        return res.redirect('/book1')
+    }
 }
 
 //từ chối duyệt và thông báo
@@ -249,8 +218,8 @@ module.exports = {
     BrowseBooks,
     postApiListBookUser,
     getbrowebook,
-    apilistBook,
     BoosMessage,
-    updateBook
+    updateBook,
+    book1
 }
 

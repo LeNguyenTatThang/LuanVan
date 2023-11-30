@@ -1,8 +1,6 @@
-
 import pool from "../config/connectDB";
-const rental = function () {
-
-}
+const nodemailer = require('nodemailer');
+const rental = function () { }
 
 
 let generateRandomCode = (length) => {
@@ -20,24 +18,35 @@ let generateRandomCode = (length) => {
 rental.create = function (data) {
     return new Promise(async (resolve, reject) => {
         try {
-            // let ngaytao = new Date();
-            console.log(data)
             let maphieu = generateRandomCode(8)
-            // let ngaytra = new Date(ngaytao.getTime() + data.ngaythue * 24 * 60 * 60 * 1000);
             let dataRental = {}
             let trangthai = 0;
             let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, diachi, ngaythue, trangthai, maphieu) values (?,?,?,?,?,?,?)'
             let sqlRental_Book = 'insert into phieuthue_sach(sach_id, phieuthue_id) VALUES (?, ?)'
-            const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu])
             let bookIds = Array.isArray(data.sach_id) ? data.sach_id : [data.sach_id];
-            let phieuthue_id = result.insertId;
+            let checkedBooks = [];
             for (let bookId of bookIds) {
-                await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
+                let check = await checkbook(bookId)
+                if (check) {
+                    checkedBooks.push({ id: bookId, tensach: check });
+                }
             }
-            dataRental = {
-                message: 'thành công'
+            if (checkedBooks.length > 0) {
+                dataRental = {
+                    errcode: 1,
+                    message: `Quyển sách ${checkedBooks.map(book => `"${book.tensach}"`)} đã được thuê không thể thuê được`
+                }
+            } else {
+                const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu])
+                let phieuthue_id = result.insertId;
+                for (let bookId of bookIds) {
+                    await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
+                }
+                dataRental = {
+                    errcode: 0,
+                    message: 'thành công'
+                }
             }
-            console.log(dataRental)
             resolve(dataRental)
         } catch (e) {
             reject(e);
@@ -45,7 +54,26 @@ rental.create = function (data) {
     })
 }
 
-//xác nhận cho thuê sách
+let checkbook = (sach_id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let sqlCheck = "SELECT sach.ten FROM sach INNER JOIN phieuthue_sach ON sach.id = phieuthue_sach.sach_id"
+            sqlCheck += " INNER JOIN phieuthue ON phieuthue_sach.phieuthue_id = phieuthue.id"
+            sqlCheck += " WHERE sach.id = ? AND (phieuthue.trangthai=0 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
+            const [result, fields] = await pool.execute(sqlCheck, [sach_id])
+            if (result.length > 0) {
+                const tenSach = result[0].ten;
+                resolve(tenSach);
+            } else {
+                resolve(false);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+//xác nhận cho thuê sách và chuyển sang chờ gửi
 rental.upStatus1 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -101,7 +129,7 @@ let checkRental = (id) => {
 
 
 
-//xác nhận đã nhận 
+//xác nhận đã nhận và chuyển sang đang thuê
 rental.upStatus2 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -110,6 +138,7 @@ rental.upStatus2 = (data) => {
             let ngaynhan = new Date();
             let ngaythueInt = parseInt(data.ngaythue, 10);
             let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
+
             let sqlRental = 'UPDATE phieuthue set trangthai = ?, ngaynhan = ?, ngaytra = ? WHERE id = ?'
             let check = await checkRental(data.id)
             if (check) {
@@ -138,7 +167,33 @@ rental.upStatus2 = (data) => {
     })
 }
 
-//đang thuê
+const sendConfirmationEmail = async (email, confirmationCode) => {
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: '2023luanvan@gmail.com',
+            pass: 'jsnn awej cdqo grmq'
+        }
+    });
+    // Soạn email
+    const mailOptions = {
+        from: '2023luanvan@gmail.com',
+        to: email,
+        subject: 'Xác nhận đăng ký',
+        text: `Mã xác nhận của bạn là: ${confirmationCode}`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully!');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+}
+
+
+//trả hàng 
 rental.upStatus3 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -239,6 +294,8 @@ rental.getRent = (data) => {
         }
     })
 }
+
+
 
 //danh sach đơn hàng cho thuê
 rental.getRentOrder = (data) => {

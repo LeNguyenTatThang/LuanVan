@@ -76,6 +76,7 @@ const postChapter = async (req, res) => {
     }
 }
 
+//api hiện nội dung của chương truyện
 const ContentChapter = async (req, res) => {
     try {
         let sach_id = req.query.sach_id

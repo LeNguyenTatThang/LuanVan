@@ -29,12 +29,15 @@ let initWebRouter = (app) => {
     router.post('/put-category', categoryController.putCatetory);
     router.get('/delete-category/:id', categoryController.deleteCategory);
 
-    router.get('/user', auth.isLogin, userController.getUser);
 
+    //tai khoan
+    router.get('/user', auth.isLogin, userController.getUser);
+    router.get('/detailUser', auth.isLogin, userController.detailUser);
 
     router.post('/post-login', loginController.getLogin);
 
     //sach
+    router.get('/book1', auth.isLogin, bookController.book1);
     router.get('/book', auth.isLogin, bookController.getbook);
     router.get('/get-detailbook', auth.isLogin, bookController.getDetailBook);
     router.post('/post-browsebook', auth.isLogin, bookController.BrowseBooks);

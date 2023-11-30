@@ -37,6 +37,7 @@
                                             <th class="text-truncate">Người Đăng</th>
                                             <th class="text-truncate">Tác Giả</th>
                                             <th class="text-truncate">Trạng Thái</th>
+                                            <th class="text-truncate">Trạng Thái Duyệt</th>
                                             <th class="text-truncate text-right">Action</th>
                                         </tr>
                                     </thead>
@@ -78,22 +79,12 @@
                                                         <td scope="row">
                                                             <%= data[i].tentacgia %>
                                                         </td>
+                                                        <td scope="row">
+                                                            <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                        </td>
                                                         <td scope="row" class="changeTT" data-id="<%= data[i].id %>">
-                                                            <div>
-                                                                <select class="form-control">
-                                                                    <% let options=["1","0"]; %>
-                                                                        <% for ( let a=0; a < options.length; a++ ){ %>
-                                                                            <% let
-                                                                                isSelected=(data[i].trangthai==options[a]
-                                                                                ) ? "selected" : "" ; %>
-                                                                                <option value="<%= options[a]%>"
-                                                                                    <%=isSelected %>>
-                                                                                    <%= options[a]==="1" ? "Hiện" : "Ẩn"
-                                                                                        %>
-                                                                                </option>
-                                                                                <% } %>
-                                                                </select>
-                                                            </div>
+                                                            <%= data[i].trangthaiduyet==="duocduyet" ? "Được duyệt"
+                                                                : "Chờ duyệt" %>
                                                         </td>
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
@@ -105,6 +96,7 @@
                                             </tbody>
                                             <% } %>
                                 </table>
+                                <hr>
                                 <div>
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination">

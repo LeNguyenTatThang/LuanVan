@@ -1,0 +1,220 @@
+<%- include('../page/header')%>
+
+
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Danh sách sách chưa duyệt
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <input type="text" name="name" id="name" class="form-control" placeholder=""
+                                            aria-describedby="helpId">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" onclick="searchAndFetchData()"><i
+                                            class="fa fa-search" aria-hidden="true"></i></button>
+                                </form>
+                                <hr>
+                                <!-- Ví dụ cách hiển thị danh sách sách trong EJS -->
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-truncate">STT</th>
+                                            <th class="text-truncate">Hình</th>
+                                            <th class="text-truncate">Tên</th>
+                                            <th class="text-truncate">Loại</th>
+                                            <th class="text-truncate">Tình Trạng</th>
+                                            <th class="text-truncate">Thể Loại </th>
+                                            <th class="text-truncate">Người Đăng</th>
+                                            <th class="text-truncate">Tác Giả</th>
+                                            <th class="text-truncate">Trạng Thái</th>
+                                            <th class="text-truncate text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dataList">
+                                        <!-- Dữ liệu sách sẽ được thêm vào đây bằng JavaScript -->
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination page-item" id="pagination">
+
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <%- include('../page/footer')%>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const socket = io();
+                    socket.on('updateData', function (data) {
+                        console.log('Nhận sự kiện updateData:', data);
+                        fetchData();
+                    });
+
+                    $('#pagination').on('click', 'a.page-link', function (e) {
+                        e.preventDefault();
+                        const page = parseInt($(this).attr('data-page'));
+                        console.log(page)
+                        fetchData(page);
+                    });
+
+                    $('.form-inline').submit(function (e) {
+                        e.preventDefault();
+                        fetchData();
+                    });
+
+                    $('#pagination').on('click', '#prevPage', function (e) {
+                        e.preventDefault();
+                        let currentPage = parseInt($('#pagination').find('li.active a.page-link').attr('data-page'));
+                        let prevPage = currentPage - 1;
+                        if (prevPage >= 1) {
+                            console.log('ket qua ', prevPage)
+                            fetchData(prevPage);
+                        } else {
+                            prevPage = 1
+                            fetchData(prevPage);
+                        }
+                    });
+
+
+                    $('#pagination').on('click', '#nextPage', function (e) {
+                        e.preventDefault();
+                        const currentPage = parseInt($('#pagination').find('li.active a.page-link').attr('data-page'));
+                        const lastPage = parseInt($('#pagination').find('li').last().prev().find('a.page-link').attr('data-page'));
+                        const nextPage = currentPage + 1;
+                        if (nextPage <= parseInt($('#pagination').find('li').last().prev().find('a.page-link').attr('data-page'))) {
+                            fetchData(nextPage);
+                        } else {
+                            fetchData(lastPage);
+                        }
+                    });
+
+
+                    fetchData();
+                });
+
+
+                function searchAndFetchData(page = 1) {
+                    fetchData(page);
+                }
+
+                function fetchData(page = 1) {
+                    const trangthaiduyet = $("#trangthaiduyet").val();
+                    const name = $("#name").val();
+                    $.ajax({
+                        url: '/book',
+                        method: 'GET',
+                        data: {
+                            name: name,
+                            trangthaiduyet: trangthaiduyet,
+                            page: page,
+                        },
+                        dataType: "JSON",
+                        success: function (data) {
+                            console.log('Dữ liệu trả về:', data.data);
+                            const dataList = $('#dataList');
+                            const pagination = $('.pagination');
+                            if (data.data) {
+                                dataList.html('');
+                                data.data.forEach(function (sach, index) {
+                                    dataList.append(`
+                                  <tr>
+                            <td scope="row">
+                                ${index + 1}
+                            </td>
+                            <td scope="row">
+                                <div class="avatar avatar-sm me-3">
+                                    <img src="/img/${sach.hinh}" class="img-list" />
+                                </div>
+                            </td>
+                            <td scope="row">
+                                ${sach.ten}
+                            </td>
+                            <td scope="row">
+                                ${sach.loai === 0 ? "Thuê" : "Đọc online"}
+                            </td>
+                            <td scope="row">
+                                ${sach.tinhtrang === 0 ? "Sách mới" : "Sách Cũ"}
+                            </td>
+                            <td scope="row">
+                                ${sach.theloai}
+                            </td>
+                            <td scope="row">
+                                ${sach.nguoidang}
+                            </td>
+                            <td scope="row">
+                                ${sach.tentacgia}
+                            </td>
+                              <td scope="row">
+                                ${sach.trangthai === 0 ? "Ẩn" : "Hiện"}
+                            </td>
+                            <td class="text-right">
+                                <a class="btn btn-sm btn-success" data-id="${sach.id}"
+                                    href="/get-detailbook?id=${sach.id}">Duyệt</a>
+                            </td>
+                        </tr>
+                            `);
+
+                                    pagination.html('');
+                                    let paginationHTML = '';
+                                    paginationHTML += ` <li class="page-item" id="prevPage">
+        <a class="page-link" href="#" data-page="${page - 1}">Trước</a>
+    </li>`
+                                    for (let i = 1; i <= data.totalPage; i++) {
+                                        if (i === page) {
+                                            paginationHTML += `
+            <li class="page-item active">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+        `;
+                                        } else if (i === 1 || i === data.totalPage || (i >= page - 2 && i <= page + 2)) {
+                                            paginationHTML += `
+            <li class="page-item">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+        `;
+                                        } else if ((i === page - 3 && i > 1) || (i === page + 3 && i < data.totalPage)) {
+                                            paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                                        }
+                                    }
+                                    paginationHTML += `
+   
+    <li class="page-item" id="nextPage">
+        <a class="page-link" href="#" data-page="${page + 1}">Sau</a>
+    </li>
+`;
+                                    pagination.append(paginationHTML);
+                                });
+                            } else {
+                                dataList.html('');
+                                dataList.append('<div>không có dữ liệu</div>')
+                            }
+
+                        },
+                        error: function (error) {
+                            console.error('Lỗi:', error);
+                        }
+                    });
+                }
+            </script>
+            </body>
+
+            </html>

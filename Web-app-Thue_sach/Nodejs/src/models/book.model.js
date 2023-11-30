@@ -1,22 +1,23 @@
-import { DATE } from "sequelize";
+
 import pool from "../config/connectDB";
 
 const book = function () { }
 
-// hien thi ds sach chua dc duyet ben admin
-book.getTrangthai0 = async (page, name) => {
+// hien thi ds sach bên admin
+book.getApprovalStatus = async (page, name, trangthaiduyet) => {
     return new Promise(async (resolve, reject) => {
         try {
+
             let data = {};
             let limit = '5';
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-            sql += " WHERE sach.trangthai=0 "
-            let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=0"
+            sql += " WHERE sach.trangthaiduyet=? "
+            let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthaiduyet=?"
             if (name) {
                 sqlTotal += " AND sach.ten LIKE '%" + name + "%' "
             }
-            const [counts] = await pool.execute(sqlTotal)
+            const [counts] = await pool.execute(sqlTotal, [trangthaiduyet])
             let totalRow = counts[0].total
             let totalPage = Math.ceil(totalRow / limit)
             page = page > 0 ? Math.floor(page) : 1;
@@ -26,7 +27,7 @@ book.getTrangthai0 = async (page, name) => {
             if (name) {
                 sql += " AND sach.ten LIKE '%" + name + "%' "
             }
-            const [rows, fields] = await pool.execute(sql + ' ' + 'order by sach.ten ASC LIMIT ' + start + ',' + limit)
+            const [rows, fields] = await pool.execute(sql + ' ' + 'order by sach.ten ASC LIMIT ' + start + ',' + limit, [trangthaiduyet])
             if (rows.length === 0) {
                 data = {
                     totalPage,
@@ -50,51 +51,6 @@ book.getTrangthai0 = async (page, name) => {
     })
 }
 
-book.getsachduyet = async (page, name) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let data = {};
-            let limit = '5';
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
-            sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-            sql += " WHERE sach.trangthai=1 "
-            let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1"
-            if (name) {
-                sqlTotal += " AND sach.ten LIKE '%" + name + "%' "
-            }
-            const [counts] = await pool.execute(sqlTotal)
-            let totalRow = counts[0].total
-            let totalPage = Math.ceil(totalRow / limit)
-            page = page > 0 ? Math.floor(page) : 1;
-            page = page <= totalPage ? Math.floor(page) : totalPage;
-            let start = (page - 1) * limit;
-            start = start > 0 ? start : 0;
-            if (name) {
-                sql += " AND sach.ten LIKE '%" + name + "%' "
-            }
-            const [rows, fields] = await pool.execute(sql + ' ' + 'order by sach.ten ASC LIMIT ' + start + ',' + limit)
-            if (rows.length === 0) {
-                data = {
-                    totalPage,
-                    name,
-                    errcode: '1',
-                    message: 'không có dữ liệu'
-                }
-            } else {
-                data = {
-                    rows,
-                    totalPage,
-                    name,
-                    errcode: '0',
-                    message: 'ok'
-                }
-            }
-            resolve(data)
-        } catch (e) {
-            reject(e);
-        }
-    })
-}
 
 // ds sách user
 book.getTrangthai1 = (page) => {
@@ -245,7 +201,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id, sach.trangthai, tinhtrang, sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
+            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
@@ -284,23 +240,13 @@ book.getId = (id) => {
 }
 
 
-book.updateTrangthai = (id) => {
+book.updateApprovalStatus = (id, trangthaiduyet) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataBook = {};
-            let trangthai = {};
-            console.log("sv", id)
-            const [rows, fields] = await pool.execute('SELECT * FROM sach where id= ?', [id])
-            let check = rows[0]
-            console.log(check)
-            if (check) {
-                if (check.trangthai == 1) {
-                    trangthai = 0
-                } else {
-                    trangthai = 1
-                }
-                await pool.execute('update sach set trangthai = ? where id = ?',
-                    [trangthai, id]);
+            const [result, fields] = await pool.execute('update sach set trangthaiduyet = ? where id = ?',
+                [trangthaiduyet, id]);
+            if (result) {
                 dataBook = {
                     errcode: 0,
                     message: 'Duyệt thành công'
@@ -308,7 +254,7 @@ book.updateTrangthai = (id) => {
             } else {
                 dataBook = {
                     errcode: 1,
-                    message: 'id không tồn tại'
+                    message: 'Duyệt thất bại'
                 }
             }
             resolve(dataBook)
@@ -323,10 +269,9 @@ book.createMessage = (data) => {
         try {
             let DataMsr = {}
             let ngaytao = new Date()
-            let trangthai = 3
-            let sql = "update sach set trangthai = ? where id = ?"
+            let sql = "update sach set trangthaiduyet = ? where id = ?"
             let sqlMsg = "insert into thongbao(noidung, id_sach, ngaytao) values (?, ?, ?)"
-            await pool.execute(sql, [trangthai, data.id])
+            await pool.execute(sql, [data.trangthaiduyet, data.id])
             await pool.execute(sqlMsg, [data.noidung, data.id, ngaytao])
             DataMsr = {
                 errcode: 0,
@@ -383,17 +328,17 @@ book.update = (data, hinhmoi) => {
             let sqlCheck = "SELECT sach.id FROM sach INNER JOIN phieuthue_sach ON sach.id = phieuthue_sach.sach_id"
             sqlCheck += " INNER JOIN phieuthue ON phieuthue_sach.phieuthue_id = phieuthue.id"
             sqlCheck += " WHERE sach.id =? AND (phieuthue.trangthai=4 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
-            let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?,gia=?, tiencoc=? WHERE id= ?"
+            let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?, trangthai=?, gia=?, tiencoc=? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
             console.log('Check:', check)
             if (check.length > 0) {
                 bookModel = {
                     errcode: 1,
-                    message: "không thể cập nhật quyển sách này"
+                    message: "không thể cập nhật quyển sách này do đang trong quá trình thuê"
                 }
             }
             else {
-                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.tinhtrang, data.gia, data.tiencoc, data.id])
+                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.tinhtrang, data.trangthai, data.gia, data.tiencoc, data.id])
                 if (result) {
                     bookModel = {
                         errcode: 0,

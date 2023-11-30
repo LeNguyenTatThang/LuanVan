@@ -6,7 +6,7 @@ comment.getAll = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let commentData = {};
-            let sql = 'select users.hinh, users.ten,users.hinh, binhluan.noidung, ngaytao from binhluan'
+            let sql = 'select users.ten,users.hinh, binhluan.noidung, ngaytao from binhluan'
             sql += ' INNER JOIN sach on binhluan.sach_id = sach.id'
             sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=?'
             const [rows] = await pool.execute(sql, [data]);

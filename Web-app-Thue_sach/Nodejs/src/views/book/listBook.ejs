@@ -49,6 +49,7 @@
                                             <th class="text-truncate">Người Đăng</th>
                                             <th class="text-truncate">Tác Giả</th>
                                             <th class="text-truncate">Trạng Thái</th>
+                                            <th class="text-truncate">Trạng Thái Duyệt</th>
                                             <th class="text-truncate text-right">Action</th>
                                         </tr>
                                     </thead>
@@ -90,20 +91,21 @@
                                                         <td scope="row">
                                                             <%= data[i].tentacgia %>
                                                         </td>
-
+                                                        <td scope="row">
+                                                            <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                        </td>
                                                         <td scope="row" class="changeTT" data-id="<%= data[i].id %>">
-
                                                             <div>
-                                                                <select class="form-control" name="trangthai">
-                                                                    <% let options=["1","0"]; %>
-                                                                        <% for ( let a=0; a < options.length; a++ ){ %>
+                                                                <select class="form-control" name="trangthaiduyet">
+                                                                    <% let options=["choduyet","duocduyet"]; %>
+                                                                        <% for (let a=0; a < options.length; a++) { %>
                                                                             <% let
-                                                                                isSelected=(data[i].trangthai==options[a]
-                                                                                ) ? "selected" : "" ; %>
-                                                                                <option value="<%= options[a]%>"
+                                                                                isSelected=(data[i].trangthaiduyet===options[a])
+                                                                                ? "selected" : "" ; %>
+                                                                                <option value="<%= options[a] %>"
                                                                                     <%=isSelected %>>
-                                                                                    <%= options[a]==="1" ? "Hiện" : "Ẩn"
-                                                                                        %>
+                                                                                    <%= options[a]==="choduyet"
+                                                                                        ? "Chờ Duyệt" : "Được Duyệt" %>
                                                                                 </option>
                                                                                 <% } %>
                                                                 </select>
@@ -119,6 +121,7 @@
                                             </tbody>
                                             <% } %>
                                 </table>
+                                <hr>
                                 <div>
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination">
@@ -181,17 +184,17 @@
                                                                                             </span>
                                                                                         </li>
                                                                                         <% } else if (i===1 ||
-                                                                                            i===totalPage || (i>= page -
-                                                                                            2 && i <= page + 2)) { %>
+                                                                                            i===totalPage || (i>= page
+                                                                                            -2 && i <= page + 2)) { %>
                                                                                                 <li class="page-item">
                                                                                                     <a class="page-link"
                                                                                                         href="/book?page=<%= i %>">
                                                                                                         <%= i %>
                                                                                                     </a>
                                                                                                 </li>
-                                                                                                <% } else if (i===page -
-                                                                                                    3 || i===page + 3) {
-                                                                                                    %>
+                                                                                                <% } else if (i===page
+                                                                                                    -3 || i===page + 3)
+                                                                                                    { %>
                                                                                                     <li
                                                                                                         class="page-item disabled">
                                                                                                         <span
@@ -212,7 +215,7 @@
                                                                                                                 </a>
                                                                                                             </li>
                                                                                                             <% } %>
-
+                                        </ul>
                                     </nav>
                                 </div>
                             </div>
@@ -229,11 +232,13 @@
                 $(document).ready(function () {
                     $(".changeTT").change(function () {
                         const id = $(this).attr('data-id');
+                        const trangthaiduyet = $(this).find("select[name='trangthaiduyet']").val();
                         $.ajax({
                             url: 'http://localhost:8000/post-browsebook',
                             method: "post",
                             data: {
-                                id
+                                id,
+                                trangthaiduyet
                             },
                             dataType: "JSON",
                             success: function () {

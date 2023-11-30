@@ -30,9 +30,10 @@ let initApiRouter = (app) => {
     router.post('/api-userLogin', userController.userApiLogin);
 
     // api đăng kí user
-    router.post('/api-userRegister', userController.Apiregister)
+    router.post('/api-userRegister', userController.Apiregister);
 
-
+    // api xác nhận trạng thái
+    router.patch('/api/accountVerification/:id', userController.accountVerification);
     //sach
 
     //api thêm sách
@@ -40,8 +41,6 @@ let initApiRouter = (app) => {
 
     //api chi tiết sách trang user và admin
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
-
-    router.get('/get-api-bookAdmin', bookController.apilistBook)
 
     //cập nhật sách(có id, hinh, tinhtrang, gia, tiencoc )
     router.patch('/api/book/update', upload.single('hinh'), bookController.updateBook)
@@ -57,7 +56,7 @@ let initApiRouter = (app) => {
     router.patch('/api/update-user', userController.apiUpdateUser)
 
     //api lấy sách theo tác giả
-    router.get('/api/get-book-authur', authorController.apiGetBookAuthur)
+    router.post('/api/get-book-authur', authorController.apiGetBookAuthur)
 
 
 
@@ -67,7 +66,7 @@ let initApiRouter = (app) => {
     // có các thuộc tính(users_id, chutiem_id,tongtien,sach_id)
     router.post('/post-api-rental', rentalController.postRental)
 
-    //api cập nhật trạng thái phiếu thuê thành xác nhận cho thuê
+    //api cập nhật trạng thái phiếu thuê thành xác nhận cho thuê(có id của phiếu thuê)
     router.patch('/api/confirmRental', rentalController.confirmRental)
 
     // api xác nhận nhận hàng có các thuộc tính(id , ngày thuê)

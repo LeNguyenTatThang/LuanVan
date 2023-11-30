@@ -79,6 +79,11 @@
                                                         <td scope="row">
                                                             <%= data.loai===0 ? "Admin" : "User" %>
                                                         </td>
+                                                        <td class="text-right">
+                                                            <a class="btn btn-sm btn-success"
+                                                                href="/detailUser?id=<%= data.id %>">Chi
+                                                                tiết</a>
+                                                        </td>
                                                     </tr>
                                                     <% }) %>
                                             </tbody>

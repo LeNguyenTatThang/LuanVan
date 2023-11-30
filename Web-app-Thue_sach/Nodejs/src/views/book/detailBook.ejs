@@ -25,6 +25,9 @@
                                             <div>
                                                 <input type="hidden" name="id" value="<%= data.id %>" />
                                             </div>
+                                            <div>
+                                                <input type="hidden" name="trangthaiduyet" value="duocduyet" />
+                                            </div>
                                             <div class="form-group">
                                                 <img id="change-image" width="300" height="300"
                                                     src="/img/<%= data.hinh %>" alt="">
@@ -36,13 +39,15 @@
                                                 </span>
                                             </div>
                                             <div class="form-group">
+                                                <label for="">Trạng thái: </label>
+                                                <span for="">
+                                                    <%= data.tinhtrang===1 ? "Sách Mới" : "Sách Cũ" %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="">Tình trạng: </label>
                                                 <span for="">
-                                                    <% if(data.tinhtrang===1 ){%>
-                                                        Sách Mới
-                                                        <% }else{ %>
-                                                            Sách Cũ
-                                                            <% } %>
+                                                    <%= data.trangthai===1 ? "Hiện" : "Ẩn" %>
                                                 </span>
                                             </div>
                                             <div class="form-group">
@@ -106,14 +111,23 @@
                                         <div>
                                             <input type="hidden" name="id" value="<%= data.id %>" />
                                         </div>
-                                        <label for="">
-                                            <%if(data.trangthai==0){%>
+                                        <%if(data.trangthaiduyet==="choduyet"){%>
+                                            <div>
+                                                <input type="hidden" name="trangthaiduyet" value="khongduyet" />
+                                            </div>
+                                            <label for="">
                                                 Lý do không duyệt
-                                                <% } else {%>
+                                            </label>
+                                            <% } else {%>
+                                                <div>
+                                                    <input type="hidden" name="trangthaiduyet" value="bicam" />
+                                                </div>
+                                                <label for="">
                                                     Lý do bị cấm
-                                                    <% } %>
-                                        </label>
-                                        <textarea name="noidung" id="summernote" cols="30" rows="10"></textarea>
+                                                </label>
+                                                <% } %>
+                                                    <textarea name="noidung" id="summernote" cols="30"
+                                                        rows="10"></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
                                         lại</button>

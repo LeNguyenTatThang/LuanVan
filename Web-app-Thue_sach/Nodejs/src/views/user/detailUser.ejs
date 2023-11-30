@@ -1,0 +1,81 @@
+<%- include('../page/header')%>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".btnDelete").click(function () {
+                const id = $(this).attr('data-id');
+                if (confirm(`Bạn có muốn xóa thể loại có id= ${id}`)) {
+                    return true
+
+                } else {
+                    return false
+                }
+            })
+        })
+    </script>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Thông tin cá nhân
+                </h1>
+
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-4">
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="img-user img-fluid img-circle" src="img/<%= data.hinh %>"
+                                        alt="User profile picture">
+                                </div>
+
+                                <h3 class="profile-username text-center">
+                                    <%= data.ten %>
+                                </h3>
+
+                                <p class="text-muted text-center">Software Engineer</p>
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>email: </b> <a class="float-right">
+                                            <%= data.email %>
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Loại: </b> <a class="float-right">
+                                            <% if(data.loai==0){%>
+                                                Admin
+                                                <%}%>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div>
+                                    <a href="/edit-Account?id=<%= data.id %>" class="btn btn-primary">Cập
+                                        nhật thông tin</a>
+                                    <a name="" id="" class="btn btn-default float-right" href="/user"><i
+                                            class="fa fa-arrow-left" aria-hidden="true"></i> Quay Lại</a>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+
+                    <!-- /.box-footer-->
+                </div>
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <%- include('../page/footer')%>
+            <!-- /.content-wrapper -->
+            </body>
+
+            </html>
