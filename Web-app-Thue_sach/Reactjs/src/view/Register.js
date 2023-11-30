@@ -9,32 +9,46 @@ export default function Register() {
     const [ten, setTen] = useState();
     const navigate = useNavigate()
     const [confirmPassword, setConfirmPasswrod] = useState();
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setAgreedToTerms(!agreedToTerms);
+    };
     const handleRegister = async () => {
         console.log(ten, email, matkhau)
-        if (!ten || !email || !matkhau || !confirmPassword) {
+        if (agreedToTerms) {
+            if (!ten || !email || !matkhau || !confirmPassword) {
+                iziToast.error({
+                    title: 'Lỗi!!',
+                    position: 'topRight',
+                    message: 'Bạn không được để trống'
+                });
+            }
+            if (matkhau !== confirmPassword) {
+                iziToast.error({
+                    title: 'Lỗi!!',
+                    position: 'topRight',
+                    message: 'Mật khẩu không trùng khớp'
+                });
+            }
+            let res = await apiRegister(ten, email, matkhau);
+            console.log(res)
+            if (res && res.errcode === 200) {
+                iziToast.success({
+                    title: 'Hi',
+                    position: 'topRight',
+                    message: 'Đăng ký thành công, vui lòng đăng nhập lại'
+                });
+                navigate('/signin');
+            }
+        } else {
             iziToast.error({
                 title: 'Lỗi!!',
                 position: 'topRight',
-                message: 'Bạn không được để trống'
+                message: 'Bạn có đồng ý với điều khoản, chính sách của chúng tôi'
             });
         }
-        if (matkhau !== confirmPassword) {
-            iziToast.error({
-                title: 'Lỗi!!',
-                position: 'topRight',
-                message: 'Mật khẩu không trùng khớp'
-            });
-        }
-        let res = await apiRegister(ten, email, matkhau);
-        console.log(res)
-        if (res && res.errcode === 0) {
-            iziToast.success({
-                title: 'Hi',
-                position: 'topRight',
-                message: 'Đăng ký thành công, vui lòng đăng nhập lại'
-            });
-            navigate('/signin');
-        }
+
     }
     return (
         <>
@@ -75,24 +89,39 @@ export default function Register() {
                                 </div>
                                 <div>
                                     <label for="confirm-password" className="block mb-2 text-sm font-medium text-gray-900 ">Nhập lại mật khẩu</label>
-                                    <input type="confirm-password" name="confirmPassword" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                    <input type="password" name="confirmPassword" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                         required=""
                                         value={confirmPassword}
                                         onChange={(event) => { setConfirmPasswrod(event.target.value) }} />
                                 </div>
-                                <div className="flex items-start">
-                                    <div className="flex items-center h-5">
-                                        <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300" required="" />
-                                    </div>
-                                    <div className="ml-3 text-sm flex">
-                                        <label for="terms" className="font-light text-gray-500 flex ">Tôi đồng ý &nbsp;<div className="font-medium text-primary-600 hover:underline" href="#">điều khoản và chính sách</div></label>
-                                    </div>
+                                <div className="ml-3 text-sm flex">
+                                    <label htmlFor="terms" className="font-light text-gray-500 flex">
+                                        <input
+                                            type="checkbox"
+                                            id="terms"
+                                            checked={agreedToTerms}
+                                            onChange={handleCheckboxChange}
+                                            className="mr-2"
+                                        />
+                                        Tôi đồng ý &nbsp;
+                                        <div className="font-medium text-primary-600 hover:underline" href="#">
+                                            điều khoản và chính sách
+                                        </div>
+                                    </label>
                                 </div>
-                                <button type="submit" className="w-full text-black bg-stone-200 hover:bg-red-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center "
-                                    onClick={() => handleRegister()}
-                                >Tạo tài khoản</button>
-                                <p className="text-sm font-light text-gray-500 ">
-                                    Bạn đã có tài khoản?<Link to='/login'> <div className="font-medium text-primary-600 hover:underline ">Đăng nhập tại đây</div></Link>
+                                <button
+                                    type="button"
+                                    className="w-full text-black bg-stone-200 hover:bg-red-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center"
+                                    onClick={handleRegister}
+                                    disabled={!agreedToTerms}
+                                >
+                                    Tạo tài khoản
+                                </button>
+                                <p className="text-sm font-light text-gray-500">
+                                    Bạn đã có tài khoản?
+                                    <Link to="/login">
+                                        <div className="font-medium text-primary-600 hover:underline">Đăng nhập tại đây</div>
+                                    </Link>
                                 </p>
                             </div>
                         </div>

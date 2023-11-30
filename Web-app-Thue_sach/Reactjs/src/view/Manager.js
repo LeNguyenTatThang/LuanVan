@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { apiCompleted, apiConfirmRentOne, apiConfirmRentThree, apiConfirmRentTwo, apiConfirmRental, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
 import iziToast from 'izitoast';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 //hiển thị ngày được chuyển đổi từ chuỗi ngày-giờ 
 
 const Manager = () => {
@@ -79,8 +80,8 @@ const Manager = () => {
 
     //button xác nhận lấy hàng của người thuê
     const [receivedItems, setReceivedItems] = useState([]);
-    const handleReceiveClick = async (id, index) => {
-        let confirmData = await apiConfirmRentOne(id);
+    const handleReceiveClick = async (id, ngaythue, index) => {
+        let confirmData = await apiConfirmRentOne(id, ngaythue);
         if (confirmData && confirmData.status === 200) {
             setReceivedItems([...receivedItems, index]);
             iziToast.success({
@@ -174,6 +175,8 @@ const Manager = () => {
             });
         }
     };
+
+    const navigate = useNavigate();
     useEffect(() => {
         apiRent();
         apiRentOne();
@@ -183,7 +186,10 @@ const Manager = () => {
         callRentOrderTwo();
         callRentOrderThree();
         callOrderThree();
-    }, [])
+        if (!userData.isLogin) {
+            navigate('/');
+        }
+    }, [userData])
 
 
 
@@ -349,6 +355,7 @@ const Manager = () => {
                                             <th className="py-2 px-4 border-b">STT</th>
                                             <th className="py-2 px-4 border-b">Tên sách</th>
                                             <th className="py-2 px-4 border-b">Chủ tiệm</th>
+                                            <th className="py-2 px-4 border-b">Số ngày thuê</th>
                                             <th className="py-2 px-4 border-b">Trạng thái</th>
                                         </tr>
                                     </thead>
@@ -360,6 +367,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
                                                     <td className="py-2 px-4 border-b">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b">{item.ngaythue}</td>
                                                     <td className="py-2 px-4 border-b">Đang chờ duyệt</td>
                                                 </tr>
                                             ))}
@@ -378,6 +386,7 @@ const Manager = () => {
                                             <th className="py-2 px-4 border-b">STT</th>
                                             <th className="py-2 px-4 border-b">Tên sách</th>
                                             <th className="py-2 px-4 border-b">Chủ tiệm</th>
+                                            <th className="py-2 px-4 border-b">Số ngày thuê</th>
                                             <th className="py-2 px-4 border-b">Trạng thái</th>
                                         </tr>
                                     </thead>
@@ -389,6 +398,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
                                                     <td className="py-2 px-4 border-b">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b">{item.ngaythue} ngày</td>
                                                     <td className="py-2 px-4 border-b">
 
                                                         {receivedItems.includes(index) ? (
@@ -396,7 +406,7 @@ const Manager = () => {
                                                         ) : (
                                                             <button
                                                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                                                                onClick={() => handleReceiveClick(item.id, index)}
+                                                                onClick={() => handleReceiveClick(item.id, item.ngaythue, index)}
                                                             >
                                                                 Nhận hàng
                                                             </button>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { REMOVE_FROM_CART } from '../app/userCard';
+import { REMOVE_FROM_CART, REMOVE_ALL } from '../app/userCard';
 import { useNavigate } from 'react-router-dom';
 import Avt from '../avatar-authur.png';
 import axios from 'axios';
@@ -139,7 +139,7 @@ export default function CustomerCard() {
     let ngaythue = selectedValue
     console.log(ngaythue)
 
-    const onClickXuatHoaDon = async () => {
+    const onClickXuatHoaDon = async (_value) => {
         if (diachi === "") {
             iziToast.error({
                 title: "Thiếu thông tin",
@@ -154,6 +154,7 @@ export default function CustomerCard() {
                     position: "topRight",
                     message: "Đã xác nhận đơn hàng, hãy chờ phản hồi từ chủ shop"
                 });
+                dispatch(REMOVE_ALL(_value));
             }
             else {
                 iziToast.error({
@@ -165,6 +166,11 @@ export default function CustomerCard() {
         }
 
     }
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setAgreedToTerms(!agreedToTerms);
+    };
     //console.log(">>check address: ", result)
     return (
         <>
@@ -220,10 +226,26 @@ export default function CustomerCard() {
                         <strong>Lưu ý:</strong><span className='text-amber-500'> &nbsp;Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (người đăng)</span>
                     </div>
                     <br />
+                    <div className="ml-3 text-sm flex">
+                        <label htmlFor="terms" className="font-light text-gray-500 flex">
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                checked={agreedToTerms}
+                                onChange={handleCheckboxChange}
+                                className="mr-2"
+                            />
+                            Tôi đồng ý &nbsp;
+                            <div className="font-medium text-primary-600 hover:underline" href="#">
+                                điều khoản và chính sách
+                            </div>
+                        </label>
+                    </div>
                     <div
                         onClick={onClickXuatHoaDon}
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
                         style={{ textAlign: 'center' }}
+                        disabled={!agreedToTerms}
                     >
                         Xác nhận
                     </div>
