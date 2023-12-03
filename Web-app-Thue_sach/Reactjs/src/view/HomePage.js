@@ -36,10 +36,10 @@ export default function HomePage() {
                 onSlideChange={() => console.log('slide change')}
                 onSwiper={(swiper) => console.log(swiper)}
             >
-                <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
-                <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
-                <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
-                <SwiperSlide> <img src={image} className="w-full h-80" /></SwiperSlide>
+                <SwiperSlide> <img src='https://images2.alphacoders.com/261/26102.jpg' className="w-full h-80 object-cover" /></SwiperSlide>
+                <SwiperSlide> <img src='https://wallpapers.com/images/hd/books-and-diary-ebgaadbddzeidaaz.jpg' className="w-full h-80 object-cover" /></SwiperSlide>
+                <SwiperSlide> <img src='https://wallpapers.com/images/hd/book-background-g59mnlmh8pq7359e.jpg' className="w-full h-80 object-cover" /></SwiperSlide>
+                <SwiperSlide> <img src='https://wallpapersmug.com/download/3840x2160/f12332/books.jpg' className="w-full h-80 object-cover" /></SwiperSlide>
             </Swiper>
 
             <div className="max-w-screen-xl mx-auto p-2 sm:p-10 md:p-4">

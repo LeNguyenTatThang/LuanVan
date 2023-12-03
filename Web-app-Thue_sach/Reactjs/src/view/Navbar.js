@@ -46,6 +46,16 @@ export default function Navbar() {
                             </div></Link>
                         </li>
                         <li>
+                            <Link to="/products"> <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
+
+                                <svg class="w-5 h-5 text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 23 23">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z" />
+                                </svg>
+                                <span className="flex-1 ml-3 whitespace-nowrap">Bài viết</span>
+
+                            </div></Link>
+                        </li>
+                        <li>
                             <Link to="/search"><div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
                                 <svg className="flex-shrink-0 w-5 h-5 transition duration-75  text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -133,12 +143,13 @@ export default function Navbar() {
                                 </>
                                 }
                             </>
-
                         </li>
-
                     </ul>
+
                 </div>
+
             </aside >
+
         </>
     )
 }

@@ -15,7 +15,6 @@ export default function Register() {
         setAgreedToTerms(!agreedToTerms);
     };
     const handleRegister = async () => {
-        console.log(ten, email, matkhau)
         if (agreedToTerms) {
             if (!ten || !email || !matkhau || !confirmPassword) {
                 iziToast.error({
@@ -32,14 +31,20 @@ export default function Register() {
                 });
             }
             let res = await apiRegister(ten, email, matkhau);
-            console.log(res)
-            if (res && res.errcode === 200) {
+
+            if (res && res.status === 200) {
                 iziToast.success({
                     title: 'Hi',
                     position: 'topRight',
-                    message: 'Đăng ký thành công, vui lòng đăng nhập lại'
+                    message: 'Đăng ký thành công, vui lòng xác nhận email'
                 });
-                navigate('/signin');
+                setTimeout(navigate('/signin'), 2000);
+            } else {
+                iziToast.warning({
+                    title: 'Lỗi',
+                    position: 'center',
+                    message: res.data.message,
+                });
             }
         } else {
             iziToast.error({
