@@ -1,0 +1,240 @@
+<%- include('../page/header')%>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".btnDelete").click(function () {
+                const id = $(this).attr('data-id');
+                if (confirm(`Bạn có muốn xóa bài viết có id= ${id}`)) {
+                    return true
+
+                } else {
+                    return false
+                }
+            })
+        })
+    </script>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Danh sách bài viết
+                </h1>
+
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div>
+                                    <form class="form-inline">
+                                        <div class="col-12">
+                                            <input value="<%= name %>" type="text" name="name" id=""
+                                                class="form-control" placeholder="" aria-describedby="helpId">
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"
+                                                    aria-hidden="true"></i></button>
+                                            <a href="/addBlogPage" class="btn btn-success float-right"><i
+                                                    class="fa fa-plus" aria-hidden="true"></i>Thêm bài viết</a>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-truncate">STT</th>
+                                            <th class="text-truncate">Tên</th>
+                                            <th class="text-truncate">Nội dung</th>
+                                            <th class="text-truncate">Trạng thái</th>
+                                            <th class="text-truncate">Thể</th>
+                                            <th class="text-truncate text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <%if(errcode==1) {%>
+                                        <tbody>
+                                            <div>
+                                                <td scope="row">
+                                                    <%=message %>
+                                                </td>
+                                            </div>
+                                        </tbody>
+                                        <% }else { %>
+                                            <tbody>
+                                                <% data.map(function(data, index){ %>
+                                                    <tr>
+                                                        <td scope="row">
+                                                            <%= index + 1 %>
+                                                        </td>
+                                                        <td scope="row" class="col-lg-4">
+                                                            <div class="custom-column">
+                                                                <%= data.ten %>
+                                                            </div>
+                                                        </td>
+                                                        <td scope="row" class="col-lg-4">
+                                                            <div class="custom-column">
+                                                                <%= data.noidung %>
+                                                            </div>
+                                                        </td>
+
+
+                                                        <td scope="row">
+                                                            <%= data.trangthai===0 ? "Ẩn" : "Hiện" %>
+                                                        </td>
+                                                        <td scope="row">
+                                                            <%= data.the %>
+                                                        </td>
+                                                        <td class="col-2 text-right text-nowrap">
+                                                            <a class="btn btn-sm btn-danger btnDelete"
+                                                                data-id="<%= data.id %>"
+                                                                href="/deleteBlog/<%= data.id %>"><i
+                                                                    class="fa fa-trash"></i>
+                                                                Xóa</a>
+                                                            <a class="btn btn-sm btn-primary"
+                                                                href="/detaiBlog?id=<%= data.id %>"><i
+                                                                    class="fa fa-edit"></i> Sửa</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                            <% } %>
+                                </table>
+                                <div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination">
+                                            <%if(name) {%>
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="/blog?page=<%= page > 1 ? page - 1 : 1%>&name=<%= name%>"
+                                                        aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+                                                <%for(let i=1; i<=totalPage; i++){ %>
+                                                    <% if (i===page) { %>
+                                                        <li class="page-item active">
+                                                            <span class="page-link">
+                                                                <%= i %>
+                                                            </span>
+                                                        </li>
+                                                        <% } else if (i===1 || i===totalPage || (i>= page -
+                                                            2 && i <= page + 2)) { %>
+                                                                <li class="page-item">
+                                                                    <a class="page-link"
+                                                                        href="/blog?page=<%= i %>&name=<%= name%>">
+                                                                        <%= i %>
+                                                                    </a>
+                                                                </li>
+                                                                <% } else if (i===page - 3 || i===page + 3) { %>
+                                                                    <li class="page-item disabled">
+                                                                        <span class="page-link">...</span>
+                                                                    </li>
+                                                                    <% } %>
+                                                                        <%} %>
+                                                                            <li class="page-item">
+                                                                                <a class="page-link"
+                                                                                    href="/blog?page=<%= page < totalPage ? page + 1 : totalPage%>&name=<%= name%>"
+                                                                                    aria-label="Next">
+                                                                                    <span
+                                                                                        aria-hidden="true">&raquo;</span>
+                                                                                    <span class="sr-only">Next</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <%}else {%>
+                                                                                <li class="page-item">
+                                                                                    <a class="page-link"
+                                                                                        href="/blog?page=<%= page > 1 ? page - 1 : 1%>"
+                                                                                        aria-label="Previous">
+                                                                                        <span
+                                                                                            aria-hidden="true">&laquo;</span>
+                                                                                        <span
+                                                                                            class="sr-only">Previous</span>
+                                                                                    </a>
+                                                                                </li>
+                                                                                <% for (let i=1; i <=totalPage; i++) {
+                                                                                    %>
+                                                                                    <% if (i===page) { %>
+                                                                                        <li class="page-item active">
+                                                                                            <span class="page-link">
+                                                                                                <%= i %>
+                                                                                            </span>
+                                                                                        </li>
+                                                                                        <% } else if (i===1 ||
+                                                                                            i===totalPage || (i>=
+                                                                                            page -
+                                                                                            2 && i <= page + 2)) { %>
+                                                                                                <li class="page-item">
+                                                                                                    <a class="page-link"
+                                                                                                        href="/blog?page=<%= i %>">
+                                                                                                        <%= i %>
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                                <% } else if (i===page -
+                                                                                                    3 || i===page + 3) {
+                                                                                                    %>
+                                                                                                    <li
+                                                                                                        class="page-item disabled">
+                                                                                                        <span
+                                                                                                            class="page-link">...</span>
+                                                                                                    </li>
+                                                                                                    <% } %>
+                                                                                                        <% } %>
+
+                                                                                                            <li
+                                                                                                                class="page-item">
+                                                                                                                <a class="page-link"
+                                                                                                                    href="/blog?page=<%= page < totalPage ? page + 1 : totalPage%>"
+                                                                                                                    aria-label="Next">
+                                                                                                                    <span
+                                                                                                                        aria-hidden="true">&raquo;</span>
+                                                                                                                    <span
+                                                                                                                        class="sr-only">Next</span>
+                                                                                                                </a>
+                                                                                                            </li>
+                                                                                                            <% } %>
+
+                                    </nav>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- /.box-body -->
+
+                    <!-- /.box-footer-->
+                </div>
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <% let arrMsg=[] %>
+            <% msgBlog.forEach(function(msg){ %>
+                <% arrMsg.push(msg) %>
+                    <% })%>
+                        <% let arrErr=[] %>
+                            <% errBlog.forEach(function(err){ %>
+                                <% arrErr.push(err) %>
+                                    <% })%>
+                                        <%- include('../page/footer')%>
+                                            <!-- /.content-wrapper -->
+                                            <script>
+                                                $(document).ready(function () {
+                                                    let msg = '<%= arrMsg%>';
+                                                    let err = '<%= arrErr%>';
+                                                    if (msg != '') {
+                                                        toastr.success(msg, { timeOut: 5000 })
+                                                    }
+                                                    if (err != '') {
+                                                        toastr.error(err, { timeOut: 5000 })
+                                                    }
+                                                })
+                                            </script>
+
+                                            </body>
+
+                                            </html>

@@ -1,6 +1,6 @@
 import rental from '../models/rental.model'
 const schedule = require('node-schedule');
-
+const nodemailer = require('nodemailer');
 //api tạo phiếu thuê
 const postRental = async (req, res) => {
     try {
@@ -33,6 +33,8 @@ const confirmRental = async (req, res) => {
         let rentalData = req.body
         let data = await rental.upStatus1(rentalData)
         if (data.errcode === 0) {
+            let dataMail = await rental.getRenalByIdRental(rentalData.id)
+            await sendConfirmationEmail(dataMail);
             return res.status(200).json({
                 status: 200,
                 message: data.message
@@ -51,6 +53,35 @@ const confirmRental = async (req, res) => {
         })
     }
 }
+
+const sendConfirmationEmail = async (data) => {
+    const viewsPath = path.join(__dirname, '../views');
+    const sourcePath = path.join(viewsPath, 'email/emailRental.ejs');
+    const source = fs.readFileSync(sourcePath, 'utf8');
+    const template = ejs.compile(source);
+    const html = template({ email: email, href: url });
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: '2023luanvan@gmail.com',
+            pass: 'jsnn awej cdqo grmq'
+        }
+    });
+    // Soạn email
+    const mailOptions = {
+        from: '2023luanvan@gmail.com',
+        to: data.email,
+        subject: 'Xác nhận đăng ký',
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully!');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+}
+
 
 //xác nhận nhận hàng 
 const received = async (req, res) => {
@@ -319,6 +350,9 @@ const rentalOrders1 = async (req, res) => {
     }
 }
 
+
+
+
 //api danh sách đơn hàng cho thuê đang thuê
 const rentalOrders2 = async (req, res) => {
     try {
@@ -400,6 +434,18 @@ const rentalOrders4 = async (req, res) => {
     }
 }
 
+const testthuhtmlemail = async (req, res) => {
+    let rentalData = req.body
+    console.log('ggggg')
+    let dataMail = await rental.getRenalByIdRental(15)
+    console.log(dataMail)
+    return res.render('email/emailRental.ejs', {
+        data: dataMail.data,
+        books: dataMail.books
+    })
+
+}
+
 module.exports = {
     postRental,
     confirmRental,
@@ -415,6 +461,7 @@ module.exports = {
     rentalOrders1,
     rentalOrders2,
     rentalOrders3,
-    rentalOrders4
+    rentalOrders4,
+    testthuhtmlemail
 
 }

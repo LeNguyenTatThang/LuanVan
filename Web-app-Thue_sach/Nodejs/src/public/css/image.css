@@ -46,3 +46,11 @@
     height: 240px;
     width: 200px;
 }
+
+.custom-column {
+    max-width: 600px;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

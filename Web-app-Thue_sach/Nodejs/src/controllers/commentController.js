@@ -53,7 +53,35 @@ const createComment = async (req, res) => {
         })
     }
 }
+
+
+//cập nhật trạng thái bình luận
+const updateCpmmentStatus = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let trangthai = req.body.trangthai
+        console.log(trangthai, id)
+        let data = await comment.updatestatus(id, trangthai);
+        console.log(data)
+        if (data.errcode == 0) {
+            return res.json({
+                message: data.message
+            })
+        } else {
+            return res.json({
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.json({
+            message: 'lỗi Server'
+        })
+    }
+}
+
 module.exports = {
     createComment,
-    listComment
+    listComment,
+    updateCpmmentStatus
 }

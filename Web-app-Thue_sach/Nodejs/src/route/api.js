@@ -34,12 +34,14 @@ let initApiRouter = (app) => {
 
     // api xác nhận trạng thái
     router.patch('/api/accountVerification/:id', userController.accountVerification);
+
+
     //sach
 
     //api thêm sách
     router.post('/post-api-book', upload.single('hinh'), bookController.postBook)
 
-    //api chi tiết sách trang user và admin
+    //api chi tiết sách trang user
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
 
     //cập nhật sách(có id, hinh, tinhtrang, gia, tiencoc )
@@ -127,6 +129,8 @@ let initApiRouter = (app) => {
 
     // hiện nội dung chương
     router.get('/api/chapter/detailchapter', chapterController.ContentChapter)
+
+
 
     return app.use("/", router)
 }

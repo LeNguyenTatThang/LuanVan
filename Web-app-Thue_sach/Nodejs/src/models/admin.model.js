@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 const salt = bcrypt.genSaltSync(10);
-// import pool from "../config/connectDB";
 var pool = require('../config/connectDB')
 const admin = function () { }
 
@@ -13,7 +12,8 @@ admin.handleAdminLogin = (email, matkhau) => {
                 const [rows, fields] = await pool.execute('SELECT id, ten, email,matkhau, loai FROM users where email= ?', [email])
                 let admin = rows[0];
                 if (admin) {
-                    if (admin.matkhau == matkhau) {
+                    let checkmk = await bcrypt.compareSync(matkhau, admin.matkhau);
+                    if (checkmk) {
                         if (admin.loai === 0) {
                             adminData.errcode = 0;
                             adminData.errMessage = 'đăng nhập thành công';

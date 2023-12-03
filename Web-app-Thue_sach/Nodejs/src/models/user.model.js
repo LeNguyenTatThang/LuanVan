@@ -9,26 +9,30 @@ user.handleUserLogin = (email, matkhau) => {
     return new Promise(async (resolve, reject) => {
         try {
             let userData = {};
-            console.log(email);
-            console.log(matkhau);
             let isCheck = await user.checkEmail(email);
             if (isCheck) {
-                const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau FROM users where email= ?', [email])
-                let user = rows[0];
-                if (user) {
-                    let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
-                    if (checkmk) {
-                        userData.errcode = 0;
-                        userData.errMessage = 'đăng nhập thành công';
-                        delete user.matkhau;
-                        userData.user = user;
-                    } else {
-                        userData.errcode = 3;
-                        userData.errMessage = "sai mật khẩu";
-                    }
+                let check = await user.checkVerification(email)
+                if (check) {
+                    userData.errcode = 6;
+                    userData.errMessage = "email này chưa xác thực";
                 } else {
-                    adminData.errcode = 4;
-                    adminData.errMessage = "sai email";
+                    const [rows, fields] = await pool.execute('SELECT id,ten,hinh, email,matkhau FROM users where email= ?', [email])
+                    let user = rows[0];
+                    if (user) {
+                        let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
+                        if (checkmk) {
+                            userData.errcode = 0;
+                            userData.errMessage = 'đăng nhập thành công';
+                            delete user.matkhau;
+                            userData.user = user;
+                        } else {
+                            userData.errcode = 3;
+                            userData.errMessage = "sai mật khẩu";
+                        }
+                    } else {
+                        adminData.errcode = 4;
+                        adminData.errMessage = "sai email";
+                    }
                 }
             } else {
                 userData.errcode = 5;
@@ -61,6 +65,41 @@ user.checkEmail = (email) => {
     });
 }
 
+user.checkNameUssers = (ten) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let ten1 = ten.trim();
+            let ten2 = ten1.replace(/\s+/g, ' ');
+            const [rows, fields] = await pool.execute('SELECT * FROM users where ten= ?', [ten2])
+            let users = rows[0];
+            if (users) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
+user.checkVerification = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT * FROM users where email= ? AND xacthuctaikhoan = 0', [email])
+            let admin = rows[0];
+            if (admin) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
 //xac that tai khoan
 user.updateVerification = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -98,6 +137,57 @@ user.updateVerification = (id) => {
     });
 }
 
+//cập nhật trạng thái cấm binh luận và bỏ cấm
+user.updatedisableCommentsUsers = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("du lieu", data)
+            let userModel = {}
+            let sql = "UPDATE users SET cambl=? WHERE id=?"
+            const [result, fields] = await pool.execute(sql, [data.cambl, data.id])
+            if (result) {
+                userModel = {
+                    errcode: 0,
+                    message: "thành công"
+                }
+            } else {
+                userModel = {
+                    errcode: 1,
+                    message: "thất bại"
+                }
+            }
+            resolve(userModel)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+//cấm người dùng đăng sách và bỏ cấm
+user.DisableBook = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userModel = {}
+            let sql = "UPDATE users SET camdang=? WHERE id=?"
+            const [result, fields] = await pool.execute(sql, [data.camdang, data.id])
+            if (result) {
+                userModel = {
+                    errcode: 0,
+                    message: "thành công"
+                }
+            } else {
+                userModel = {
+                    errcode: 1,
+                    message: "thất bại"
+                }
+            }
+            resolve(userModel)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 // ma hoa mat khau
 let hashUsePassword = (matkhau) => {
     return new Promise(async (resolve, reject) => {
@@ -120,7 +210,7 @@ user.registerUser = async (users) => {
             console.log(matkhau)
             let loai = 1;
             const [result] = await pool.execute('insert into users(ten, email, matkhau, loai) values (?, ?, ?, ?)',
-                [users.ten, users.email, matkhau, loai, hoatdong]);
+                [users.ten, users.email, matkhau, loai]);
             let id_users = result.insertId
             console.log('mã', id_users)
             userData = {
@@ -141,12 +231,11 @@ user.getAll = (page, name) => {
         try {
             let data = {};
             let limit = '5';
-            let sql = "SELECT id, hinh,ten,email,loai FROM users";
-            let sqlTotal = "SELECT COUNT(*) as total FROM users"
+            let sql = "SELECT id, hinh,ten,email,loai FROM users WHERE loai =1";
+            let sqlTotal = "SELECT COUNT(*) as total FROM users WHERE loai =1"
             if (name) {
-                sqlTotal += " WHERE ten LIKE '%" + name + "%' "
+                sqlTotal += " AND ten LIKE '%" + name + "%'"
             }
-
             const [counts] = await pool.execute(sqlTotal)
             let totalRow = counts[0].total
             let totalPage = Math.ceil(totalRow / limit)
@@ -155,7 +244,7 @@ user.getAll = (page, name) => {
             let start = (page - 1) * limit;
             start = start > 0 ? start : 0;
             if (name) {
-                sql += " WHERE ten LIKE '%" + name + "%' "
+                sql += " AND ten LIKE '%" + name + "%'"
             }
             const [rows, fields] = await pool.execute(sql + ' ' + 'order by id ASC LIMIT ' + start + ',' + limit)
             if (rows.length === 0) {
@@ -184,7 +273,7 @@ user.getId = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let usersModel = {}
-            let sql = "SELECT ten, hinh, email, cambl, camdang, loai, diachi, sdt  FROM users WHERE id =?"
+            let sql = "SELECT id, ten, hinh, email, cambl, camdang, loai, diachi, sdt  FROM users WHERE id =?"
             const [result] = await pool.execute(sql, [id])
             let dataUser = result[0]
             if (dataUser) {

@@ -134,6 +134,7 @@ const updateAuthor = async (req, res, next) => {
             return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
         }
     } catch (error) {
+        console.error(error)
         req.flash('errAuthor', 'lỗi Server')
         return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
     }

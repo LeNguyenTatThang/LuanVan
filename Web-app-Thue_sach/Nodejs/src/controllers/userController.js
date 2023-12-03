@@ -34,11 +34,11 @@ const getUser = async (req, res) => {
 const detailUser = async (req, res) => {
     try {
         let id = req.query.id
-        console.log('id', id)
         let data = await user.getId(id)
-        console.log('dữ liệu', data)
         if (data.errcode === 0) {
             return res.render('user/detailUser.ejs', {
+                msgUsers: req.flash('msgUsers'),
+                errUsers: req.flash('errUsers'),
                 data: data.data
             })
         } else {
@@ -49,9 +49,42 @@ const detailUser = async (req, res) => {
     }
 }
 
+const disableCommentsUsers = async (req, res) => {
+    try {
+        let data = req.body
+        let dataUsers = await user.updatedisableCommentsUsers(data)
+        if (dataUsers.errcode === 0) {
+            req.flash('msgUsers', dataUsers.message)
+            return res.redirect(`/detailUser?id=${data.id}`)
+        } else {
+            req.flash('errUsers', dataUsers.message)
+            return res.redirect(`/detailUser?id=${data.id}`)
+        }
+    } catch (error) {
+        console.error(error)
+        req.flash('errUsers', 'lỗi Server')
+        return res.redirect(`/detailUser?id=${data.id}`)
+    }
+}
 
+const DisableBookPosting = async (req, res) => {
 
-
+    try {
+        let data = req.body
+        let dataUsers = await user.DisableBook(data)
+        if (dataUsers.errcode === 0) {
+            req.flash('msgUsers', dataUsers.message)
+            return res.redirect(`/detailUser?id=${data.id}`)
+        } else {
+            req.flash('errUsers', dataUsers.message)
+            return res.redirect(`/detailUser?id=${data.id}`)
+        }
+    } catch (error) {
+        console.error(error)
+        req.flash('errUsers', 'lỗi Server')
+        return res.redirect(`/detailUser?id=${data.id}`)
+    }
+}
 
 //api
 
@@ -91,11 +124,25 @@ const Apiregister = async (req, res) => {
                 message: 'email đã tồn tại'
             })
         }
+        let checkName = await user.checkNameUssers(data.ten)
+        if (checkName) {
+            return res.status(402).json({
+                status: 402,
+                message: 'tên đã tồn tại'
+            })
+        }
+        let checkPassword = await isValidPassword(data.matkhau)
+        if (!checkPassword) {
+            return res.status(402).json({
+                status: 403,
+                message: 'Mật khẩu phải có ít nhất 6 chữ số và không có khoảng trắng'
+            })
+        }
+
         let userData = await user.registerUser(data);
-        console.log("dữ liệu", userData)
-        const url = `http://localhost:3000/create-account-ok/${userData.id_users}`;
-        await sendConfirmationEmail(data.email, url);
         if (userData.errcode == 0) {
+            const url = `http://localhost:3000/create-account-ok/${userData.id_users}`;
+            await sendConfirmationEmail(data.email, url);
             return res.status(200).json({
                 status: 200,
                 message: userData.message
@@ -108,6 +155,12 @@ const Apiregister = async (req, res) => {
             message: 'lỗi Server'
         })
     }
+}
+
+//kiểm tra mk có đủ sáu chữ số ko
+function isValidPassword(password) {
+    const regex = /^\d{6,}$/;
+    return regex.test(password) && !/\s/.test(password);
 }
 
 //xác nhận tài khoản
@@ -139,11 +192,10 @@ const accountVerification = async (req, res) => {
 //gửi mail
 const sendConfirmationEmail = async (email, url) => {
     const viewsPath = path.join(__dirname, '../views');
-    const sourcePath = path.join(viewsPath, 'emailTemplate.ejs');
+    const sourcePath = path.join(viewsPath, 'email/emailTemplate.ejs');
     const source = fs.readFileSync(sourcePath, 'utf8');
     const template = ejs.compile(source);
     const html = template({ email: email, href: url });
-
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -151,6 +203,7 @@ const sendConfirmationEmail = async (email, url) => {
             pass: 'jsnn awej cdqo grmq'
         }
     });
+
     // Soạn email
     const mailOptions = {
         from: 'Thuê sách',
@@ -172,7 +225,6 @@ const sendConfirmationEmail = async (email, url) => {
 const apiUpdateUser = async (req, res) => {
     try {
         let data = req.body
-        console.log("check data 123>>>>", data)
         let userData = await user.UpdateUser(data);
         if (userData.errcode == 0) {
             return res.status(200).json({
@@ -182,7 +234,7 @@ const apiUpdateUser = async (req, res) => {
         } else {
             return res.status(401).json({
                 status: 401,
-                message: 'hh'
+                message: 'cập nhật thất bại'
             })
         }
     } catch (error) {
@@ -201,5 +253,7 @@ module.exports = {
     Apiregister,
     apiUpdateUser,
     accountVerification,
-    detailUser
+    detailUser,
+    disableCommentsUsers,
+    DisableBookPosting
 }

@@ -50,9 +50,9 @@ io.on('connection', (socket) => {
 
 
 
-app.use(auth.isLogin, (req, res) => {
-    return res.render('404.ejs')
-})
+// app.use(auth.isLogin, (req, res) => {
+//     return res.render('404.ejs')
+// })
 
 
 let port = process.env.PORT || 6969;
