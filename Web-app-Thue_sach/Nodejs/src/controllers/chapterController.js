@@ -1,3 +1,4 @@
+import { error } from "console";
 import chapter from "../models/chapter.model"
 const fs = require('fs');
 
@@ -35,7 +36,7 @@ const postChapter = async (req, res) => {
             filePath = req.file.path;
             const fileContent = fs.readFileSync(filePath, 'utf-8');
             const words = fileContent.split(/\s+/)
-            const maxWords = 4000;
+            const maxWords = 8000;
             if (words.length > maxWords) {
                 return res.status(400).json({
                     status: 400,
@@ -62,6 +63,7 @@ const postChapter = async (req, res) => {
                 }
             }
         } else {
+            console.error(error)
             return res.status(400).json({
                 status: 400,
                 message: 'không có file hoặc sai dịnh dạng'
@@ -80,8 +82,8 @@ const postChapter = async (req, res) => {
 const ContentChapter = async (req, res) => {
     try {
         let sach_id = req.query.sach_id
-        let id = req.query.id
-        let dataChapter = await chapter.getContentChapters(sach_id, id)
+        let chuong = req.query.chuong
+        let dataChapter = await chapter.getContentChapters(sach_id, chuong)
         if (dataChapter.errcode === 0) {
             return res.status(200).json({
                 status: 200,

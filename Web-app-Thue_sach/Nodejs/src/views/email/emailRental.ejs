@@ -2,6 +2,51 @@
 
 <head>
     <title>Thuê Sách</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .large-text {
+            font-size: 20px;
+
+        }
+
+        .currency {
+            font-size: 18px;
+
+        }
+
+        body {
+            text-align: center;
+        }
+
+        table {
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .container .khung {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
 </head>
 
 <body>
@@ -11,24 +56,44 @@
     <p>Thông tin phiếu thuê:</p>
     <p>ID: <%= data.id %>
     </p>
+    <p>Người thuê: <%= data.nguoithue %>
+    </p>
+    <p>Ngày thuê: <%= data.ngaythue %>
+    </p>
+    <p>Email: <%= data.email %>
+    </p>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Hình</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Tiền cọc</th>
+            </tr>
+            <% for (let i=0; i < books.length; i++) { %>
+                <tr>
+                    <td class="khung">
+                        <img src="cid:<%= books[i].tensach.replace(/\s/g, '') %>" alt="Hình ảnh sách" width="100"
+                            height="100">
+                    </td>
+                    <td>
+                        <%= books[i].tensach %>
+                    </td>
+                    <td>
+                        <%= formatCurrency(books[i].gia) %>
+                    </td>
+                    <td>
+                        <%= formatCurrency(books[i].tiencoc) %>
+                    </td>
+                </tr>
+                <% } %>
+        </table>
+    </div>
 
-    <% for (let i=0; i < books.length; i++) { %>
-        <p>
-            Hình: <%= books[i].hinh %><br>
-                Tên sách: <%= books[i].tensach %><br>
-                    Giá: <%= books[i].gia %><br>
-                        Tiền cọc: <%= books[i].tiencoc %><br>
-        </p>
-        <% } %>
-
-            <p>Người thuê: <%= data.nguoithue %>
-            </p>
-            <p>Ngày thuê: <%= data.ngaythue %>
-            </p>
-            <p>Email: <%= data.email %>
-            </p>
-            <p>Tổng tiền: <%= data.tongtien %>
-            </p>
+    <p class="large-text">Tổng tiền: <span class="currency">
+            <%= formatCurrency(data.tongtien) %>
+        </span></p>
+    </p>
 </body>
 
 </html>

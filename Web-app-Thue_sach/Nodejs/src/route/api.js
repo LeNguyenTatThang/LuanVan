@@ -121,7 +121,7 @@ let initApiRouter = (app) => {
 
     //noi dung sach
 
-    //api thêm chương cho truyện đọc online (noidung, sach_id, chuong)
+    //api thêm chương cho truyện đọc online (noidung, sach_id, tieude)
     router.post('/api/chapter/create', uploadTxt.single('noidung'), chapterController.postChapter)
 
     //api hiện danh sách chương theo id của sách (page, sach_id)

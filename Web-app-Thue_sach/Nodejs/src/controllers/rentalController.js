@@ -1,6 +1,9 @@
 import rental from '../models/rental.model'
 const schedule = require('node-schedule');
 const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const fs = require('fs');
+const path = require('path');
 //api tạo phiếu thuê
 const postRental = async (req, res) => {
     try {
@@ -34,7 +37,7 @@ const confirmRental = async (req, res) => {
         let data = await rental.upStatus1(rentalData)
         if (data.errcode === 0) {
             let dataMail = await rental.getRenalByIdRental(rentalData.id)
-            await sendConfirmationEmail(dataMail);
+            await sendEmail(dataMail);
             return res.status(200).json({
                 status: 200,
                 message: data.message
@@ -54,12 +57,27 @@ const confirmRental = async (req, res) => {
     }
 }
 
-const sendConfirmationEmail = async (data) => {
+const sendEmail = async (dataMail) => {
     const viewsPath = path.join(__dirname, '../views');
     const sourcePath = path.join(viewsPath, 'email/emailRental.ejs');
     const source = fs.readFileSync(sourcePath, 'utf8');
     const template = ejs.compile(source);
-    const html = template({ email: email, href: url });
+    const html = template({ data: dataMail.data, books: dataMail.books, formatCurrency: formatCurrency });
+    const attachments = [];
+
+    for (const book of dataMail.books) {
+        const attachment = {
+            filename: `${book.tensach.replace(/\s/g, '')}.jpg`,
+            path: `http://localhost:8000/img/${book.hinh}`,
+            cid: `${book.tensach.replace(/\s/g, '')}`,
+            // encoding: 'base64',
+            // contentDisposition: 'inline',
+            // width: 100,
+            // height: 100,
+        };
+        attachments.push(attachment);
+    }
+
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -69,9 +87,11 @@ const sendConfirmationEmail = async (data) => {
     });
     // Soạn email
     const mailOptions = {
-        from: '2023luanvan@gmail.com',
-        to: data.email,
-        subject: 'Xác nhận đăng ký',
+        from: 'Thuê sách',
+        to: dataMail.data.email,
+        subject: 'Phiếu thuê sách',
+        html: html,
+        attachments: attachments,
     };
 
     try {
@@ -434,6 +454,10 @@ const rentalOrders4 = async (req, res) => {
     }
 }
 
+function formatCurrency(number) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+}
+
 const testthuhtmlemail = async (req, res) => {
     let rentalData = req.body
     console.log('ggggg')
@@ -441,7 +465,8 @@ const testthuhtmlemail = async (req, res) => {
     console.log(dataMail)
     return res.render('email/emailRental.ejs', {
         data: dataMail.data,
-        books: dataMail.books
+        books: dataMail.books,
+        formatCurrency: formatCurrency
     })
 
 }
