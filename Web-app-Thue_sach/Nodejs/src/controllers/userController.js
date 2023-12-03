@@ -114,6 +114,7 @@ const Apiregister = async (req, res) => {
 const accountVerification = async (req, res) => {
     try {
         let id = req.params.id
+        console.log('mã id', id)
         let data = await user.updateVerification(id)
         console.log('ff', data)
         if (data.errcode === 0) {
@@ -155,7 +156,6 @@ const sendConfirmationEmail = async (email, url) => {
     const mailOptions = {
         from: 'Thuê sách',
         to: email,
-        url: 'xác thực',
         subject: 'Xác nhận đăng ký',
         html: html,
     };
