@@ -11,26 +11,11 @@ user.handleUserLogin = (email, matkhau) => {
             let userData = {};
             let isCheck = await user.checkEmail(email);
             if (isCheck) {
-<<<<<<< HEAD
-                const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau FROM users where email= ?', [email])
-                let user = rows[0];
-                if (user) {
-                    let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
-                    if (checkmk) {
-                        userData.errcode = 0;
-                        userData.errMessage = 'đăng nhập thành công';
-                        delete user.matkhau;
-                        userData.user = user;
-                    } else {
-                        userData.errcode = 3;
-                        userData.errMessage = "sai mật khẩu";
-                    }
-=======
+
                 let check = await user.checkVerification(email)
                 if (check) {
                     userData.errcode = 6;
                     userData.errMessage = "email này chưa xác thực";
->>>>>>> d9605159fd21feeecf07a486b962bf2d6532da9e
                 } else {
                     const [rows, fields] = await pool.execute('SELECT id,ten,hinh, email,matkhau FROM users where email= ?', [email])
                     let user = rows[0];

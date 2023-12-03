@@ -8,7 +8,7 @@ comment.getAll = async (data) => {
             let commentData = {};
             let sql = 'select users.ten,users.hinh, binhluan.noidung, ngaytao from binhluan'
             sql += ' INNER JOIN sach on binhluan.sach_id = sach.id'
-            sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=? AND trangthai=1 ORDER BY ngaytao DESC'
+            sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=? AND binhluan.trangthai=1 ORDER BY ngaytao DESC'
             const [rows] = await pool.execute(sql, [data]);
             if (rows.length > 0) {
                 commentData = {
