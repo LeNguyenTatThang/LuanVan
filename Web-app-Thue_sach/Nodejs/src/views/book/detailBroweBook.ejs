@@ -1,0 +1,255 @@
+<%- include('../page/header')%>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Chi tiết sách
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <form action="/post-browsebook" method="post">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <div class="card-body">
+                                            <div>
+                                                <input type="hidden" name="id" value="<%= data.id %>" />
+                                            </div>
+                                            <div>
+                                                <input type="hidden" name="trangthaiduyet" value="duocduyet" />
+                                            </div>
+                                            <div class="form-group">
+                                                <img id="change-image" width="300" height="300"
+                                                    src="/img/<%= data.hinh %>" alt="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Tên SÁch: </label>
+                                                <span for="">
+                                                    <%= data.ten %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Tình trạng: </label>
+                                                <span for="">
+                                                    <%= data.tinhtrang===1 ? "Sách Mới" : "Sách Cũ" %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Trạng thái: </label>
+                                                <span for="">
+                                                    <%= data.trangthai===1 ? "Hiện" : "Ẩn" %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">thể loại: </label>
+                                                <span for="">
+                                                    <%= data.theloai %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Tên tác giả: </label>
+                                                <span for="">
+                                                    <%= data.tentacgia %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Người đăng: </label>
+                                                <span for="">
+                                                    <%= data.nguoidang %>
+                                                </span>
+                                            </div>
+                                            <%if(data.loai==0) {%>
+                                                <li class="mb-3">
+                                                    <span class="h6">giá</span>
+                                                    <span>
+                                                        <%= data.gia %>
+                                                    </span>
+                                                </li>
+                                                <li class="mb-3">
+                                                    <span class="h6">tiền cọc</span>
+                                                    <span>
+                                                        <%= data.tiencoc %>
+                                                    </span>
+                                                </li>
+                                                <% } %>
+                                                    <a name="" id="" class="btn btn-default float-right"
+                                                        href="/get-broweBook"><i class="fa fa-arrow-left"
+                                                            aria-hidden="true"></i> Quay Lại</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="">Mô tả</label>
+                                                <div>
+                                                    <%= data.mota %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h1>
+                            Bình luận của sách
+                        </h1>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <input type="text" name="id" value="<%= data.id %>" class="form-control"
+                                            aria-describedby="helpId" style="display: none;">
+                                        <input type="text" value="<%= name %>" name="name" id="" class="form-control"
+                                            placeholder="nhập tên người bình luận" aria-describedby="helpId">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"
+                                            aria-hidden="true"></i></button>
+                                </form>
+                                <hr>
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-truncate">STT</th>
+                                            <th class="text-truncate">Hình</th>
+                                            <th class="text-truncate">Tên</th>
+                                            <th class="text-truncate">Nội dung</th>
+                                            <th class="text-truncate">Trạng Thái</th>
+                                            <th class="text-truncate text-right">Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <% if (dataCmt && dataCmt.length> 0) { %>
+                                            <% for(let i=0; i < dataCmt.length; i++) { %>
+                                                <tr>
+                                                    <td scope="row">
+                                                        <%= i+1 %>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div class="avatar avatar-sm me-3">
+                                                            <img src="/img/<%= dataCmt[i].hinh %>" class="img-list" />
+                                                        </div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <%= dataCmt[i].ten %>
+                                                    </td>
+                                                    <td scope="row" class="col-lg-4">
+                                                        <div class="custom-column">
+                                                            <%= dataCmt[i].noidung%>
+                                                        </div>
+                                                    </td>
+                                                    <td scope="row" class="changeTT col-lg-2"
+                                                        data-id="<%= dataCmt[i].id %>">
+                                                        <div>
+                                                            <select class="form-control" name="trangthai">
+                                                                <% let options=[ 0 ,1 ]; %>
+                                                                    <% for (let option of options) { %>
+                                                                        <% let
+                                                                            isSelected=(dataCmt[i].trangthai===option)
+                                                                            ? "selected" : "" ; %>
+                                                                            <option value="<%= option %>" <%=isSelected
+                                                                                %>>
+                                                                                <%= option===0 ? "Ẩn" : "Hiện" %>
+                                                                            </option>
+                                                                            <% } %>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <% }else{ %>
+                                                        <td scope="row">
+                                                            <div>Không có bình luận</div>
+                                                        </td>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <!-- /.box-footer-->
+
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <% let arrMsg=[] %>
+            <% msgBook.forEach(function(msg){ %>
+                <% arrMsg.push(msg) %>
+                    <% })%>
+                        <% let arrErr=[] %>
+                            <% errBook.forEach(function(err){ %>
+                                <% arrErr.push(err) %>
+                                    <% })%>
+                                        <%- include('../page/footer')%>
+                                            <script>
+                                                function showImage(input) {
+                                                    if (input.files && input.files[0]) {
+                                                        var reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            $('#change-image').attr('src', e.target.result).height(300).width(300)
+                                                        };
+                                                        reader.readAsDataURL(input.files[0])
+                                                    }
+                                                }
+                                            </script>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    let msg = '<%= arrMsg%>';
+                                                    let err = '<%= arrErr%>';
+                                                    if (msg != '') {
+                                                        toastr.success(msg, { timeOut: 5000 })
+                                                    }
+                                                    if (err != '') {
+                                                        toastr.error(err, { timeOut: 5000 })
+                                                    }
+                                                })
+                                            </script>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    $(".changeTT").change(function () {
+                                                        const id = $(this).attr('data-id');
+                                                        const trangthai = $(this).find("select[name='trangthai']").val();
+                                                        $.ajax({
+                                                            url: '/updateCpmmentStatus',
+                                                            method: "post",
+                                                            data: {
+                                                                id,
+                                                                trangthai
+                                                            },
+                                                            dataType: "JSON",
+                                                            success: function (data) {
+                                                                console.log(data)
+                                                                toastr.success(data.message, { timeOut: 5000 })
+                                                                setTimeout(function () {
+                                                                    location.reload();
+                                                                }, 2000);
+                                                            },
+                                                            error: function (error) {
+                                                                console.error('Lỗi:', error);
+                                                            }
+                                                        });
+
+                                                    })
+                                                });
+                                            </script>
+                                            </body>
+
+                                            </html>
+                                            <!-- /.content-wrapper -->

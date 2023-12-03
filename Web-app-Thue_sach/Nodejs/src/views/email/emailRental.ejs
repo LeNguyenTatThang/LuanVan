@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <title>Thuê Sách</title>
+</head>
+
+<body>
+    <p>Xin chào ! <%= data.nguoithue %>
+    </p>
+    <p>Đơn hàng của bạn đã được xác nhận. Cảm ơn bạn đã thuê sách.</p>
+    <p>Thông tin phiếu thuê:</p>
+    <p>ID: <%= data.id %>
+    </p>
+
+    <% for (let i=0; i < books.length; i++) { %>
+        <p>
+            Hình: <%= books[i].hinh %><br>
+                Tên sách: <%= books[i].tensach %><br>
+                    Giá: <%= books[i].gia %><br>
+                        Tiền cọc: <%= books[i].tiencoc %><br>
+        </p>
+        <% } %>
+
+            <p>Người thuê: <%= data.nguoithue %>
+            </p>
+            <p>Ngày thuê: <%= data.ngaythue %>
+            </p>
+            <p>Email: <%= data.email %>
+            </p>
+            <p>Tổng tiền: <%= data.tongtien %>
+            </p>
+</body>
+
+</html>

@@ -8,7 +8,7 @@ comment.getAll = async (data) => {
             let commentData = {};
             let sql = 'select users.ten,users.hinh, binhluan.noidung, ngaytao from binhluan'
             sql += ' INNER JOIN sach on binhluan.sach_id = sach.id'
-            sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=?'
+            sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=? AND trangthai=1 ORDER BY ngaytao DESC'
             const [rows] = await pool.execute(sql, [data]);
             if (rows.length > 0) {
                 commentData = {
@@ -28,11 +28,47 @@ comment.getAll = async (data) => {
     })
 }
 
+comment.getComment = async (data, name) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let commentData = {};
+            let sql = 'SELECT binhluan.id, users.ten, users.hinh, binhluan.noidung, binhluan.trangthai, ngaytao FROM binhluan';
+            sql += ' INNER JOIN sach ON binhluan.sach_id = sach.id';
+            sql += ' INNER JOIN users ON binhluan.users_id = users.id WHERE sach.id = ?';
+
+            if (name) {
+                sql += " AND users.ten LIKE '%" + name + "%'";
+            }
+
+            sql += ' ORDER BY ngaytao DESC';
+
+            const [rows] = await pool.execute(sql, [data]);
+            if (rows.length > 0) {
+                commentData = {
+                    name,
+                    rows,
+                    errcode: 0
+                };
+            } else {
+                commentData = {
+                    name,
+                    errcode: 1,
+                    message: 'Không có bình luận'
+                };
+            }
+            resolve(commentData);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+
 comment.create = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let commentData = {};
-            let sqlCheck = 'select id from users where id = ? and trangthai = 1'
+            let sqlCheck = 'select id from users where id = ? and cambl = 1'
             let sql = 'insert into binhluan(sach_id, users_id, noidung,trangthai, ngaytao) values (?, ?, ?, ?,?)'
             const [check] = await pool.execute(sqlCheck, [data.users_id]);
             if (check.length > 0) {
@@ -52,6 +88,30 @@ comment.create = async (data) => {
             resolve(commentData)
         } catch (e) {
             reject(e);
+        }
+    })
+}
+
+comment.updatestatus = (id, trangthai) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataBook = {};
+            const [result, fields] = await pool.execute('update binhluan set trangthai = ? where id = ?',
+                [trangthai, id]);
+            if (result) {
+                dataBook = {
+                    errcode: 0,
+                    message: 'Cập nhật trạng thái thành công'
+                }
+            } else {
+                dataBook = {
+                    errcode: 1,
+                    message: 'cập nhập trạng thái thất bại'
+                }
+            }
+            resolve(dataBook)
+        } catch (error) {
+            reject(error)
         }
     })
 }

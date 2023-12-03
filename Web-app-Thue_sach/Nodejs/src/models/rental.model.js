@@ -167,30 +167,7 @@ rental.upStatus2 = (data) => {
     })
 }
 
-const sendConfirmationEmail = async (email, confirmationCode) => {
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: '2023luanvan@gmail.com',
-            pass: 'jsnn awej cdqo grmq'
-        }
-    });
-    // Soạn email
-    const mailOptions = {
-        from: '2023luanvan@gmail.com',
-        to: email,
-        subject: 'Xác nhận đăng ký',
-        text: `Mã xác nhận của bạn là: ${confirmationCode}`
-    };
-
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully!');
-    } catch (error) {
-        console.error('Error sending email:', error);
-    }
-}
 
 
 //trả hàng 
@@ -294,6 +271,45 @@ rental.getRent = (data) => {
         }
     })
 }
+
+rental.getRenalByIdRental = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let sqlRental = 'select phieuthue.id,GROUP_CONCAT(sach.id) AS sach_id,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
+            sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
+            sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
+            sqlRental += ' INNER JOIN users AS chutiem_sach ON sach.id_users = chutiem_sach.id '
+            sqlRental += ' WHERE phieuthue.id= ? GROUP BY phieuthue_id'
+            const [rows, fields] = await pool.execute(sqlRental, [id])
+            let dataRow = rows[0]
+            if (dataRow) {
+                const books = dataRow.sach_id.split(',').map((id, index) => ({
+                    id: id,
+                    hinh: dataRow.hinh.split(',')[index],
+                    tensach: dataRow.tensach.split(',')[index],
+                    gia: dataRow.gia.split(',')[index],
+                    tiencoc: dataRow.tiencoc.split(',')[index],
+                }));
+                dataRental = {
+                    books: books,
+                    data: dataRow,
+                    errcode: 0,
+                }
+            } else {
+                dataRental = {
+                    errcode: 1,
+                    message: 'không có data'
+                }
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 
 
 

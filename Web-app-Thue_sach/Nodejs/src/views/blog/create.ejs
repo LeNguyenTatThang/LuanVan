@@ -1,0 +1,88 @@
+<%- include('../page/header')%>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Thêm bài viết
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <form action="/post-blog" method="POST">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="">Tên</label>
+                                                <input type="text" name="ten" class="form-control"
+                                                    aria-describedby="helpId">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Trạng thái</label>
+                                                <div>
+                                                    <select class="form-control" name="trangthai">
+                                                        <option value="0">Ẩn</option>
+                                                        <option value="1">Hiện</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Thẻ</label>
+                                                <input type="text" name="the" class="form-control"
+                                                    aria-describedby="helpId">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
+                                                Lại</button>
+                                            <a name="" id="" class="btn btn-default float-right" href="/blog"><i
+                                                    class="fa fa-arrow-left" aria-hidden="true"></i> Quay Lại</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="">Nội dung</label>
+                                                <textarea type="text" name="noidung" class="form-control"
+                                                    aria-describedby="helpId" id="summernote"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <% let arrMsg=[] %>
+            <% msgBlog.forEach(function(msg){ %>
+                <% arrMsg.push(msg) %>
+                    <% })%>
+                        <% let arrErr=[] %>
+                            <% errBlog.forEach(function(err){ %>
+                                <% arrErr.push(err) %>
+                                    <% })%>
+                                        <%- include('../page/footer')%>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    let msg = '<%= arrMsg%>';
+                                                    let err = '<%= arrErr%>';
+                                                    if (msg != '') {
+                                                        toastr.success(msg, { timeOut: 5000 })
+                                                    }
+                                                    if (err != '') {
+                                                        toastr.error(err, { timeOut: 5000 })
+                                                    }
+                                                })
+                                            </script>
+                                            </body>
+
+                                            </html>
+                                            <!-- /.content-wrapper -->

@@ -1,6 +1,7 @@
 
 import axios from "../axios";
 import book from '../models/book.model'
+import comment from '../models/comment.model'
 const fs = require('fs');
 
 const book1 = async (req, res) => {
@@ -47,6 +48,32 @@ const getbrowebook = async (req, res) => {
     }
 }
 
+//chi tiết sách đã được duyệt
+const detailBroweBook = async (req, res) => {
+    try {
+        let id = req.query.id;
+        let name = req.query.name || '';
+        let data = await book.getId(id)
+        if (data.book && data.book.id) {
+            let dataCmt = await comment.getComment(data.book.id, name);
+            return res.render('book/detailBroweBook.ejs', {
+                data: data.book,
+                dataCmt: dataCmt.rows,
+                name: dataCmt.name,
+                msgBook: req.flash('msgBook'),
+                errBook: req.flash('errBook'),
+            });
+        } else {
+            console.error("Data or Data.book is undefined or does not have 'id' property");
+            return res.redirect('/get-broweBook');
+        }
+    } catch (error) {
+        console.error(error);
+        return res.redirect('/get-broweBook');
+    }
+
+}
+
 const getDetailBook = async (req, res) => {
     let id = req.query.id;
     let data = await book.getId(id)
@@ -56,16 +83,16 @@ const getDetailBook = async (req, res) => {
     });
 }
 
+//cập nhật trạng thái duyệt sách
 const BrowseBooks = async (req, res) => {
     try {
         let id = req.body.id;
         let trangthaiduyet = req.body.trangthaiduyet
-        console.log(trangthaiduyet)
         await book.updateApprovalStatus(id, trangthaiduyet);
-        return res.redirect('/book1')
+        return res.redirect('/book')
     } catch (error) {
         console.error(error)
-        return res.redirect('/book1')
+        return res.redirect('/book')
     }
 }
 
@@ -106,13 +133,25 @@ const postBook = async (req, res, next) => {
                 message: data.message
             })
         } else {
-            fs.unlinkSync(bookData.hinh);
+            if (req.file) {
+                try {
+                    fs.unlink('src/public/img/' + bookData.hinh, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
             return res.status(402).json({
                 status: 402,
                 message: data.message
             })
         }
     } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
     }
 }
 
@@ -220,6 +259,7 @@ module.exports = {
     getbrowebook,
     BoosMessage,
     updateBook,
-    book1
+    book1,
+    detailBroweBook
 }
 
