@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { callApiMail } from '../Service/UserService';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 const RegistrationSuccess = () => {
 
     const { id } = useParams();
@@ -19,7 +19,7 @@ const RegistrationSuccess = () => {
             <p>
                 Tài khoản của bạn đã được tạo thành công. Bạn có thể đăng nhập ngay bây giờ.
             </p>
-            {/* Thêm các phần khác nếu cần */}
+            <strong>Đăng nhập  <Link to='/signin'>tại đây</Link></strong>
         </div>
     );
 };

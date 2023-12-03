@@ -39,3 +39,55 @@
 .badge1{
   position: absolute;
 }
+.christmas-tree {
+  position: relative;
+  width: 50px;
+  height: 80px;
+}
+
+.trunk {
+  position: absolute;
+  width: 20px;
+  height: 30px;
+  background-color: #8B4513; /* Màu nâu cho thân cây */
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+
+.foliage {
+  position: relative;
+  width: 0;
+  height: 0;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.layer {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}
+
+.layer:nth-child(1) {
+  border-bottom: 25px solid #228B22; /* Màu xanh lá cây */
+  transform: translateY(0);
+}
+
+.layer:nth-child(2) {
+  border-bottom: 25px solid #228B22;
+  transform: translateY(-15px);
+}
+
+.layer:nth-child(3) {
+  border-bottom: 25px solid #228B22;
+  transform: translateY(-30px);
+}
+
+.layer:nth-child(4) {
+  border-bottom: 25px solid #228B22;
+  transform: translateY(-45px);
+}

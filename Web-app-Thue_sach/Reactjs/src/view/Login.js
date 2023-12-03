@@ -37,6 +37,12 @@ export default function Login() {
                 message: 'Chào mừng bạn đến với Thuê Sách'
             });
             navigate('/', { replace: true });
+        } else {
+            iziToast.warning({
+                title: 'Lỗi',
+                position: 'topRight',
+                message: res.message
+            });
         }
 
     }
