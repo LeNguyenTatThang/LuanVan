@@ -104,25 +104,34 @@ const sendEmail = async (dataMail) => {
 
 
 //xác nhận nhận hàng 
-const received = async (req, res) => {
+const received = async (req, res, io) => {
     try {
         let rentalData = req.body
         console.log(rentalData)
-        let data = await rental.upStatus2(rentalData)
+        let ngaynhan = new Date();
+        let ngaythueInt = parseInt(rentalData.ngaythue, 10);
+        let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
+        let data = await rental.upStatus2(rentalData, ngaynhan, ngaytra)
         if (data.errcode === 0) {
             const job = schedule.scheduleJob('*/5 * * * *', async () => {
                 // io.emit('nearDueDate', { rentalId: data.id, messageRentail: 'Cảnh báo: Còn hai ngày đến ngày trả' });
                 console.log('sắp tới ngày trả hàng')
             });
+
+            const updateStatus3 = schedule.scheduleJob('*/2 * * * *', async () => {
+                //chuyển sang trạng thái chờ trả
+                let update = await rental.upStatus3(rentalData.id)
+                console.log('chuyển sang trạng thái chờ trả')
+            });
             return res.status(200).json({
                 status: 200,
                 message: data.message
             })
-        } else {
+        } else if (data.errcode !== 0) {
             return res.status(400).json({
                 status: 400,
                 message: data.message
-            })
+            });
         }
     } catch (error) {
         console.error(error)
@@ -134,15 +143,15 @@ const received = async (req, res) => {
 }
 
 //chờ trả
-const returned = async (req, res) => {
+const returned = async (req, res, rentalData) => {
     try {
-        let rentalData = req.body
+        console.log('mã', rentalData)
         let data = await rental.upStatus3(rentalData)
         if (data.errcode === 0) {
-            return res.status(200).json({
-                status: 200,
+            return res.status(201).json({
+                status: 201,
                 message: data.message
-            })
+            });
         } else {
             return res.status(400).json({
                 status: 400,

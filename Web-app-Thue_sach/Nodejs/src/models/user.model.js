@@ -11,7 +11,6 @@ user.handleUserLogin = (email, matkhau) => {
             let userData = {};
             let isCheck = await user.checkEmail(email);
             if (isCheck) {
-<<<<<<< HEAD
                 const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau FROM users where email= ?', [email])
                 let user = rows[0];
                 if (user) {
@@ -25,12 +24,6 @@ user.handleUserLogin = (email, matkhau) => {
                         userData.errcode = 3;
                         userData.errMessage = "sai mật khẩu";
                     }
-=======
-                let check = await user.checkVerification(email)
-                if (check) {
-                    userData.errcode = 6;
-                    userData.errMessage = "email này chưa xác thực";
->>>>>>> d9605159fd21feeecf07a486b962bf2d6532da9e
                 } else {
                     const [rows, fields] = await pool.execute('SELECT id,ten,hinh, email,matkhau FROM users where email= ?', [email])
                     let user = rows[0];
@@ -285,6 +278,30 @@ user.getAll = (page, name) => {
     })
 }
 
+user.getYear = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = "SELECT id, YEAR(ngaytao) AS nam FROM users WHERE loai =1 GROUP BY nam";
+            const [rows, fields] = await pool.execute(sql)
+            if (rows.length === 0) {
+                data = {
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    errcode: '0',
+                    message: 'ok'
+                }
+            } resolve(data)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 user.getId = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -320,6 +337,39 @@ user.UpdateUser = (data) => {
                 errcode: 0
             }
             console.log("check user data update", userData)
+            resolve(userData)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+user.newAccountStatistics = (nam) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userData = {};
+            let sql = `SELECT YEAR(ngaytao) AS nam, MONTH(ngaytao) AS thang,
+                        COUNT(*) AS taikhoanmoi
+                        FROM users`
+            if (nam) {
+                sql += ` WHERE nam = ${nam}`
+            }
+            sql += ` GROUP BY YEAR(ngaytao), MONTH(ngaytao)
+                        ORDER BY nam, thang`
+            let [rows, fields] = await pool.execute(sql)
+            console.log(rows)
+            if (rows.length > 0) {
+                userData = {
+                    rows,
+                    errcode: 0
+                }
+            } else {
+                userData = {
+                    message: 'không có data',
+                    errcode: 1
+                }
+            }
+            console.log('có ko', userData)
             resolve(userData)
         } catch (e) {
             reject(e)

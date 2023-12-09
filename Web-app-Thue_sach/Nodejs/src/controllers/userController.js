@@ -222,6 +222,7 @@ const sendConfirmationEmail = async (email, url) => {
 }
 
 
+
 const apiUpdateUser = async (req, res) => {
     try {
         let data = req.body

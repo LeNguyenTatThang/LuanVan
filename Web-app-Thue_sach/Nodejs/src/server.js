@@ -5,7 +5,7 @@ import initWebRoutes from './route/web';
 import initApiRouter from './route/api';
 import session from "express-session";
 import cors from 'cors';
-import auth from "./middelware/auth"
+import auth from "./middelware/auth";
 var flash = require('connect-flash');
 require('dotenv').config();
 const http = require('http');
@@ -47,13 +47,9 @@ io.on('connection', (socket) => {
     });
 });
 
-
-
-
-// app.use(auth.isLogin, (req, res) => {
-//     return res.render('404.ejs')
-// })
-
+app.use(auth.isLogin, (req, res) => {
+    return res.render('404.ejs')
+})
 
 let port = process.env.PORT || 6969;
 

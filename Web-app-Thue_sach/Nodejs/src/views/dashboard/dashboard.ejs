@@ -1,0 +1,136 @@
+<%- include('../page/header')%>
+    <style>
+        #chart-container {
+            width: 50%;
+            /* Điều chỉnh kích thước theo ý muốn, ví dụ: 80% của chiều rộng */
+            margin: 0 auto;
+            /* Để canh giữa biểu đồ */
+        }
+    </style>
+    <script type="text/javascript">
+        function updateChart() {
+            var selectedSeries = document.getElementById('chutiem').value;
+            console.log('selectedSeries:', selectedSeries);
+            // Thêm logic cập nhật biểu đồ của bạn ở đây
+        }
+    </script>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    DashBoard
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+
+                <!-- <div id="chart-container">
+                    <div id="chart"></div>
+                </div> -->
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <section class="col-lg-6 connectedSortable ui-sortable">
+
+                            <div class="card">
+                                <div class="card-header ui-sortable-handle" style="cursor: move;">
+                                    <select name="chutiem" id="chutiem" onchange="updateChart()">
+                                        <% for (const chutiem of users.rows) { %>
+                                            <option value="<%= chutiem.id %>">Chủ tiệm <%= chutiem.ten %>
+                                            </option>
+                                            <% } %>
+                                    </select>
+
+                                    <h3 class="card-title">
+                                        <i class="fas fa-chart-pie mr-1"></i>
+                                        <font _mstmutation="1" _msttexthash="122395" _msthash="146"> Doanh thu </font>
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="chart"></div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="col-lg-6 connectedSortable ui-sortable">
+
+                            <div class="card">
+                                <div class="card-header ui-sortable-handle" style="cursor: move;">
+                                    <select>
+                                        <% for (const years of usersYear.rows) { %>
+                                            <option value="<%= years.id %>">
+                                                <%= years.nam %>
+                                            </option>
+                                            <% } %>
+                                    </select>
+                                    <h3 class="card-title">
+                                        <i class="fas fa-chart-pie mr-1"></i>
+                                        <font _mstmutation="1" _msttexthash="122395" _msthash="146"> Số tài khoản được
+                                            đăng kí trong tháng </font>
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="chartAccount"></div>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- /.content -->
+                    </div>
+                </div>
+            </section>
+        </div>
+        <%- include('../page/footer')%>
+            <% let arrayMsgLogin=[] %>
+                <% msgLogin.forEach(function(msg){ %>
+                    <% arrayMsgLogin.push(msg) %>
+                        <% })%>
+                            <script>
+                                $(document).ready(function () {
+                                    let toasName = '<%= arrayMsgLogin%>';
+                                    if (toasName != '') {
+                                        toastr.success(toasName, { timeOut: 5000 })
+                                    }
+                                })
+                            </script>
+                            <script type="text/javascript">
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    //thống kê doanh thu
+                                    var chartData = JSON.parse('<%- JSON.stringify(chartData) %>');
+                                    console.log('Series Data:', chartData.series);
+                                    chartData.series.forEach((series, index) => {
+                                        console.log(`Name of series ${index + 1}:`, series.name);
+                                    });
+
+                                    var options = {
+                                        chart: {
+                                            type: 'line'
+                                        },
+                                        series: chartData.series,
+                                        xaxis: {
+                                            categories: chartData.options.xaxis.categories
+                                        }
+                                    };
+                                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                                    chart.render();
+
+                                    //thống kê tài khoản được đăng kí trong tháng
+                                    var chartNewAccount = JSON.parse('<%- JSON.stringify(chartNewAccount) %>');
+                                    console.log('Series Account:', chartNewAccount.options.xaxis.categories);
+                                    var optionsNewAccount = {
+                                        chart: {
+                                            type: 'line'
+                                        },
+                                        series: chartNewAccount.series,
+                                        xaxis: {
+                                            categories: chartNewAccount.options.xaxis.categories
+                                        }
+                                    };
+                                    var chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
+                                    chartAccount.render();
+                                });
+                            </script>
+                            <!-- /.content-wrapper -->
+                            </body>
+
+                            </html>

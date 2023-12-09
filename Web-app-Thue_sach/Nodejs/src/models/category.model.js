@@ -12,8 +12,8 @@ category.create = function (data) {
             console.log(data)
             let categories = await checkCategories(data.ten)
             if (categories === true) {
-                const [rows] = await pool.execute('insert into theloai(ten, trangthai) values (?, ?)',
-                    [data.ten, data.trangthai]);
+                const [rows] = await pool.execute('insert into theloai(ten) values (?)',
+                    [data.ten]);
                 categoryData.errcode = 0;
                 categoryData.message = 'Thêm thể loại thành công'
 
@@ -136,8 +136,8 @@ category.update = function (data) {
                     message: 'tên thể loại này đã tồn tại'
                 }
             } else {
-                await pool.execute('update theloai set ten = ?, trangthai = ? where id = ?',
-                    [data2, data.trangthai, data.id]);
+                await pool.execute('update theloai set ten = ? where id = ?',
+                    [data2, data.id]);
                 dataCaterory = {
                     errcode: 0,
                     message: 'cập nhật thành công'

@@ -1,5 +1,5 @@
 import express from "express";
-import homeController from "../controllers/homeController";
+import dashboardController from "../controllers/dashboardController";
 import categoryController from "../controllers/categoryController";
 import userController from "../controllers/userController";
 import loginController from "../controllers/loginController";
@@ -17,13 +17,16 @@ let router = express.Router();
 
 
 let initWebRouter = (app) => {
+    // router.use(dashboardController.dashboardLogAccess);
     router.get('/', loginController.getLoginPage);
     router.get('/logout', auth.isLogout);
     router.get('/get-DetailAccount', auth.isLogin, loginController.getDetailAccount)
     router.get('/edit-Account', auth.isLogin, loginController.editAccount)
     router.post('/update-Account', auth.isLogin, upload.single('hinh'), loginController.updateAccount)
 
-    router.get('/home', auth.isLogin, homeController.getHomePage);
+    //dashbord
+    // router.post('/newAccountStatistics', dashboardController.newAccountStatistics)
+    router.get('/home', auth.isLogin, dashboardController.dashboardPage);
 
     router.get('/get-catetoryFoByID', auth.isLogin, categoryController.getFromCatetoryByID)
     router.get('/category', auth.isLogin, categoryController.getCategory);
@@ -69,6 +72,8 @@ let initWebRouter = (app) => {
     router.post('/updateBlog', auth.isLogin, blogController.updateBlog)
 
     router.get('/email', auth.isLogin, rentalController.testthuhtmlemail)
+
+
 
     return app.use("/", router)
 }

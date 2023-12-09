@@ -24,21 +24,6 @@
                                     <div>
                                         <input name="id" value="<%= data.id %>" hidden />
                                     </div>
-                                    <div class="form-group">
-                                        <label for="">Trạng thái</label>
-                                        <div>
-                                            <select class="form-control" name="trangthai">
-                                                <% let options=["1","0"]; %>
-                                                    <% for ( let i=0; i < options.length; i++ ){ %>
-                                                        <% let isSelected=(data.trangthai==options[i] ) ? "selected"
-                                                            : "" ; %>
-                                                            <option value="<%= options[i]%>" <%=isSelected %>>
-                                                                <%= options[i]==="1" ? "Hiện" : "Ẩn" %>
-                                                            </option>
-                                                            <% } %>
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
                                             Lại</button>

@@ -52,8 +52,8 @@ blog.create = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let blogData = {};
-            let [result, fields] = await pool.execute('insert into baiviet(ten, noidung, trangthai, the) values (?, ?, ?, ?)',
-                [data.ten, data.noidung, data.trangthai, data.the]);
+            let [result, fields] = await pool.execute('insert into baiviet(ten, noidung, trangthai) values (?, ?, ?)',
+                [data.ten, data.noidung, data.trangthai]);
             if (result) {
                 blogData = {
                     errcode: 0,
@@ -129,8 +129,8 @@ blog.update = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let blogModel = {};
-            let sql = "update baiviet set ten = ?,noidung = ?, trangthai = ?, the = ? where id = ?"
-            const [result, fields] = await pool.execute(sql, [data.ten, data.noidung, data.trangthai, data.the, data.id]);
+            let sql = "update baiviet set ten = ?,noidung = ?, trangthai = ? where id = ?"
+            const [result, fields] = await pool.execute(sql, [data.ten, data.noidung, data.trangthai, data.id]);
             if (result) {
                 blogModel = {
                     errcode: 0,

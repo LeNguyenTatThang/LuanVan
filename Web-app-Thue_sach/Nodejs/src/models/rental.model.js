@@ -130,15 +130,11 @@ let checkRental = (id) => {
 
 
 //xác nhận đã nhận và chuyển sang đang thuê
-rental.upStatus2 = (data) => {
+rental.upStatus2 = (data, ngaynhan, ngaytra) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {}
             let trangthai = 2;
-            let ngaynhan = new Date();
-            let ngaythueInt = parseInt(data.ngaythue, 10);
-            let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
-
             let sqlRental = 'UPDATE phieuthue set trangthai = ?, ngaynhan = ?, ngaytra = ? WHERE id = ?'
             let check = await checkRental(data.id)
             if (check) {
@@ -171,15 +167,15 @@ rental.upStatus2 = (data) => {
 
 
 //trả hàng 
-rental.upStatus3 = (data) => {
+rental.upStatus3 = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
             let trangthai = 3;
             let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
-            let check = await checkRental(data.id)
+            let check = await checkRental(id)
             if (check) {
-                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, id])
                 if (result) {
                     dataRental = {
                         errcode: 0,
@@ -276,7 +272,7 @@ rental.getRenalByIdRental = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,GROUP_CONCAT(sach.id) AS sach_id,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
@@ -325,6 +321,37 @@ rental.getRentOrder = (data) => {
             sqlRental += ' INNER JOIN users AS chutiem_sach ON sach.id_users = chutiem_sach.id '
             sqlRental += ' WHERE chutiem_id = ? AND phieuthue.trangthai = ? GROUP BY phieuthue_id'
             const [rows, fields] = await pool.execute(sqlRental, [data.chutiem_id, data.trangthai])
+            let dataRow = rows
+            if (dataRow.length > 0) {
+                dataRental = {
+                    data: dataRow,
+                    errcode: 0,
+                    message: 'ok'
+                }
+            } else {
+                dataRental = {
+                    errcode: 1,
+                    message: 'không có data'
+                }
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+
+//thống kê doanh thu
+rental.calculateOverallRevenue = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let sqlRental = `SELECT chutiem_id, SUM(tongtien) AS tongdoanhthu, YEAR(ngaynhan) AS nam, 
+            MONTH(ngaynhan) AS thang
+            FROM phieuthue WHERE trangthai =2 OR trangthai=3 OR trangthai =4
+            GROUP BY chutiem_id, nam, thang`
+            const [rows, fields] = await pool.execute(sqlRental)
             let dataRow = rows
             if (dataRow.length > 0) {
                 dataRental = {

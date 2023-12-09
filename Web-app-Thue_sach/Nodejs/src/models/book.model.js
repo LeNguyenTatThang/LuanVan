@@ -327,7 +327,7 @@ book.update = (data, hinhmoi) => {
             let bookModel = {}
             let sqlCheck = "SELECT sach.id FROM sach INNER JOIN phieuthue_sach ON sach.id = phieuthue_sach.sach_id"
             sqlCheck += " INNER JOIN phieuthue ON phieuthue_sach.phieuthue_id = phieuthue.id"
-            sqlCheck += " WHERE sach.id =? AND (phieuthue.trangthai=4 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
+            sqlCheck += " WHERE sach.id =? AND (phieuthue.trangthai=0 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
             let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?, trangthai=?, gia=?, tiencoc=? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
             console.log('Check:', check)

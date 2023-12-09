@@ -6,12 +6,9 @@ let getHomePage = (req, res) => {
 
 }
 
-let getProduct = (req, res) => {
-    return res.render('product/listProduct.ejs');
-}
 
 
 
 module.exports = {
-    getHomePage, getProduct
+    getHomePage
 }
