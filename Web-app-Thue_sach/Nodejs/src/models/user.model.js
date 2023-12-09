@@ -11,6 +11,7 @@ user.handleUserLogin = (email, matkhau) => {
             let userData = {};
             let isCheck = await user.checkEmail(email);
             if (isCheck) {
+<<<<<<< HEAD
                 const [rows, fields] = await pool.execute('SELECT id,ten, email,matkhau FROM users where email= ?', [email])
                 let user = rows[0];
                 if (user) {
@@ -24,6 +25,13 @@ user.handleUserLogin = (email, matkhau) => {
                         userData.errcode = 3;
                         userData.errMessage = "sai mật khẩu";
                     }
+=======
+
+                let check = await user.checkVerification(email)
+                if (check) {
+                    userData.errcode = 6;
+                    userData.errMessage = "email này chưa xác thực";
+>>>>>>> 6965e24bb81e7358feb15a8185f166afd269b877
                 } else {
                     const [rows, fields] = await pool.execute('SELECT id,ten,hinh, email,matkhau FROM users where email= ?', [email])
                     let user = rows[0];

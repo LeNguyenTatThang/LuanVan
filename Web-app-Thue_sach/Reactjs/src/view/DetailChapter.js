@@ -95,8 +95,8 @@ function DetailChapter() {
                     </div>
 
                     {/* Nội dung chương */}
-                    <div style={{ flex: 2, padding: '20px' }}>
-                        <p className="styled-paragraph">{chapterData.noidung}</p>
+                    <div className='' style={{ flex: 2, padding: '20px' }}>
+                        <p className='overflow-auto w-4/5 break-words'>{chapterData.noidung}</p>
                     </div>
                 </div>
             )}

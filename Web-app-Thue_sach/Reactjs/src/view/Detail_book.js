@@ -12,7 +12,7 @@ export default function Detail_book() {
 
   let { id } = useParams();
   const userData = useSelector((state) => state.user);
-  let users_id = userData.userInfo.id;
+  let users_id = userData.userInfo;
 
   useEffect(() => {
     detailBook();
@@ -20,20 +20,29 @@ export default function Detail_book() {
   }, []);
 
   const detailBook = async () => {
-    let data = await detailBookUser(id);
-    setDetail(data.data);
-  }
-
-  const showComment = async () => {
-    let res = await callApiComment(id);
-    if (res && res.status === 200) {
-      setComments(res.data);
+    try {
+      let data = await detailBookUser(id);
+      setDetail(data.data);
+    } catch (error) {
+      console.error('Error fetching book details:', error);
     }
   }
 
+  const showComment = async () => {
+    try {
+      let res = await callApiComment(id);
+      if (res && res.status === 200) {
+        setComments(res.data);
+      }
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  }
+
+
   const handleCommentSubmit = async () => {
     try {
-      let send = await apiSendComment(id, users_id, noidung);
+      let send = await apiSendComment(id, users_id.id, noidung);
       if (send && send.status === 200) {
         iziToast.success({
           title: "Bạn đã đăng một bình luận",
@@ -55,11 +64,13 @@ export default function Detail_book() {
       <div className="container mx-auto my-8 flex">
         {/* Hình ảnh sách bên trái */}
         <div className="w-1/2 pr-8">
-          <img
-            src={`http://localhost:8000/img/${detail.hinh}`}
-            alt={`${detail.hinh}`}
-            className="w-full h-auto rounded"
-          />
+          {detail && detail.hinh && (
+            <img
+              src={`http://localhost:8000/img/${detail.hinh}`}
+              alt={`${detail.hinh}`}
+              className="w-full h-auto rounded"
+            />
+          )}
           <div>
             <p>Đánh giá:</p>
             <div className="flex">
@@ -127,7 +138,7 @@ export default function Detail_book() {
             Lượt bình luận ({comments.length})
           </h2>
         </div>
-        {!userData.isLogin ? <>Bạn cần đăng nhập để bình luận và xem bình luận</> : <>
+        {!userData?.isLogin ? <>Bạn cần đăng nhập để bình luận và xem bình luận</> : <>
           <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
             <label htmlFor="comment">Bình luận:</label>
             <textarea
@@ -147,40 +158,49 @@ export default function Detail_book() {
             Gửi bình luận
           </button>
           <div className="my-4" />
-          {comments.map((comment, index) => (
-            <React.Fragment key={index}>
-              <article
-                className={`p-6 text-base shadow-xl rounded-lg ${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-                  }`}
-              >
-                <footer className="flex justify-between items-center mb-2">
-                  <div className="flex items-center">
-                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                      <img
-                        className="mr-2 w-6 h-6 rounded-full"
-                        src={comment.hinh}
-                        alt={comment.hinh}
-                      />
-                      {comment.ten}
-                    </p>
-                    <p className="text-sm text-gray-600 ">
-                      {dayjs(comment.ngaytao).format(' DD-MM-YYYY')}
-                    </p>
-                  </div>
-                </footer>
-                <p className="text-gray-500 ">{comment.noidung}</p>
-                {/* Các nút trả lời hoặc báo cáo */}
-              </article>
-              {index !== comments.length - 1 && (
-                <div className="my-4" />
-              )}
-            </React.Fragment>
-          ))}
+          {comments && comments.length > 0 &&
+            comments.map((show, index) => (
+              <React.Fragment key={index}>
+                <article
+                  className={`p-6 text-base shadow-xl rounded-lg ${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
+                    }`}
+                >
+                  <footer className="flex justify-between items-center mb-2">
+                    <div className="flex items-center">
+                      <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                        {show && show.hinh && (
+                          <img
+                            className="mr-2 w-6 h-6 rounded-full"
+                            src={`http://localhost:8000/img/${show.hinh}`}
+                            alt={`${show.hinh}`}
+                          />
+                        )}
+                        {show && show.ten && (
+                          <p>{show.ten}</p>
+                        )}
+
+                      </p>
+                      {show && show.ngaytao && (
+                        <p className="text-sm text-gray-600 ">
+                          {dayjs(show.ngaytao).format(' DD-MM-YYYY')}
+                        </p>
+                      )}
+
+                    </div>
+                  </footer>
+                  {show && show.noidung && (
+                    <p className="text-gray-500 ">{show.noidung}</p>
+                  )}
+
+                  {/* Các nút trả lời hoặc báo cáo */}
+                </article>
+                {index !== comments.length - 1 && (
+                  <div className="my-4" />
+                )}
+              </React.Fragment>
+            ))}
         </>}
-
-
       </div>
-
     </>
   )
 
