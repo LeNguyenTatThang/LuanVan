@@ -157,18 +157,56 @@ const postBook = async (req, res, next) => {
 
 //api ds sach
 const postApiListBookUser = async (req, res) => {
-    let page = req.query.page ? req.query.page : 1;
-    let bookData = await book.getTrangthai1(page)
-    return res.status(200).json({
-        data: bookData.rows,
-        name: bookData.name,
-        totalPage: bookData.totalPage,
-        errcode: bookData.errcode,
-        message: bookData.message,
-        data: bookData.rows ? bookData.rows : 'không có dữ liệu'
-    })
+    try {
+        let page = req.query.page ? req.query.page : 1;
+        let bookData = await book.getTrangthai1(page)
+        return res.status(200).json({
+            data: bookData.rows,
+            name: bookData.name,
+            totalPage: bookData.totalPage,
+            errcode: bookData.errcode,
+            message: bookData.message,
+            data: bookData.rows ? bookData.rows : 'không có dữ liệu'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+
 }
 
+
+//api lấy sách theo id của users
+const bookByIdUsers = async (req, res) => {
+    try {
+        let id_users = req.query.id_users
+        console.log(id_users)
+        let bookData = await book.getBookByIdUsers(id_users)
+        if (bookData.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                data: bookData.rows,
+                message: bookData.message,
+                data: bookData.rows
+            })
+        } else {
+            return res.status(404).json({
+                errcode: bookData.errcode,
+                message: bookData.message,
+            })
+        }
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+
+}
 
 //api lấy id của sách
 const getApiDetailBooks = async (req, res) => {
@@ -260,6 +298,7 @@ module.exports = {
     BoosMessage,
     updateBook,
     book1,
-    detailBroweBook
+    detailBroweBook,
+    bookByIdUsers,
 }
 

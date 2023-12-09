@@ -358,4 +358,32 @@ book.update = (data, hinhmoi) => {
     })
 }
 
+book.getBookByIdUsers = async (id_users) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let data = {};
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet,id_users, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
+            sql += " WHERE id_users=? "
+            const [rows, fields] = await pool.execute(sql, [id_users])
+            if (rows.length === 0) {
+                data = {
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    errcode: '0',
+                    message: 'ok'
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = book;
