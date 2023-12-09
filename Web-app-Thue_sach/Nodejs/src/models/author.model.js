@@ -203,7 +203,7 @@ author.getRandomBook = function (id) {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql = 'SELECT sach.id, ten, hinh FROM sach INNER JOIN tacgia ON sach.id_tacgia = tacgia.id WHERE tacgia.id = ? ORDER BY RAND() LIMIT 3; '
+            let sql = 'SELECT sach.id, ten, hinh,id_tacgia FROM sach INNER JOIN tacgia ON sach.id_tacgia = tacgia.id WHERE tacgia.id = ? ORDER BY RAND() LIMIT 3; '
             const [rows, err] = await pool.execute(sql, [id])
             if (rows.length > 0) {
                 data = {
