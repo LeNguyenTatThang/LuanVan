@@ -130,7 +130,7 @@ export default function CustomerCard() {
 
     console.log(result)
     //Truyền các tham số: users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue
-    let users_id = userData.userInfo.id
+    let users_id = userData.userInfo
     console.log(users_id)
     let tongtien = TotalCart
     console.log(tongtien)
@@ -147,7 +147,7 @@ export default function CustomerCard() {
                 message: "Thiếu địa chỉ rồi"
             });
         } else {
-            let res = await callApiCreateRental(users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue)
+            let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, sach_id, diachi, ngaythue)
             if (res.status === 200) {
                 iziToast.success({
                     title: res.message,
@@ -258,13 +258,13 @@ export default function CustomerCard() {
 
                     <div className="flex items-center mb-4">
                         <div className="flex-shrink-0">
-                            <img className="w-8 h-8 rounded-full" src={Avt} alt={`${userData.hinh}`} />
+                            <img className="w-8 h-8 rounded-full" src={Avt} alt={`${userData?.hinh}`} />
                             {/* {`http://localhost:8000/img/${userData.hinh}`} */}
                         </div>
 
                         <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-900">{userData.userInfo.ten}</p>
-                            <p className="text-sm text-gray-900">{userData.userInfo.email}</p>
+                            <p className="text-sm font-medium text-gray-900">{userData?.userInfo?.ten}</p>
+                            <p className="text-sm text-gray-900">{userData?.userInfo?.email}</p>
                             <p className="text-sm text-gray-900">{/* Thêm số điện thoại ở đây */} 0367431233</p>
                         </div>
                     </div>

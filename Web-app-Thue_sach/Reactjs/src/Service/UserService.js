@@ -33,6 +33,9 @@ const detailBookUser = async (id) => {
 const apiAuthurRandom = () => {
     return axios.get('/get-api-randomAuthor');
 }
+const apiRandomBook = (id_tacgia) => {
+    return axios.post('/get-api-randomBook', { id_tacgia })
+}
 //call api tạo phiếu thuê khi bấm Xác nhận
 const callApiCreateRental = (users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue) => {
     return axios.post('/post-api-rental', { users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue })
@@ -115,7 +118,7 @@ const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);
 }
 export {
-    fetchAllUser, loginApi, apiRegister,
+    fetchAllUser, loginApi, apiRegister, apiRandomBook,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom,
     callApiCreateRental,
     callApiComment, apiSendComment,
