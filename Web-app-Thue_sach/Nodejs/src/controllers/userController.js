@@ -226,13 +226,35 @@ const sendConfirmationEmail = async (email, url) => {
 const apiUpdateUser = async (req, res) => {
     try {
         let data = req.body
-        let userData = await user.UpdateUser(data);
+        let hinhmoi = {}
+        if (req.file || req.file !== undefined) {
+            hinhmoi = req.file.filename
+        } else {
+            hinhmoi = data.hinh
+        }
+        let userData = await user.UpdateUser(data, hinhmoi);
         if (userData.errcode == 0) {
+            if (req.file && data.hinh) {
+                try {
+                    fs.unlink('src/public/img/' + data.hinh, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
             return res.status(200).json({
                 status: 200,
                 message: userData.message
             })
         } else {
+            if (req.file && hinhmoi) {
+                try {
+                    fs.unlink('src/public/img/' + hinhmoi, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
             return res.status(401).json({
                 status: 401,
                 message: 'cập nhật thất bại'

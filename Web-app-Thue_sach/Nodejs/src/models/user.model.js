@@ -318,12 +318,12 @@ user.getId = (id) => {
     })
 }
 
-user.UpdateUser = (data) => {
+user.UpdateUser = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         let userData = {};
         try {
             await pool.execute('update users set hinh = ?,sdt =?, ten = ?, diachi = ? where id=?',
-                [data.hinh, data.sdt, data.ten, data.diachi, data.id])
+                [hinhmoi, data.sdt, data.ten, data.diachi, data.id])
             userData = {
                 errcode: 0
             }
