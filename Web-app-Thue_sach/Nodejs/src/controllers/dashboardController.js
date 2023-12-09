@@ -6,18 +6,18 @@ const schedule = require('node-schedule');
 const dashboardPage = async (req, res) => {
     try {
         const chartData = await calculateOverallRevenue(req, res);
-        const chartNewAccount = await newAccountStatistics(req, res);
+        // const chartNewAccount = await newAccountStatistics(req, res);
         const users = await user.getAll()
         const usersYear = await user.getYear()
         console.log(users)
         console.log('user', usersYear)
         console.log('bieu do', chartData)
-        console.log('tai khoan', chartNewAccount)
+        // console.log('tai khoan', chartNewAccount)
         return res.render('dashboard/dashboard.ejs', {
             chartData,
             users,
             usersYear,
-            chartNewAccount,
+            // chartNewAccount,
             msgLogin: req.flash('msgLogin'),
         });
     } catch (error) {
@@ -31,7 +31,8 @@ const dashboardPage = async (req, res) => {
 //thống kê số tài khoản được tạo trong tháng
 const newAccountStatistics = async (req, res) => {
     try {
-        let data = await user.newAccountStatistics()
+        let nam = req.body.nam
+        let data = await user.newAccountStatistics(nam)
         if (!Array.isArray(data.rows)) {
             console.error("Dữ liệu không phải là một mảng:", data.rows);
             return res.status(500).json({ error: 'Internal Server Error' });
@@ -55,7 +56,7 @@ const newAccountStatistics = async (req, res) => {
                 }
             }
         };
-        return chartNewAccount;
+        res.json(chartNewAccount);
     } catch (error) {
         console.error("Lỗi trong quá trình tính toán số tài khoản được tạo", error);
 

@@ -322,8 +322,8 @@ user.UpdateUser = (data) => {
     return new Promise(async (resolve, reject) => {
         let userData = {};
         try {
-            await pool.execute('update users set hinh = ?, ten = ?, diachi = ? where id=?',
-                [data.hinh, data.ten, data.diachi, data.id])
+            await pool.execute('update users set hinh = ?,sdt =?, ten = ?, diachi = ? where id=?',
+                [data.hinh, data.sdt, data.ten, data.diachi, data.id])
             userData = {
                 errcode: 0
             }
@@ -343,7 +343,7 @@ user.newAccountStatistics = (nam) => {
                         COUNT(*) AS taikhoanmoi
                         FROM users`
             if (nam) {
-                sql += ` WHERE nam = ${nam}`
+                sql += ` WHERE YEAR(ngaytao) = ${nam}`
             }
             sql += ` GROUP BY YEAR(ngaytao), MONTH(ngaytao)
                         ORDER BY nam, thang`

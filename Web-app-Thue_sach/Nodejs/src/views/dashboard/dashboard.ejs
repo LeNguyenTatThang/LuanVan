@@ -57,7 +57,7 @@
 
                             <div class="card">
                                 <div class="card-header ui-sortable-handle" style="cursor: move;">
-                                    <select>
+                                    <select id="selectYear">
                                         <% for (const years of usersYear.rows) { %>
                                             <option value="<%= years.id %>">
                                                 <%= years.nam %>
@@ -93,6 +93,7 @@
                                     }
                                 })
                             </script>
+
                             <script type="text/javascript">
                                 document.addEventListener('DOMContentLoaded', function () {
                                     //thống kê doanh thu
@@ -115,20 +116,44 @@
                                     chart.render();
 
                                     //thống kê tài khoản được đăng kí trong tháng
-                                    var chartNewAccount = JSON.parse('<%- JSON.stringify(chartNewAccount) %>');
-                                    console.log('Series Account:', chartNewAccount.options.xaxis.categories);
-                                    var optionsNewAccount = {
-                                        chart: {
-                                            type: 'line'
-                                        },
-                                        series: chartNewAccount.series,
-                                        xaxis: {
-                                            categories: chartNewAccount.options.xaxis.categories
-                                        }
-                                    };
-                                    var chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
-                                    chartAccount.render();
+
+                                    function fetchData(selectedYear) {
+                                        $.ajax({
+                                            url: '/newAccountStatistics',
+                                            method: 'POST',
+                                            contentType: 'application/json',
+                                            data: JSON.stringify({ nam: selectedYear }),
+                                            success: function (response) {
+                                                var chartNewAccount = JSON.parse(response);
+                                                var optionsNewAccount = {
+                                                    chart: {
+                                                        type: 'line'
+                                                    },
+                                                    series: chartNewAccount.series,
+                                                    xaxis: {
+                                                        categories: chartNewAccount.options.xaxis.categories
+                                                    }
+                                                };
+                                                var chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
+                                                chartAccount.render();
+                                            },
+                                            error: function (error) {
+                                                console.error('Lỗi trong quá trình gửi yêu cầu Ajax:', error);
+                                            }
+                                        });
+                                    }
+
+                                    // Xử lý sự kiện khi dropdown thay đổi
+                                    $('#selectYear').on('change', function () {
+                                        var selectedYear = $(this).val();
+                                        console.log(selectedYear)
+                                        fetchData(selectedYear);
+                                    });
+
+                                    fetchData(null);
                                 });
+
+
                             </script>
                             <!-- /.content-wrapper -->
                             </body>

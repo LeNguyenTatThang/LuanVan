@@ -25,7 +25,7 @@ let initWebRouter = (app) => {
     router.post('/update-Account', auth.isLogin, upload.single('hinh'), loginController.updateAccount)
 
     //dashbord
-    // router.post('/newAccountStatistics', dashboardController.newAccountStatistics)
+    router.post('/newAccountStatistics', dashboardController.newAccountStatistics)
     router.get('/home', auth.isLogin, dashboardController.dashboardPage);
 
     router.get('/get-catetoryFoByID', auth.isLogin, categoryController.getFromCatetoryByID)

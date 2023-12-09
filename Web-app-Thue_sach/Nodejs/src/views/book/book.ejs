@@ -265,3 +265,20 @@
             }
             });
             };
+
+
+
+
+            var chartNewAccount = JSON.parse('<%- JSON.stringify(chartNewAccount) %>');
+                console.log('Series Account:', chartNewAccount.options.xaxis.categories);
+                var optionsNewAccount = {
+                chart: {
+                type: 'line'
+                },
+                series: chartNewAccount.series,
+                xaxis: {
+                categories: chartNewAccount.options.xaxis.categories
+                }
+                };
+                var chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
+                chartAccount.render();
