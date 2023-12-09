@@ -37,7 +37,7 @@ export default function Profile() {
                                         {userData.userInfo.diachi ? <>{userData.userInfo.diachi}</> : <>Ban chua cap nhat dia chi</>}
                                     </div>
                                     <div className=" text-gray-800 items-center"> {userData.userInfo.email}</div>
-                                    <div className=" text-gray-800 items-center"> {userData.userInfo.sdt}</div>
+                                    <div className=" text-gray-800 items-center"> {userData.userInfo.sdt ? <>{userData.userInfo.sdt}</> : <>Ban chua cap nhat so dien thoai</>}</div>
                                 </div>
                             </div>
                             <div className="flex gap-2 px-2">
