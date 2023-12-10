@@ -1,14 +1,15 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useNavigation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOG_OUT } from '../app/userReducer';
 import iziToast from 'izitoast';
 import Cart from './Cart';
 export default function Navbar() {
     const userData = useSelector((state) => state.user);
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogout = async () => {
+        navigate('/')
         iziToast.success({
             position: 'topRight',
             message: 'Bạn đã đăng xuất'

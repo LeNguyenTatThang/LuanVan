@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ADD_TO_CART } from '../app/userCard';
 import { Link, useNavigate } from 'react-router-dom';
 import iziToast from 'izitoast';
+import Select from 'react-select';
 
 
 export default function Product() {
@@ -73,20 +74,29 @@ export default function Product() {
         } else {
             dispatch(ADD_TO_CART(_item));
         }
-
-
+    }
+    const option = listBook?.map((book) => {
+        return {
+            value: book.id,
+            label: book.ten
+        }
+    })
+    const handleChange = (e) => {
+        console.log(`Selected option: ${e ? e.label : 'null'}`);
     }
 
     return (
         <>
-            <select className="select w-auto h-10">
-                <option disabled selected>Pick your favorite Simpson</option>
-                <option>Homer</option>
-                <option>Marge</option>
-                <option>Bart</option>
-                <option>Lisa</option>
-                <option>Maggie</option>
-            </select>
+            <div>
+                <label htmlFor="mySelect">Tìm theo tên:</label>
+                <Select
+                    id="mySelect"
+                    options={option}
+                    onChange={handleChange}
+                    placeholder="Select..."
+                    className=' w-60 bg-slate-600'
+                />
+            </div>
             <br /><br />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
                 {listBook && listBook.length > 0 &&

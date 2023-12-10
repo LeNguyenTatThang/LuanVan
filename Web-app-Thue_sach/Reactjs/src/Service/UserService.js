@@ -19,6 +19,15 @@ const addBook = (hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia
         }
     );
 }
+const updateUser = (id, hinh, ten, diachi, sdt) => {
+    return axios.patch("/api/update-user", { id, hinh, ten, diachi, sdt },
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
+}
 const apiListCate = () => {
     return axios.get("/get-api-category");
 }
@@ -118,7 +127,7 @@ const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);
 }
 export {
-    fetchAllUser, loginApi, apiRegister, apiRandomBook,
+    fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom,
     callApiCreateRental,
     callApiComment, apiSendComment,

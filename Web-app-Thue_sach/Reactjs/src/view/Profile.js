@@ -1,48 +1,193 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { UPDATE_USER_INFORMATION } from '../app/userReducer';
+import { updateUser } from '../Service/UserService';
+import iziToast from 'izitoast';
 
 export default function Profile() {
-
     const navigate = useNavigate();
-
     const userData = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const [editMode, setEditMode] = useState(false);
+    const [newUserInfo, setNewUserInfo] = useState({
+        ten: userData.userInfo ? userData.userInfo.ten : '',
+        diachi: userData.userInfo ? userData.userInfo.diachi : '',
+        sdt: userData.userInfo ? userData.userInfo.sdt : '',
+        hinh: userData.userInfo ? userData.userInfo.hinh : '',
+    });
+    const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
-        if (!userData.isLogin) {
+        if (!userData.isLogin && !editMode) {
             navigate('/');
         }
-    }, [userData])
+    }, [userData, navigate, editMode]);
 
-    const dispatch = useDispatch();
+    const handleEditProfile = () => {
+        setEditMode(true);
+    };
+
+    const handleChange = (e) => {
+        const img = {
+            preview: URL.createObjectURL(e.target.files[0]),
+            data: e.target.files[0],
+        };
+        setSelectedImage(img);
+    };
+
+    const handleSaveChanges = async () => {
+        if (editMode && selectedImage) {
+            // Update user information and exit edit mode
+            await updateUser(
+                userData.userInfo.id,
+                selectedImage.data,
+                newUserInfo.ten,
+                newUserInfo.diachi,
+                newUserInfo.sdt
+            );
+            // After successfully saving changes
+            dispatch(UPDATE_USER_INFORMATION(newUserInfo));
+            setEditMode(false);
+        }
+    };
+
+    const handleGoBack = () => {
+        // Reset newUserInfo to the current user information and exit edit mode
+        setNewUserInfo({
+            ten: userData.userInfo ? userData.userInfo.ten : '',
+            diachi: userData.userInfo ? userData.userInfo.diachi : '',
+            sdt: userData.userInfo ? userData.userInfo.sdt : '',
+            hinh: userData.userInfo ? userData.userInfo.hinh : '',
+        });
+        setEditMode(false);
+    };
+    const [hinh, setHinh] = useState({ preview: '', data: '' });
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewUserInfo((prevInfo) => ({
+            ...prevInfo,
+            [name]: value,
+        }));
+    };
     return (
         <>
-
-            <div className="h-screen bg-gray-200 pt-20">
+            <div className="h-screen bg-gray-200 pt-10">
                 <div>
-
                     <div className="max-w-sm mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
                         <div className="border-b px-4 pb-6">
                             <div className="text-center my-4">
-                                <img className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4" src={`http://localhost:8000/img/${userData.userInfo.hinh}`}
-                                    alt={`${userData.userInfo.hinh}`} />
+                                {editMode ? (
+                                    <img
+                                        className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4"
+                                        src={selectedImage ? selectedImage.preview : newUserInfo.hinh}
+                                        alt="New Image"
+                                    />
+                                ) : (
+                                    <img
+                                        className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4"
+                                        src={`http://localhost:8000/img/${userData?.userInfo?.hinh}`}
+                                        alt={userData?.userInfo?.hinh || 'Chưa cập nhật'}
+                                    />
+                                )}
                                 <div className="py-2">
-                                    <h3 className="font-bold text-2xl mb-1">{userData.userInfo.ten}</h3>
-                                    <div className="inline-flex text-gray-700 items-center">
-                                        <svg className="h-5 w-5 text-gray-400 mr-1" fill="currentColor"
-                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                            <path className=""
-                                                d="M5.64 16.36a9 9 0 1 1 12.72 0l-5.65 5.66a1 1 0 0 1-1.42 0l-5.65-5.66zm11.31-1.41a7 7 0 1 0-9.9 0L12 19.9l4.95-4.95zM12 14a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
-                                        </svg>
-                                        {userData.userInfo.diachi ? <>{userData.userInfo.diachi}</> : <>Ban chua cap nhat dia chi</>}
+                                    <h3 className="font-bold text-2xl mb-1">
+                                        {editMode ? (
+                                            <input
+                                                type="text"
+                                                name="ten"
+                                                value={newUserInfo.ten}
+                                                onChange={handleInputChange}
+                                                className="border-b border-gray-300 focus:outline-none focus:border-blue-500 text-lg"
+                                            />
+                                        ) : (
+                                            <>{userData.userInfo ? userData.userInfo.ten : ''}</>
+                                        )}
+                                    </h3>
+                                    <div className="py-2">
+                                        {/* Input fields for 'diachi', 'sdt', and 'hinh' */}
+                                        {editMode ? (
+                                            <>
+                                                <input
+                                                    type="text"
+                                                    name="diachi"
+                                                    value={newUserInfo.diachi}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Địa chỉ"
+                                                    className="border-b border-gray-300 focus:outline-none focus:border-blue-500 text-lg p-2"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    name="sdt"
+                                                    value={newUserInfo.sdt}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Số điện thoại"
+                                                    className="border-b border-gray-300 focus:outline-none focus:border-blue-500 text-lg p-2"
+                                                />
+                                                <input
+                                                    type="file"
+                                                    name="hinh"
+                                                    className="file-input w-full max-w-xs"
+                                                    onChange={handleChange}
+                                                />
+                                                <img src={hinh.preview} alt="Preview" />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="py-2">
+                                                    {/* Information display for 'diachi', 'sdt', and 'hinh' */}
+                                                    {!editMode && userData.userInfo ? (
+                                                        <>
+                                                            <div className="flex items-center mb-2">
+                                                                <span className="mr-2 text-gray-700">Email:</span>
+                                                                <span className="text-gray-800">
+                                                                    {userData.userInfo.email || 'Chưa cập nhật'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex items-center mb-2">
+                                                                <span className="mr-2 text-gray-700">Địa chỉ:</span>
+                                                                <span className="text-gray-800">
+                                                                    {userData.userInfo.diachi || 'Chưa cập nhật'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex items-center mb-2">
+                                                                <span className="mr-2 text-gray-700">Số điện thoại:</span>
+                                                                <span className="text-gray-800">
+                                                                    {userData.userInfo.sdt || 'Chưa cập nhật'}
+                                                                </span>
+                                                            </div>
+                                                        </>
+                                                    ) : null}
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
-                                    <div className=" text-gray-800 items-center"> {userData.userInfo.email}</div>
-                                    <div className=" text-gray-800 items-center"> {userData.userInfo.sdt ? <>{userData.userInfo.sdt}</> : <>Ban chua cap nhat so dien thoai</>}</div>
                                 </div>
                             </div>
                             <div className="flex gap-2 px-2">
-                                <button className="flex-1 rounded-full bg-blue-600 text-white antialiased font-bold hover:bg-blue-800 px-4 py-2">Follow</button>
-                                <button className="flex-1 rounded-full border-2 border-gray-400 font-semibold text-black px-4 py-2">Message</button>
+                                {editMode ? (
+                                    <>
+                                        <button
+                                            onClick={handleSaveChanges}
+                                            className="flex-1 rounded-full bg-blue-600 text-white antialiased font-bold hover:bg-blue-800 px-4 py-2"
+                                        >
+                                            Lưu
+                                        </button>
+                                        <button
+                                            onClick={handleGoBack}
+                                            className="flex-1 rounded-full bg-gray-500 text-white antialiased font-bold hover:bg-gray-700 px-4 py-2"
+                                        >
+                                            Trở về
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button
+                                        onClick={handleEditProfile}
+                                        className="flex-1 rounded-full bg-blue-600 text-white antialiased font-bold hover:bg-blue-800 px-4 py-2"
+                                    >
+                                        Sửa thông tin
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <div className="px-4 py-4">

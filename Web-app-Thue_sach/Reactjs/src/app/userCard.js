@@ -43,8 +43,10 @@ const userCard = createSlice({
             };
         },
         REMOVE_ALL: (state, action) => {
-            state.product = null;
-            return state
+            return {
+                ...state,
+                cart: [],
+            };
         },
 
     },
