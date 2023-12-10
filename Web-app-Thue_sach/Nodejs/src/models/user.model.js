@@ -16,7 +16,7 @@ user.handleUserLogin = (email, matkhau) => {
                     userData.errcode = 6;
                     userData.errMessage = "email này chưa xác thực";
                 } else {
-                    const [rows, fields] = await pool.execute('SELECT id,ten,hinh, email,matkhau FROM users where email= ?', [email])
+                    const [rows, fields] = await pool.execute('SELECT id,ten,hinh,diachi,sdt, email,matkhau FROM users where email= ?', [email])
                     let user = rows[0];
                     if (user) {
                         let checkmk = await bcrypt.compareSync(matkhau, user.matkhau);
@@ -292,6 +292,32 @@ user.getYear = () => {
         }
     })
 }
+
+user.getUsers = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = "SELECT id, ten FROM users WHERE loai =1";
+            const [rows, fields] = await pool.execute(sql)
+            if (rows.length === 0) {
+                data = {
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    errcode: '0',
+                    message: 'ok'
+                }
+            } resolve(data)
+        } catch {
+            reject(e)
+        }
+    })
+}
+
+
 
 user.getId = (id) => {
     return new Promise(async (resolve, reject) => {

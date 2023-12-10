@@ -5,16 +5,16 @@ const schedule = require('node-schedule');
 
 const dashboardPage = async (req, res) => {
     try {
-        const chartData = await calculateOverallRevenue(req, res);
+        // const chartData = await calculateOverallRevenue(req, res);
         // const chartNewAccount = await newAccountStatistics(req, res);
-        const users = await user.getAll()
+        const users = await user.getUsers()
         const usersYear = await user.getYear()
-        console.log(users)
+        console.log('chủ tiệm', users)
         console.log('user', usersYear)
-        console.log('bieu do', chartData)
+        // console.log('bieu do', chartData)
         // console.log('tai khoan', chartNewAccount)
         return res.render('dashboard/dashboard.ejs', {
-            chartData,
+            // chartData,
             users,
             usersYear,
             // chartNewAccount,
@@ -66,15 +66,18 @@ const newAccountStatistics = async (req, res) => {
 //thống kê tổng doanh thu của chủ tiệm
 const calculateOverallRevenue = async (req, res) => {
     try {
-        let data = await rental.calculateOverallRevenue()
-        console.log(data.data)
-        if (!Array.isArray(data.data)) {
-            console.error("Dữ liệu không phải là một mảng:", data.data);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        data.data.sort((a, b) => a.chutiem_id - b.chutiem_id || (a.nam * 12 + a.thang) - (b.nam * 12 + b.thang));
-        const groupedData = groupBy(data.data, 'chutiem_id');
+        let name = req.body.name
+        let data = await rental.calculateOverallRevenue(name)
 
+        if (!data || !data.data || data.data.length === 0) {
+            console.error("Dữ liệu không tồn tại hoặc rỗng");
+            return res.status(404).json({ error: 'Not Found' });
+        }
+        console.log('duwx liêu ', data.data)
+        const dataArray = Array.isArray(data.data) ? data.data : [data.data];
+        dataArray.sort((a, b) => a.chutiem_id - b.chutiem_id || (a.nam * 12 + a.thang) - (b.nam * 12 + b.thang));
+        const groupedData = groupBy(dataArray.filter(item => item && item.chutiem_id), 'chutiem_id');
+        console.log('dârr', dataArray)
         const series = Object.values(groupedData).map(group => ({
             name: `Chủ tiệm ${group[0].chutiem_id}`,
             data: group.map(row => ({
@@ -90,13 +93,12 @@ const calculateOverallRevenue = async (req, res) => {
                     type: 'line'
                 },
                 xaxis: {
-                    categories: data.data.map(row => `${row.nam}-${row.thang}`)
+                    categories: dataArray.map(row => `${row.nam}-${row.thang}`)
                 }
             }
         };
-
-        console.log(chartData)
-        return chartData;
+        console.log('dữ liệu doanh thu', chartData)
+        res.json(chartData)
     } catch (error) {
         console.error("Lỗi trong quá trình tính toán doanh thu:", error);
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -148,5 +150,6 @@ const dashboardLogAccess = async (req, res, next) => {
 module.exports = {
     dashboardPage,
     dashboardLogAccess,
-    newAccountStatistics
+    newAccountStatistics,
+    calculateOverallRevenue
 }

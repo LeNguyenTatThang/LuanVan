@@ -343,14 +343,18 @@ rental.getRentOrder = (data) => {
 
 
 //thống kê doanh thu
-rental.calculateOverallRevenue = () => {
+rental.calculateOverallRevenue = (name) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
+            console.log('tên', name)
             let sqlRental = `SELECT chutiem_id, SUM(tongtien) AS tongdoanhthu, YEAR(ngaynhan) AS nam, 
             MONTH(ngaynhan) AS thang
-            FROM phieuthue WHERE trangthai =2 OR trangthai=3 OR trangthai =4
-            GROUP BY chutiem_id, nam, thang`
+            FROM phieuthue WHERE (trangthai =2 OR trangthai=3 OR trangthai =4)`
+            if (name !== null && name !== "") {
+                sqlRental += ` AND chutiem_id = ${name}`;
+            }
+            sqlRental += ` GROUP BY chutiem_id, nam, thang`;
             const [rows, fields] = await pool.execute(sqlRental)
             let dataRow = rows
             if (dataRow.length > 0) {

@@ -28,6 +28,7 @@ let initWebRouter = (app) => {
     router.post('/newAccountStatistics', dashboardController.newAccountStatistics)
     router.get('/home', auth.isLogin, dashboardController.dashboardPage);
 
+    router.post('/calculateOverallRevenue', dashboardController.calculateOverallRevenue)
     router.get('/get-catetoryFoByID', auth.isLogin, categoryController.getFromCatetoryByID)
     router.get('/category', auth.isLogin, categoryController.getCategory);
     router.get('/add-category', auth.isLogin, categoryController.getAddCategory);

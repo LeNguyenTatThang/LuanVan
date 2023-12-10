@@ -36,7 +36,8 @@
 
                             <div class="card">
                                 <div class="card-header ui-sortable-handle" style="cursor: move;">
-                                    <select name="chutiem" id="chutiem" onchange="updateChart()">
+                                    <select id="selectUser">
+                                        <option value="null">Tất cả</option>
                                         <% for (const chutiem of users.rows) { %>
                                             <option value="<%= chutiem.id %>">Chủ tiệm <%= chutiem.ten %>
                                             </option>
@@ -58,8 +59,9 @@
                             <div class="card">
                                 <div class="card-header ui-sortable-handle" style="cursor: move;">
                                     <select id="selectYear">
+                                        <option value="" selected disabled>Chọn năm</option>
                                         <% for (const years of usersYear.rows) { %>
-                                            <option value="<%= years.id %>">
+                                            <option value="<%= years.nam %>">
                                                 <%= years.nam %>
                                             </option>
                                             <% } %>
@@ -96,46 +98,38 @@
 
                             <script type="text/javascript">
                                 document.addEventListener('DOMContentLoaded', function () {
+
                                     //thống kê doanh thu
-                                    var chartData = JSON.parse('<%- JSON.stringify(chartData) %>');
-                                    console.log('Series Data:', chartData.series);
-                                    chartData.series.forEach((series, index) => {
-                                        console.log(`Name of series ${index + 1}:`, series.name);
-                                    });
+                                    var chartRevenue;
 
-                                    var options = {
-                                        chart: {
-                                            type: 'line'
-                                        },
-                                        series: chartData.series,
-                                        xaxis: {
-                                            categories: chartData.options.xaxis.categories
-                                        }
-                                    };
-                                    var chart = new ApexCharts(document.querySelector("#chart"), options);
-                                    chart.render();
-
-                                    //thống kê tài khoản được đăng kí trong tháng
-
-                                    function fetchData(selectedYear) {
+                                    function fetchChartRevenue(name) {
                                         $.ajax({
-                                            url: '/newAccountStatistics',
+                                            url: '/calculateOverallRevenue',
                                             method: 'POST',
-                                            contentType: 'application/json',
-                                            data: JSON.stringify({ nam: selectedYear }),
-                                            success: function (response) {
-                                                var chartNewAccount = JSON.parse(response);
-                                                var optionsNewAccount = {
-                                                    chart: {
-                                                        type: 'line'
-                                                    },
-                                                    series: chartNewAccount.series,
-                                                    xaxis: {
-                                                        categories: chartNewAccount.options.xaxis.categories
-                                                    }
-                                                };
-                                                var chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
-                                                chartAccount.render();
+                                            data: { name: name },
+                                            dataType: "JSON",
+                                            success: function (chartData) {
+                                                console.log('Dữ liệu từ server:', chartData);
+                                                if (!chartRevenue) {
+                                                    var options = {
+                                                        chart: {
+                                                            type: 'line'
+                                                        },
+                                                        series: chartData.series,
+                                                        xaxis: {
+                                                            categories: chartData.options.xaxis.categories
+                                                        }
+                                                    };
+                                                    chartRevenue = new ApexCharts(document.querySelector("#chart"), options);
+                                                    chartRevenue.render();
+                                                } else {
+                                                    chartRevenue.updateOptions({
+                                                        xaxis: {
+                                                            categories: chartData.options.xaxis.categories
+                                                        }
+                                                    });
+                                                    chartRevenue.updateSeries(chartData.series);
+                                                }
                                             },
                                             error: function (error) {
                                                 console.error('Lỗi trong quá trình gửi yêu cầu Ajax:', error);
@@ -143,14 +137,58 @@
                                         });
                                     }
 
-                                    // Xử lý sự kiện khi dropdown thay đổi
+                                    $('#selectUser').on('change', function () {
+                                        var selectUser = $(this).val();
+                                        var name = (selectUser === "null") ? null : selectUser;
+                                        console.log(name)
+
+                                        fetchChartRevenue(name);
+
+                                    });
+                                    fetchChartRevenue(null)
+                                    console.log('da', fetchChartRevenue)
+                                    //thống kê tài khoản được đăng kí trong tháng
+                                    var chartAccount;
+                                    function fetchChartAccount(selectedYear) {
+                                        $.ajax({
+                                            url: '/newAccountStatistics',
+                                            method: 'POST',
+                                            dataType: "JSON",
+                                            data: { nam: selectedYear },
+                                            success: function (response) {
+                                                if (!chartAccount) {
+                                                    var optionsNewAccount = {
+                                                        chart: {
+                                                            type: 'line'
+                                                        },
+                                                        series: response.series,
+                                                        xaxis: {
+                                                            categories: response.options.xaxis.categories
+                                                        }
+                                                    };
+                                                    chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
+                                                    chartAccount.render();
+                                                } else {
+                                                    chartAccount.updateOptions({
+                                                        xaxis: {
+                                                            categories: response.options.xaxis.categories
+                                                        }
+                                                    });
+                                                    chartAccount.updateSeries(response.series);
+                                                }
+                                            },
+                                            error: function (error) {
+                                                console.error('Lỗi trong quá trình gửi yêu cầu Ajax:', error);
+                                            }
+                                        });
+                                    }
+
                                     $('#selectYear').on('change', function () {
                                         var selectedYear = $(this).val();
-                                        console.log(selectedYear)
-                                        fetchData(selectedYear);
+                                        fetchChartAccount(selectedYear);
                                     });
 
-                                    fetchData(null);
+                                    fetchChartAccount(null);
                                 });
 
 

@@ -282,3 +282,22 @@
                 };
                 var chartAccount = new ApexCharts(document.querySelector("#chartAccount"), optionsNewAccount);
                 chartAccount.render();
+
+
+                var chartData = JSON.parse('<%- JSON.stringify(chartData) %>');
+                    console.log('Series Data:', chartData.series);
+                    chartData.series.forEach((series, index) => {
+                    console.log(`Name of series ${index + 1}:`, series.name);
+                    });
+
+                    var options = {
+                    chart: {
+                    type: 'line'
+                    },
+                    series: chartData.series,
+                    xaxis: {
+                    categories: chartData.options.xaxis.categories
+                    }
+                    };
+                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                    chart.render();
