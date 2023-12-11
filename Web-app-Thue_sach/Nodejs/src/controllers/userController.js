@@ -232,11 +232,12 @@ const apiUpdateUser = async (req, res) => {
         } else {
             hinhmoi = data.hinh
         }
+        let dataImage = await user.getId(data.id)
         let userData = await user.UpdateUser(data, hinhmoi);
         if (userData.errcode == 0) {
-            if (req.file && data.hinh) {
+            if (req.file && dataImage.hinh) {
                 try {
-                    fs.unlink('src/public/img/' + data.hinh, function (err) {
+                    fs.unlink('src/public/img/' + dataImage.hinh, function (err) {
                     });
                 } catch (error) {
                     throw error
