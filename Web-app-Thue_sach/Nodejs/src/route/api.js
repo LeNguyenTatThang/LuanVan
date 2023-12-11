@@ -22,6 +22,8 @@ let initApiRouter = (app) => {
     // api danh sách thể loại
     router.get('/get-api-category', categoryController.apiListCategory)
 
+    //api lấy chi tiết user
+    router.get('/api/getUserByID', userController.userByID)
 
     //api lấy ds phân trang bên user
     router.get('/get-api-listBook', bookController.postApiListBookUser)
