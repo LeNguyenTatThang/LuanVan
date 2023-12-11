@@ -221,7 +221,29 @@ const sendConfirmationEmail = async (email, url) => {
     }
 }
 
-
+const userByID = async (req, res) => {
+    try {
+        id = req.query.id
+        let data = await user.getId(id)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
 
 const apiUpdateUser = async (req, res) => {
     try {
@@ -279,5 +301,6 @@ module.exports = {
     accountVerification,
     detailUser,
     disableCommentsUsers,
-    DisableBookPosting
+    DisableBookPosting,
+    userByID
 }
