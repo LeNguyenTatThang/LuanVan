@@ -322,6 +322,7 @@ user.getUsers = () => {
 user.getId = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log('check', id)
             let usersModel = {}
             let sql = "SELECT id, ten, hinh, email, cambl, camdang, loai, diachi, sdt  FROM users WHERE id =?"
             const [result] = await pool.execute(sql, [id])

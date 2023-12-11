@@ -223,7 +223,7 @@ const sendConfirmationEmail = async (email, url) => {
 
 const userByID = async (req, res) => {
     try {
-        id = req.query.id
+        let id = req.query.id
         let data = await user.getId(id)
         if (data.errcode === 0) {
             return res.status(200).json({
