@@ -244,13 +244,14 @@ const updateBook = async (req, res) => {
         } else {
             hinhmoi = data.hinh
         }
+        let dataImage = await book.getId(data.id)
         console.log('hinh', hinhmoi)
         let dataBook = await book.update(data, hinhmoi)
         console.log(dataBook)
         if (dataBook.errcode == 0) {
             if (req.file) {
                 try {
-                    fs.unlink('src/public/img/' + data.hinh, function (err) {
+                    fs.unlink('src/public/img/' + dataImage.hinh, function (err) {
                     });
                 } catch (error) {
                     throw error
