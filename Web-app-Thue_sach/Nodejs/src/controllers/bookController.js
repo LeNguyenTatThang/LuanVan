@@ -284,7 +284,32 @@ const updateBook = async (req, res) => {
 }
 
 
-//api danh sach chuong cua sach
+//api danh sach theo theloai va tacgia
+const bookByCatetoryAndAuthor = async (req, res) => {
+    try {
+        let category = req.query.theloai_id
+        let author = req.query.id_tacgia
+        let data = await book.getBookByCatetoryAndAuthor(category, author)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data.rows,
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                data: data.message
+            })
+
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: "lỗi Server"
+        })
+    }
+}
 
 
 module.exports = {
@@ -300,5 +325,6 @@ module.exports = {
     book1,
     detailBroweBook,
     bookByIdUsers,
+    bookByCatetoryAndAuthor
 }
 

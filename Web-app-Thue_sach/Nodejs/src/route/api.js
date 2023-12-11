@@ -50,6 +50,8 @@ let initApiRouter = (app) => {
     //lấy ds sách theo id_users(id_users)
     router.get('/api/bookByIdUsers', bookController.bookByIdUsers)
 
+    //lấy ds sách theo theloai va tacgia
+    router.get('/api/bookByCatetoryAndAuthor', bookController.bookByCatetoryAndAuthor)
     //tac gia
     router.get('/get-api-randomAuthor', authorController.apiRandomAuthor)
 

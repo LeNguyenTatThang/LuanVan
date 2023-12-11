@@ -90,6 +90,40 @@ book.getTrangthai1 = (page) => {
     })
 }
 
+book.getBookByCatetoryAndAuthor = (category, author) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let limit = 6;
+            let data = {};
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
+            sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet'"
+            if (category) {
+                sql += ` AND theloai_id=${category}`
+            }
+            if (author) {
+                sql += ` AND id_tacgia=${author}`
+            }
+            let [rows, fields] = await pool.execute(sql)
+            console.log(rows)
+            if (rows.length === 0) {
+                data = {
+                    errcode: 1,
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    errcode: 0,
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 //them sach
 book.create = (bookData) => {
     return new Promise(async (resolve, reject) => {
