@@ -355,6 +355,8 @@ user.UpdateUser = (data, hinhmoi) => {
                 errcode: 0
             }
             console.log("check user data update", userData)
+            console.log("image>>>>: ", hinhmoi)
+            console.log("data>>>>>: ", data)
             resolve(userData)
         } catch (e) {
             reject(e)
