@@ -412,7 +412,7 @@ book.getBookByIdUsers = async (id_users, loai) => {
             let data = {};
             let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet,id_users, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-            sql += " WHERE id_users=? AND loai=? "
+            sql += " WHERE id_users=? AND sach.loai=? "
             const [rows, fields] = await pool.execute(sql, [id_users, loai])
             if (rows.length === 0) {
                 data = {

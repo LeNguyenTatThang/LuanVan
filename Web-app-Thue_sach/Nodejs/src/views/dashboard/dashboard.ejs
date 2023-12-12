@@ -111,6 +111,7 @@
                                             success: function (chartData) {
                                                 console.log('Dữ liệu từ server:', chartData);
                                                 var hasData = chartData.series && chartData.series.length > 0;
+                                                console.log('có dâtta', hasData)
                                                 if (!chartRevenue) {
                                                     var options = {
                                                         chart: {
@@ -123,6 +124,7 @@
                                                     };
                                                     chartRevenue = new ApexCharts(document.querySelector("#chart"), options);
                                                     chartRevenue.render();
+                                                    chartHasData = hasNewData;
                                                 } else {
                                                     chartRevenue.updateOptions({
                                                         xaxis: {
@@ -130,26 +132,7 @@
                                                         }
                                                     });
                                                     chartRevenue.updateSeries(chartData.series);
-                                                    if (hasData) {
-                                                        chartRevenue.updateOptions({
-                                                            xaxis: {
-                                                                categories: chartData.options.xaxis.categories
-                                                            }
-                                                        });
-                                                        chartRevenue.updateSeries(chartData.series);
-                                                    } else {
-                                                        // Nếu không có dữ liệu mới, và biểu đồ đã có dữ liệu trước đó, hiển thị một trạng thái đặc biệt
-                                                        chartRevenue.updateOptions({
-                                                            chart: {
-                                                                type: 'line'
-                                                            },
-                                                            series: [{ name: 'Không có dữ liệu', data: [0] }], // Hiển thị một đường với một điểm
-                                                            xaxis: {
-                                                                categories: ['Không có dữ liệu']
-                                                            }
-                                                        });
-                                                        chartHasData = false; // Gán biến để báo hiệu không có dữ liệu
-                                                    }
+
                                                 }
                                             },
                                             error: function (error) {
@@ -161,10 +144,7 @@
                                     $('#selectUser').on('change', function () {
                                         var selectUser = $(this).val();
                                         var name = (selectUser === "null") ? null : selectUser;
-                                        console.log(name)
-
                                         fetchChartRevenue(name);
-
                                     });
                                     fetchChartRevenue(null)
                                     console.log('da', fetchChartRevenue)
