@@ -82,7 +82,7 @@ export default function Navbar() {
                                                     <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 " fill="none" viewBox="0 0 23 23" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
-                                                    <span className="flex-1 ml-3 whitespace-nowrap">{userData.userInfo.ten} </span>
+                                                    <span className="flex-1 ml-3 whitespace-nowrap">{userData.userInfo && <span>{userData.userInfo.ten}</span>} </span>
                                                 </div>
                                             </label>
                                             <ul tabindex="0" className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">

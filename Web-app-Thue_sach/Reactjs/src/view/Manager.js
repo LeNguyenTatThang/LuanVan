@@ -288,7 +288,7 @@ const Manager = () => {
                                                     } hover:bg-gray-300`}>
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
-                                                    <td className="py-2 px-4 border-b">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b">{item.nguoithue}</td>
                                                     <td className="py-2 px-4 border-b">Sách được thuê từ ngày: {dayjs(item.ngaynhan).format(' DD-MM-YYYY')}<br />
                                                         Ngày trả sách vào: {dayjs(item.ngaytra).format(' DD-MM-YYYY')}
                                                     </td>
@@ -314,8 +314,8 @@ const Manager = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {RentOrderThree && RentOrderThree.length > 0 &&
-                                            RentOrderThree.map((item, index) => (
+                                        {OrderThree && OrderThree.length > 0 &&
+                                            OrderThree.map((item, index) => (
                                                 <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
                                                     } hover:bg-gray-300`}>
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
@@ -471,17 +471,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
                                                     <td className="py-2 px-4 border-b">{item.nguoidang}</td>
-                                                    <td className="py-2 px-4 border-b">
-                                                        {returnItems.includes(index) ? (
-                                                            <span>Đang vận chuyển</span>
-                                                        ) : (
-                                                            <button
-                                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                                                                onClick={() => handleReturnClick(item.id, index)}
-                                                            >
-                                                                Trả sách lại cho chủ tiệm
-                                                            </button>
-                                                        )}
+                                                    <td className="py-2 px-4 border-b">Đang chờ chủ tiệm nhận sách
                                                     </td>
                                                 </tr>
                                             ))}
