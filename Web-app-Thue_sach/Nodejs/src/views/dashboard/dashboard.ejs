@@ -110,6 +110,7 @@
                                             dataType: "JSON",
                                             success: function (chartData) {
                                                 console.log('Dữ liệu từ server:', chartData);
+                                                var hasData = chartData.series && chartData.series.length > 0;
                                                 if (!chartRevenue) {
                                                     var options = {
                                                         chart: {
@@ -129,6 +130,26 @@
                                                         }
                                                     });
                                                     chartRevenue.updateSeries(chartData.series);
+                                                    if (hasData) {
+                                                        chartRevenue.updateOptions({
+                                                            xaxis: {
+                                                                categories: chartData.options.xaxis.categories
+                                                            }
+                                                        });
+                                                        chartRevenue.updateSeries(chartData.series);
+                                                    } else {
+                                                        // Nếu không có dữ liệu mới, và biểu đồ đã có dữ liệu trước đó, hiển thị một trạng thái đặc biệt
+                                                        chartRevenue.updateOptions({
+                                                            chart: {
+                                                                type: 'line'
+                                                            },
+                                                            series: [{ name: 'Không có dữ liệu', data: [0] }], // Hiển thị một đường với một điểm
+                                                            xaxis: {
+                                                                categories: ['Không có dữ liệu']
+                                                            }
+                                                        });
+                                                        chartHasData = false; // Gán biến để báo hiệu không có dữ liệu
+                                                    }
                                                 }
                                             },
                                             error: function (error) {

@@ -22,7 +22,7 @@ let initApiRouter = (app) => {
     // api danh sách thể loại
     router.get('/get-api-category', categoryController.apiListCategory)
 
-    //api lấy chi tiết user
+    //api lấy chi tiết user theo loại (loai, id_users)
     router.get('/api/getUserByID', userController.userByID)
 
     //api lấy ds phân trang bên user

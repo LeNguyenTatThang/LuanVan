@@ -184,8 +184,9 @@ const postApiListBookUser = async (req, res) => {
 const bookByIdUsers = async (req, res) => {
     try {
         let id_users = req.query.id_users
+        let loai = req.query.loai
         console.log(id_users)
-        let bookData = await book.getBookByIdUsers(id_users)
+        let bookData = await book.getBookByIdUsers(id_users, loai)
         if (bookData.errcode == 0) {
             return res.status(200).json({
                 status: 200,
