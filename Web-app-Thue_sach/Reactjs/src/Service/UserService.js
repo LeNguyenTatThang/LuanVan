@@ -9,6 +9,9 @@ const loginApi = (email, matkhau) => {
 const apiRegister = (ten, email, matkhau,) => {
     return axios.post("/api-userRegister", { ten, email, matkhau });
 }
+const apiDetailUser = (id) => {
+    return axios.get(`/api/getUserByID?id=${id}`)
+}
 const addBook = (hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users) => {
 
     return axios.post("/post-api-book", { hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users },
@@ -127,7 +130,7 @@ const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);
 }
 export {
-    fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser,
+    fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom,
     callApiCreateRental,
     callApiComment, apiSendComment,
