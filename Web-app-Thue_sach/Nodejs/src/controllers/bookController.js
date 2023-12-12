@@ -111,6 +111,8 @@ const BoosMessage = async (req, res) => {
 
 //API
 
+
+
 //api them sach
 const postBook = async (req, res, next) => {
     try {
@@ -288,9 +290,11 @@ const updateBook = async (req, res) => {
 //api danh sach theo theloai va tacgia
 const bookByCatetoryAndAuthor = async (req, res) => {
     try {
-        let category = req.query.theloai_id
-        let author = req.query.id_tacgia
-        let data = await book.getBookByCatetoryAndAuthor(category, author)
+        let theloai_id = req.query.theloai_id
+        let id_tacgia = req.query.id_tacgia
+        let loai = req.query.loai
+        let ten = req.query.ten
+        let data = await book.getBookByCatetoryAndAuthor(theloai_id, id_tacgia, loai, ten)
         if (data.errcode === 0) {
             return res.status(200).json({
                 status: 200,

@@ -41,6 +41,11 @@ rental.create = function (data) {
                 let phieuthue_id = result.insertId;
                 for (let bookId of bookIds) {
                     await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
+                    let sqlUpdate = `UPDATE sach SET trangthaithue = dangthue WHERE id=?`
+                    const [result, fields] = await pool.execute(sqlUpdate, [bookId])
+                    if (result) {
+
+                    }
                 }
                 dataRental = {
                     errcode: 0,
@@ -57,9 +62,7 @@ rental.create = function (data) {
 let checkbook = (sach_id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let sqlCheck = "SELECT sach.ten FROM sach INNER JOIN phieuthue_sach ON sach.id = phieuthue_sach.sach_id"
-            sqlCheck += " INNER JOIN phieuthue ON phieuthue_sach.phieuthue_id = phieuthue.id"
-            sqlCheck += " WHERE sach.id = ? AND (phieuthue.trangthai=0 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
+            let sqlCheck = "SELECT sach.ten FROM sach WHERE sach.id = ? AND trangthaithue = dangthue"
             const [result, fields] = await pool.execute(sqlCheck, [sach_id])
             if (result.length > 0) {
                 const tenSach = result[0].ten;
@@ -201,20 +204,40 @@ rental.upStatus3 = (id) => {
     })
 }
 
-//trờ trả
+//hoàn tất đơn hàng cho thuê
 rental.upStatus4 = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let trangthai = 5;
+            let trangthai = 4;
             let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let sqlRental_book = "SELECT sach_id FROM phieuthue_sach WHERE phieuthue_id = ? "
             let check = await checkRental(data.id)
             if (check) {
                 const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
                 if (result) {
-                    dataRental = {
-                        errcode: 0,
-                        message: 'thành công'
+                    const [rows, fields] = await pool.execute(sqlRental_book, [data.id])
+                    if (rows) {
+                        for (let bookId of rows) {
+                            let sqlUpdate = 'UPDATE sach SET trangthaithue = ? WHERE id=?'
+                            const [updeteBook] = await pool.execute(sqlUpdate, ['chuathue', bookId.sach_id])
+                            if (updeteBook) {
+                                dataRental = {
+                                    errcode: 0,
+                                    message: 'thành công'
+                                }
+                            } else {
+                                dataRental = {
+                                    errcode: 3,
+                                    message: 'thất bại'
+                                }
+                            }
+                        }
+                    } else {
+                        dataRental = {
+                            errcode: 2,
+                            message: 'thất bại'
+                        }
                     }
                 } else {
                     dataRental = {
@@ -241,7 +264,7 @@ rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach ,nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '
@@ -272,7 +295,7 @@ rental.getRenalByIdRental = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
@@ -314,7 +337,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '

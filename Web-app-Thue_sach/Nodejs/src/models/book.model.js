@@ -58,7 +58,7 @@ book.getTrangthai1 = (page) => {
         try {
             let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet'"
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1 AND trangthaiduyet ='duocduyet'"
@@ -90,19 +90,24 @@ book.getTrangthai1 = (page) => {
     })
 }
 
-book.getBookByCatetoryAndAuthor = (category, author) => {
+book.getBookByCatetoryAndAuthor = (theloai_id, id_tacgia, loai, ten) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,masach, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet'"
-            if (category) {
-                sql += ` AND theloai_id=${category}`
+            if (theloai_id) {
+                sql += ` AND theloai_id=${theloai_id}`
             }
-            if (author) {
-                sql += ` AND id_tacgia=${author}`
+            if (id_tacgia) {
+                sql += ` AND id_tacgia=${id_tacgia}`
+            }
+            if (loai) {
+                sql += ` AND loai=${loai}`
+            }
+            if (ten) {
+                sql += `AND sach.ten LIKE '%" ${ten} "%`
             }
             let [rows, fields] = await pool.execute(sql)
             console.log(rows)
@@ -124,15 +129,27 @@ book.getBookByCatetoryAndAuthor = (category, author) => {
     })
 }
 
+let generateRandomCode = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+}
+
 //them sach
 book.create = (bookData) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql0 = 'insert into sach(hinh, ten , trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            let sql1 = 'insert into sach(hinh, ten , trangthai, loai, theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?)';
-            let trangthai = 0;
-
+            let masach = "ms" + generateRandomCode(10)
+            let sql0 = 'insert into sach(hinh, ten ,masach, trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
+            let sql1 = 'insert into sach(hinh, ten ,masach, trangthai, loai, theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?)';
+            let trangthai = 1;
             if (bookData.loai == 0) {
 
                 if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang) {
@@ -150,7 +167,7 @@ book.create = (bookData) => {
                     } else {
                         let dataAuthorID = await checkAuthor(bookData.tentacgia)
                         let id_tacgia = dataAuthorID;
-                        await pool.execute(sql0, [bookData.hinh, bookData.ten, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
+                        await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
                         data = {
                             errcode: 0,
                             message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
@@ -173,7 +190,7 @@ book.create = (bookData) => {
                     } else {
                         let dataAuthorID = await checkAuthor(bookData.tentacgia)
                         let id_tacgia = dataAuthorID;
-                        await pool.execute(sql1, [bookData.hinh, bookData.ten, trangthai, bookData.loai, bookData.theloai_id, id_tacgia, bookData.id_users]);
+                        await pool.execute(sql1, [bookData.hinh, bookData.ten, masach, trangthai, bookData.loai, bookData.theloai_id, id_tacgia, bookData.id_users]);
                         data = {
                             errcode: 0,
                             message: 'Thêm sách đọc online thành công vui lòng chờ Admin duyệt'
@@ -235,7 +252,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
+            let sql = "SELECT sach.hinh,sach.ten,noidung,sach.id,masach,trangthaithue sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
@@ -357,14 +374,10 @@ book.createChap = (data) => {
 book.update = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('data: ', data, "hinhmoi", hinhmoi)
             let bookModel = {}
-            let sqlCheck = "SELECT sach.id FROM sach INNER JOIN phieuthue_sach ON sach.id = phieuthue_sach.sach_id"
-            sqlCheck += " INNER JOIN phieuthue ON phieuthue_sach.phieuthue_id = phieuthue.id"
-            sqlCheck += " WHERE sach.id =? AND (phieuthue.trangthai=0 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3)"
+            let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = dangthue"
             let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?, trangthai=?, gia=?, tiencoc=? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
-            console.log('Check:', check)
             if (check.length > 0) {
                 bookModel = {
                     errcode: 1,
