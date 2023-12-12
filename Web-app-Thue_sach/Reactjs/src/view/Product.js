@@ -103,7 +103,7 @@ export default function Product() {
                     listBook.map((item, idex) => {
                         return (
                             <>
-                                <div className="rounded overflow-hidden shadow-lg flex flex-col">
+                                <div className="rounded overflow-hidden shadow-lg flex flex-col" key={idex}>
                                     <div className="relative">
                                         <img className="w-full h-56"
                                             src={`http://localhost:8000/img/${item.hinh}`}

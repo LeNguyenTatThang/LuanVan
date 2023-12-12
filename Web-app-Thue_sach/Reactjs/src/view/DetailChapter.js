@@ -4,7 +4,7 @@ import { callApiChapter } from '../Service/UserService';
 
 function DetailChapter() {
     // Khai báo state để lưu trữ giá trị của id và sach_id
-    const [id, setId] = useState(2);
+    const [id, setId] = useState(1);
     const [sachId, setSachId] = useState(13);
     const [chapterData, setChapterData] = useState([]);
     const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // Mặc định là màu trắng

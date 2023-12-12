@@ -21,6 +21,7 @@ import Chat from './view/Chat';
 import DetailChapter from './view/DetailChapter';
 import ChatBox from './view/Chatbox';
 import RegistrationSuccess from './view/Accept';
+import ReadBook from './view/ReadBook';
 
 
 
@@ -44,6 +45,7 @@ function App() {
         <Route path="/customer-card" element={<div className="p-4 sm:ml-64"> <CustomerCard /> </div>} />
         <Route path="/detail-book/:id" element={<div className="p-4 sm:ml-64"> <Detail_book /> </div>} />
         <Route path="/manager-book" element={<div className="p-4 sm:ml-64"> <Manager /> </div>} />
+        <Route path="/read-book" element={<div className="p-4 sm:ml-64"> <ReadBook /> </div>} />
         <Route path="/chatbox" element={<div className="p-4 sm:ml-64"> <ChatBox /> </div>} />
         <Route path="/create-account-ok/:id" element={<div className="p-4 sm:ml-64"> <RegistrationSuccess /> </div>} />
         <Route path="/detailchapter" element={<div className="p-4 sm:ml-64"> <DetailChapter /> </div>} />

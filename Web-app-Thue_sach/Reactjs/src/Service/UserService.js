@@ -118,13 +118,22 @@ const apiSendComment = (sach_id, users_id, noidung) => {
 }
 
 //api get chapter book
-const callApiChapter = (id, sachId) => {
+const callApiChapter = (chuong, sachId) => {
     return axios.get('/api/chapter/detailchapter', {
         params: {
-            id: id,
+            chuong: chuong,
             sach_id: sachId,
         },
     });
+}
+
+const apigetBookRead = (id_users, loai) => {
+    return axios.get('/api/bookByIdUsers', {
+        params: {
+            id_users: id_users,
+            loai: loai,
+        },
+    })
 }
 const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);
@@ -139,6 +148,6 @@ export {
     apiRentOrder, apiRentOrderOne, apiRentOrderTwo, apiOrderThree, apiOrderFour,
     apiConfirmRentThree,
     apiCompleted,
-    callApiChapter,
+    callApiChapter, apigetBookRead,
     callApiMail,
 };
