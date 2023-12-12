@@ -167,7 +167,7 @@ export default function AddProduct() {
                                 </div>
 
 
-                                {book.loai === '0' ?
+                                {book === 0 ?
                                     <>
                                         <div>
                                             <label>Tình trạng sách:</label>
@@ -185,7 +185,20 @@ export default function AddProduct() {
                                             <label className="block mb-2 text-sm font-medium text-gray-900 ">Giá tiền</label>
                                             <input type="number" name="gia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
                                                 value={gia}
-                                                onChange={(event) => { setGia(event.target.value) }} />
+                                                onChange={(event) => {
+                                                    if (event && event.target && event.target.value !== undefined) {
+                                                        const inputValue = event.target.value;
+                                                        if (/^\d+$/.test(inputValue)) {
+                                                            setGia(event.target.value);
+                                                        } else {
+                                                            iziToast.error({
+                                                                title: "Wrong!!",
+                                                                position: "topRight",
+                                                                message: "Vui lòng không nhập số âm"
+                                                            });
+                                                        }
+                                                    }
+                                                }} />
                                         </div>
                                         <div>
                                             <label className="block mb-2 text-sm font-medium text-gray-900 ">Tiền cọc</label>
@@ -198,16 +211,15 @@ export default function AddProduct() {
                                                 onChange={(event) => {
                                                     // Ensure event.target and event.target.value are defined
                                                     if (event && event.target && event.target.value !== undefined) {
-                                                        // Lấy giá trị nhập từ người dùng
                                                         const inputValue = event.target.value;
-
-                                                        // Kiểm tra nếu giá trị là một số tự nhiên và không âm
                                                         if (/^\d+$/.test(inputValue)) {
-                                                            // Cập nhật giá trị chỉ khi là số tự nhiên không âm
                                                             setTiencoc(inputValue);
                                                         } else {
-                                                            // Nếu giá trị không hợp lệ, có thể thông báo hoặc xử lý theo cách khác
-                                                            console.log("Vui lòng nhập một số tự nhiên không âm.");
+                                                            iziToast.error({
+                                                                title: "Wrong!!",
+                                                                position: "topRight",
+                                                                message: "Vui lòng không nhập số âm"
+                                                            });
                                                         }
                                                     }
                                                 }}
