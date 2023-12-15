@@ -43,16 +43,13 @@ export default function AddProduct() {
     }, [])
 
     const dispatch = useDispatch();
-    const [imagePreview, setImagePreview] = useState('');
     const handleChange = (e) => {
-        const file = e.target.files[0];
-
-        // Check if a file is selected
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImagePreview(imageUrl);
+        const img = {
+            preview: URL.createObjectURL(e.target.files[0]),
+            data: e.target.files[0],
         }
-    };
+        setHinh(img)
+    }
 
     const getCategory = async () => {
         let cate = await apiListCate();
@@ -157,7 +154,7 @@ export default function AddProduct() {
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Hình ảnh</label>
                                     <input type="file" onChange={handleChange} />
-                                    {imagePreview && <img src={imagePreview} alt="Preview" />}
+                                    {hinh.preview && <img src={hinh.preview} alt="Preview" />}
                                 </div>
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Tên tác giả</label>

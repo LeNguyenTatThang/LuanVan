@@ -15,7 +15,7 @@ export default function HomePage() {
 
     const [authur, setAuthur] = useState([]);
     const [randomBook, setRandomBook] = useState([]);
-    const checkArray = authur.length > 0 ? authur[0].id : null;
+    const checkArray = authur?.length > 0 ? authur[0].id : null;
     const getAuthor = async () => {
         try {
             let res = await apiAuthurRandom(checkArray);
@@ -109,7 +109,9 @@ export default function HomePage() {
                                                                         </div>
                                                                         <div className='flex items-center py-1 px-1 justify-between w-full'>
                                                                             <div className='py-1 text-clamp-1 w-40 overflow-hidden'>{data.ten}</div>
-                                                                            <div className='text-sm text-lime-600'>683</div>
+                                                                            {data.loai === 0 ?
+                                                                                <><div className='text-sm text-lime-600'>Thuê</div></> : <><div className='text-sm text-lime-600'>Đọc miễn phí</div></>
+                                                                            }
                                                                         </div>
                                                                     </div>
                                                                 ) : (

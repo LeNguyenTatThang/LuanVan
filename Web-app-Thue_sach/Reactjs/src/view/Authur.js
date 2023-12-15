@@ -1,8 +1,22 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { apiBookAuthur } from '../Service/UserService';
 
 export default function Authur() {
+    const [books, setBooks] = useState();
+    let id_tacgia = 1
+    const callBookAuthur = async () => {
+        let res = await apiBookAuthur(id_tacgia)
+        if (res && res.status === 200) {
+            setBooks(res.data.data)
+        }
+    }
+    useEffect(() => {
+        callBookAuthur();
+
+    }, [])
+    console.log(books)
     return (
         <div className='container py-4 mx-auto'>
             <div className='w-11/12 mx-auto row py-2 bg-slate-300 rounded-2 gap-2 px-2 shadow-xl '>

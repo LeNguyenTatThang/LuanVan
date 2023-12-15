@@ -19,9 +19,9 @@ import Detail_book from './view/Detail_book';
 import Manager from './view/Manager';
 import Chat from './view/Chat';
 import DetailChapter from './view/DetailChapter';
-import ChatBox from './view/Chatbox';
 import RegistrationSuccess from './view/Accept';
 import ReadBook from './view/ReadBook';
+import Blog from './Blog';
 
 
 
@@ -37,6 +37,7 @@ function App() {
         <Route path="/profiles" element={<div className="p-4 sm:ml-64"><Profile />  </div>} />
         <Route path="/signin" element={<div className="p-4 sm:ml-64"><Login />  </div>} />
         <Route path="/search" element={<div className="p-4 sm:ml-64"> <Search /> </div>} />
+        <Route path="/blogs" element={<div className="p-4 sm:ml-64"> <Blog /> </div>} />
         <Route path="/authur" element={<div className="p-4 sm:ml-64"><Authur /> </div>} />
         <Route path="/review" element={<div className="p-4 sm:ml-64"><Review /> </div>} />
         <Route path="/chat" element={<div className="p-4 sm:ml-64"> <Chat /> </div>} />
@@ -46,7 +47,6 @@ function App() {
         <Route path="/detail-book/:id" element={<div className="p-4 sm:ml-64"> <Detail_book /> </div>} />
         <Route path="/manager-book" element={<div className="p-4 sm:ml-64"> <Manager /> </div>} />
         <Route path="/read-book" element={<div className="p-4 sm:ml-64"> <ReadBook /> </div>} />
-        <Route path="/chatbox" element={<div className="p-4 sm:ml-64"> <ChatBox /> </div>} />
         <Route path="/create-account-ok/:id" element={<div className="p-4 sm:ml-64"> <RegistrationSuccess /> </div>} />
         <Route path="/detailchapter" element={<div className="p-4 sm:ml-64"> <DetailChapter /> </div>} />
         <Route path="*" element={<div className="p-4 sm:ml-64"><Page404 /></div>} />

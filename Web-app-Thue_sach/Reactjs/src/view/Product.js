@@ -6,7 +6,7 @@ import { ADD_TO_CART } from '../app/userCard';
 import { Link, useNavigate } from 'react-router-dom';
 import iziToast from 'izitoast';
 import Select from 'react-select';
-
+import LazyLoad from 'react-lazyload';
 
 export default function Product() {
 
@@ -87,6 +87,7 @@ export default function Product() {
 
     return (
         <>
+
             <div>
                 <label htmlFor="mySelect">Tìm theo tên:</label>
                 <Select
@@ -98,6 +99,7 @@ export default function Product() {
                 />
             </div>
             <br /><br />
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
                 {listBook && listBook.length > 0 &&
                     listBook.map((item, idex) => {
@@ -105,14 +107,18 @@ export default function Product() {
                             <>
                                 <div className="rounded overflow-hidden shadow-lg flex flex-col" key={idex}>
                                     <div className="relative">
-                                        <img className="w-full h-56"
-                                            src={`http://localhost:8000/img/${item.hinh}`}
-                                            alt={`${item.hinh}`} />
+                                        <LazyLoad height={200} offset={100}>
+                                            <img
+                                                className="w-full h-56 object-cover border border-gray-200 shadow-md transform transition-transform duration-300 ease-in-out group-hover:scale-105"
+                                                src={`http://localhost:8000/img/${item.hinh}`}
+                                                alt={`${item.hinh}`}
+                                            />
+                                        </LazyLoad>
                                         <div
                                             className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25">
                                         </div>
                                         <div
-                                            className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
+                                            className="rounded-full text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
                                             {item.loai === 0 ? (
                                                 <>
                                                     {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
@@ -132,9 +138,9 @@ export default function Product() {
                                     </div>
                                     <div className="py-2 mb-auto">
 
-                                        <div className="px-6 flex flex-row items-center justify-between">
+                                        <div className="px-6 flex flex-row items-center justify-center">
                                             <Link to={`/detail-book/${item.id}`} >
-                                                <div className="font-medium text-lg cursor-pointer hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">
+                                                <div className=" font-medium text-lg cursor-pointer hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">
                                                     <span >{item.ten}</span>
                                                 </div>
                                             </Link>

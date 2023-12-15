@@ -47,7 +47,7 @@ export default function Navbar() {
                             </div></Link>
                         </li>
                         <li>
-                            <Link to="/products"> <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
+                            <Link to="/blogs"> <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
 
                                 <svg className="w-5 h-5 text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 23 23">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z" />
@@ -94,7 +94,7 @@ export default function Navbar() {
                                                         <span className="flex-1 ml-3 whitespace-nowrap">Thêm sách mới </span>
                                                     </div></Link></li>
                                                 <li><Link to='/profiles'>
-                                                    <div className="flex items-center p-2 text-gray-900 rounded-lg group cursor-pointer">
+                                                    <div className="flex items-center p-2  text-gray-900 rounded-lg group cursor-pointer">
                                                         <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"></path>
                                                         </svg>
