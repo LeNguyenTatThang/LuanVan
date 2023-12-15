@@ -69,14 +69,14 @@ export default function AddProduct() {
             });
         }
 
-        if (book.loai === '') {
+        if (book === '') {
             iziToast.info({
                 title: "Opzzz!!",
                 position: "topRight",
                 message: "Hãy chọn loại sách đăng"
             });
         }
-
+        //thêm các thuộc tính                hinh, ten, tinhtrang,loai, theloai_id, gia, tiencoc, tentacgia, id_users
         let res = await addBook(hinh.data, ten, tinhtrang?.value, book, theloai_id, gia, tiencoc, tentacgia, id_users);
 
         if (res && res.status === 200) {
@@ -104,7 +104,7 @@ export default function AddProduct() {
     })
 
     const handleChangeCate = (e) => {
-        console.log(e)
+        setTheloai_id(e.value)
     }
 
     const options = [
