@@ -17,6 +17,27 @@ let router = express.Router();
 
 
 let initWebRouter = (app) => {
+    app.use((req, res, next) => {
+        res.locals.formattedAmount = (amount) => {
+            const formattedAmount = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                minimumFractionDigits: 0,
+            }).format(amount);
+            return formattedAmount;
+        };
+        next();
+    });
+
+
+    app.use((req, res, next) => {
+        res.locals.formatDate = (date) => {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            return new Date(date).toLocaleDateString('vi-VN', options);
+        };
+        next();
+    });
+
     // router.use(dashboardController.dashboardLogAccess);
     router.get('/', loginController.getLoginPage);
     router.get('/logout', auth.isLogout);
@@ -27,7 +48,6 @@ let initWebRouter = (app) => {
     //dashbord
     router.post('/newAccountStatistics', dashboardController.newAccountStatistics)
     router.get('/home', auth.isLogin, dashboardController.dashboardPage);
-
     router.post('/calculateOverallRevenue', dashboardController.calculateOverallRevenue)
     router.get('/get-catetoryFoByID', auth.isLogin, categoryController.getFromCatetoryByID)
     router.get('/category', auth.isLogin, categoryController.getCategory);
@@ -42,6 +62,7 @@ let initWebRouter = (app) => {
     router.get('/detailUser', auth.isLogin, userController.detailUser);
     router.post('/disableCommentsUsers', auth.isLogin, userController.disableCommentsUsers);
     router.post('/DisableBookPosting', auth.isLogin, userController.DisableBookPosting);
+    router.post('/rentalBan', auth.isLogin, userController.rentalBan);
     router.post('/post-login', loginController.getLogin);
 
     //sach
@@ -74,7 +95,9 @@ let initWebRouter = (app) => {
 
     router.get('/email', auth.isLogin, rentalController.testthuhtmlemail)
 
-
+    //phieuthue
+    router.get('/rental', auth.isLogin, rentalController.listRentals)
+    router.get('/detailRentals', auth.isLogin, rentalController.detailRentals)
 
     return app.use("/", router)
 }

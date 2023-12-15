@@ -6,9 +6,9 @@ comment.getAll = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let commentData = {};
-            let sql = 'select users.ten,users.hinh, binhluan.noidung, ngaytao from binhluan'
+            let sql = 'select users.ten,users.hinh, binhluan.noidung, binhluan.ngaytao from binhluan'
             sql += ' INNER JOIN sach on binhluan.sach_id = sach.id'
-            sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=? AND binhluan.trangthai=1 ORDER BY ngaytao DESC'
+            sql += ' INNER JOIN users on binhluan.users_id = users.id where sach.id=? AND binhluan.trangthai=1 ORDER BY binhluan.ngaytao DESC'
             const [rows] = await pool.execute(sql, [data]);
             if (rows.length > 0) {
                 commentData = {
@@ -32,7 +32,7 @@ comment.getComment = async (data, name) => {
     return new Promise(async (resolve, reject) => {
         try {
             let commentData = {};
-            let sql = 'SELECT binhluan.id, users.ten, users.hinh, binhluan.noidung, binhluan.trangthai, ngaytao FROM binhluan';
+            let sql = 'SELECT binhluan.id, users.ten, users.hinh, binhluan.noidung, binhluan.trangthai, binhluan.ngaytao FROM binhluan';
             sql += ' INNER JOIN sach ON binhluan.sach_id = sach.id';
             sql += ' INNER JOIN users ON binhluan.users_id = users.id WHERE sach.id = ?';
 
@@ -40,7 +40,7 @@ comment.getComment = async (data, name) => {
                 sql += " AND users.ten LIKE '%" + name + "%'";
             }
 
-            sql += ' ORDER BY ngaytao DESC';
+            sql += ' ORDER BY binhluan.ngaytao DESC';
 
             const [rows] = await pool.execute(sql, [data]);
             if (rows.length > 0) {

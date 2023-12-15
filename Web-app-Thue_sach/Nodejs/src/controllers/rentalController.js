@@ -1,13 +1,69 @@
 import rental from '../models/rental.model'
+import user from "../models/user.model"
+
 const schedule = require('node-schedule');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
+
+const listRentals = async (req, res) => {
+    try {
+        let page = req.query.page ? req.query.page : 1;
+        let name = req.query.name;
+        let data = await rental.getAll(page, name)
+        return res.render('rental/rental.ejs', {
+            name: data.name,
+            totalPage: data.totalPage,
+            errcode: data.errcode,
+            data: data.data,
+            page: parseInt(page),
+            message: data.message
+        })
+    } catch (error) {
+        console.error(error)
+        return res.redirect('/rental')
+    }
+}
+
+const detailRentals = async (req, res) => {
+    try {
+        let id = req.query.id
+        let data = await rental.getRenalByIdRental(id)
+        if (data.errcode === 0) {
+            return res.render('rental/detail.ejs', {
+                errcode: data.errcode,
+                data: data.data,
+                books: data.books,
+                message: data.message
+            })
+        } else {
+            return res.redirect('/rental')
+        }
+    } catch (error) {
+        console.error(error)
+        return res.redirect('/rental')
+    }
+}
+//api
+
 //api tạo phiếu thuê
 const postRental = async (req, res) => {
     try {
         let rentalData = req.body
+        if (!rentalData.sach_id || !rentalData.chutiem_id) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Vui lòng thêm sách vào giỏ hàng'
+            })
+        }
+        let checkUsers = await user.checkUserRentalBan(rentalData.users_id)
+        if (checkUsers) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Bạn đã bị cấm thuê sách'
+            })
+        }
         let data = await rental.create(rentalData)
         if (data.errcode == 0) {
             return res.status(200).json({
@@ -496,6 +552,7 @@ module.exports = {
     rentalOrders2,
     rentalOrders3,
     rentalOrders4,
-    testthuhtmlemail
-
+    testthuhtmlemail,
+    listRentals,
+    detailRentals
 }

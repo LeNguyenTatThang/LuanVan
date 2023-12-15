@@ -1,17 +1,15 @@
 <%- include('../page/header')%>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $(".btnDelete").click(function () {
-                const id = $(this).attr('data-id');
-                if (confirm(`Bạn có muốn xóa thể loại có id= ${id}`)) {
-                    return true
-
-                } else {
-                    return false
-                }
-            })
-        })
+        document.addEventListener('DOMContentLoaded', function () {
+            const socket = io();
+            socket.on('updateData', function (data) {
+                console.log('Received updateData event:', data);
+                const dataList = document.getElementById('dataList');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            });
+        });
     </script>
     <%- include('../page/aside')%>
         <!-- Content Wrapper. Contains page content -->
@@ -19,36 +17,37 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Danh sách tài khoản
+                    Danh sách phiếu thuê
                 </h1>
 
             </section>
             <!-- Main content -->
             <section class="content">
                 <!-- Default box -->
-                <div class="row">
+                <div class="row" id="dataList">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <div>
-                                    <form class="form-inline">
-                                        <div class="col-12">
-                                            <input value="<%= name %>" type="text" name="name" id=""
-                                                class="form-control" placeholder="Nhập tên tài khoản"
-                                                aria-describedby="helpId">
-                                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"
-                                                    aria-hidden="true"></i></button>
-                                        </div>
-                                    </form>
-                                </div>
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <input type="text" name="name" value="<%= name%>" id="" class="form-control"
+                                            placeholder="Nhập mã phiếu thuê" aria-describedby="helpId">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"
+                                            aria-hidden="true"></i></button>
+                                </form>
                                 <hr>
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th class="text-truncate">STT</th>
-                                            <th class="text-truncate">Hình</th>
-                                            <th class="text-truncate">Tên</th>
-                                            <th class="text-truncate">Loại</th>
+                                            <th class="text-truncate">Mã phiếu</th>
+                                            <th class="text-truncate">Sách</th>
+                                            <th class="text-truncate">Người Thuê</th>
+                                            <th class="text-truncate">Người Cho Thuê</th>
+                                            <th class="text-truncate">Ngày thuê</th>
+                                            <th class="text-truncate">Trạng thái</th>
+                                            <th class="text-truncate text-right">Action</th>
                                         </tr>
                                     </thead>
                                     <%if(errcode==1) {%>
@@ -61,42 +60,62 @@
                                         </tbody>
                                         <% }else { %>
                                             <tbody>
-                                                <% data.map(function(data, index){ %>
+                                                <% for(let i=0; i < data.length; i++) { %>
                                                     <tr>
                                                         <td scope="row">
-                                                            <%= index + 1 %>
+                                                            <%= i+1 %>
                                                         </td>
                                                         <td scope="row">
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="avatar avatar-sm me-3">
-                                                                    <img src="/img/<%= data.hinh %>" class="img-list" />
-                                                                </div>
-                                                            </div>
+                                                            <%= data[i].maphieu %>
                                                         </td>
                                                         <td scope="row">
-                                                            <%= data.ten %>
+                                                            <% const books=data[i].tensach.split(','); %>
+                                                                <% for (let j=0; j < books.length; j++) { %>
+                                                                    <div class="custom-column">
+                                                                        <%=books[j] %>
+                                                                    </div>
+                                                                    <% } %>
                                                         </td>
-
                                                         <td scope="row">
-                                                            <%= data.loai===0 ? "Admin" : "User" %>
+                                                            <%= data[i].nguoithue %>
+                                                        </td>
+                                                        <td scope="row">
+                                                            <%= data[i].nguoidang %>
+                                                        </td>
+                                                        <td scope="row">
+                                                            <%= data[i].ngaythue %>
+                                                        </td>
+                                                        <td scope="row">
+                                                            <%if(data[i].trangthai===0){ %>
+                                                                chờ xác nhận
+                                                                <% }else if(data[i].trangthai===1){%>
+                                                                    chờ nhận
+                                                                    <% }else if(data[i].trangthai===2){%>
+                                                                        đang thuê
+                                                                        <% }else if(data[i].trangthai===3){%>
+                                                                            chờ trả
+                                                                            <% }else if(data[i].trangthai===4){%>
+                                                                                hoàn tất
+                                                                                <% } %>
                                                         </td>
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
-                                                                href="/detailUser?id=<%= data.id %>">Chi
-                                                                tiết</a>
+                                                                data-id="<%= data[i].id %>"
+                                                                href="/detailRentals?id=<%= data[i].id %>">Chi tiết</a>
                                                         </td>
                                                     </tr>
-                                                    <% }) %>
+                                                    <% } %>
                                             </tbody>
                                             <% } %>
                                 </table>
+                                <hr>
                                 <div>
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination">
                                             <%if(name) {%>
                                                 <li class="page-item">
                                                     <a class="page-link"
-                                                        href="/user?page=<%= page > 1 ? page - 1 : 1%>&name=<%= name%>"
+                                                        href="/rental?page=<%= page > 1 ? page - 1 : 1%>&name=<%= name%>"
                                                         aria-label="Previous">
                                                         <span aria-hidden="true">&laquo;</span>
                                                         <span class="sr-only">Previous</span>
@@ -113,7 +132,7 @@
                                                             2 && i <= page + 2)) { %>
                                                                 <li class="page-item">
                                                                     <a class="page-link"
-                                                                        href="/user?page=<%= i %>&name=<%= name%>">
+                                                                        href="/rental?page=<%= i %>&name=<%= name%>">
                                                                         <%= i %>
                                                                     </a>
                                                                 </li>
@@ -125,7 +144,7 @@
                                                                         <%} %>
                                                                             <li class="page-item">
                                                                                 <a class="page-link"
-                                                                                    href="/user?page=<%= page < totalPage ? page + 1 : totalPage%>&name=<%= name%>"
+                                                                                    href="/rental?page=<%= page < totalPage ? page + 1 : totalPage%>&name=<%= name%>"
                                                                                     aria-label="Next">
                                                                                     <span
                                                                                         aria-hidden="true">&raquo;</span>
@@ -135,7 +154,7 @@
                                                                             <%}else {%>
                                                                                 <li class="page-item">
                                                                                     <a class="page-link"
-                                                                                        href="/user?page=<%= page > 1 ? page - 1 : 1%>"
+                                                                                        href="/rental?page=<%= page > 1 ? page - 1 : 1%>"
                                                                                         aria-label="Previous">
                                                                                         <span
                                                                                             aria-hidden="true">&laquo;</span>
@@ -152,17 +171,17 @@
                                                                                             </span>
                                                                                         </li>
                                                                                         <% } else if (i===1 ||
-                                                                                            i===totalPage || (i>= page -
-                                                                                            2 && i <= page + 2)) { %>
+                                                                                            i===totalPage || (i>= page
+                                                                                            -2 && i <= page + 2)) { %>
                                                                                                 <li class="page-item">
                                                                                                     <a class="page-link"
-                                                                                                        href="/user?page=<%= i %>">
+                                                                                                        href="/rental?page=<%= i %>">
                                                                                                         <%= i %>
                                                                                                     </a>
                                                                                                 </li>
-                                                                                                <% } else if (i===page -
-                                                                                                    3 || i===page + 3) {
-                                                                                                    %>
+                                                                                                <% } else if (i===page
+                                                                                                    -3 || i===page + 3)
+                                                                                                    { %>
                                                                                                     <li
                                                                                                         class="page-item disabled">
                                                                                                         <span
@@ -174,7 +193,7 @@
                                                                                                             <li
                                                                                                                 class="page-item">
                                                                                                                 <a class="page-link"
-                                                                                                                    href="/user?page=<%= page < totalPage ? page + 1 : totalPage%>"
+                                                                                                                    href="/rental?page=<%= page < totalPage ? page + 1 : totalPage%>"
                                                                                                                     aria-label="Next">
                                                                                                                     <span
                                                                                                                         aria-hidden="true">&raquo;</span>
@@ -183,26 +202,22 @@
                                                                                                                 </a>
                                                                                                             </li>
                                                                                                             <% } %>
-
+                                        </ul>
                                     </nav>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-                    <!-- /.box-body -->
-
-                    <!-- /.box-footer-->
                 </div>
+
                 <!-- /.box -->
             </section>
             <!-- /.content -->
         </div>
-
         <%- include('../page/footer')%>
-            <!-- /.content-wrapper -->
+
 
             </body>
 
             </html>
+            <!-- /.content-wrapper -->

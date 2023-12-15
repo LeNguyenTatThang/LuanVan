@@ -86,6 +86,26 @@ const DisableBookPosting = async (req, res) => {
     }
 }
 
+
+const rentalBan = async (req, res) => {
+    try {
+        let data = req.body
+        console.log('id', data)
+        let dataUsers = await user.rentalBanFee(data)
+        if (dataUsers.errcode === 0) {
+            req.flash('msgUsers', dataUsers.message)
+            return res.redirect(`/detailUser?id=${data.id}`)
+        } else {
+            req.flash('errUsers', dataUsers.message)
+            return res.redirect(`/detailUser?id=${data.id}`)
+        }
+    } catch (error) {
+        console.error(error)
+        req.flash('errUsers', 'lỗi Server')
+        return res.redirect(`/detailUser?id=${data.id}`)
+    }
+}
+
 //api
 
 // api đăng nhập user
@@ -302,5 +322,6 @@ module.exports = {
     detailUser,
     disableCommentsUsers,
     DisableBookPosting,
-    userByID
+    userByID,
+    rentalBan
 }

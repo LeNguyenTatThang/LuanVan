@@ -1,0 +1,127 @@
+<%- include('../page/header')%>
+    <%- include('../page/aside')%>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                Chi tiết phiếu thuê
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <form action="/post-browsebook" method="post">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <div class="card-body">
+                                            <div>
+                                                <input type="hidden" name="id" value="<%= data.id %>" />
+                                            </div>
+                                            <div>
+                                                <input type="hidden" name="trangthaiduyet" value="duocduyet" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Mã phiếu: </label>
+                                                <span for="">
+                                                    <%= data.maphieu %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Sản phẩm: </label>
+                                                <table class="table table-bordered table-hover">
+                                                    <tr>
+                                                        <th>Tên</th>
+                                                        <th>Giá</th>
+                                                        <th>Tiền cọc</th>
+                                                    </tr>
+                                                    <% for (let i=0; i < books.length; i++) { %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= books[i].tensach %>
+                                                            </td>
+                                                            <td>
+                                                                <%= formattedAmount(books[i].gia) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= formattedAmount(books[i].tiencoc)%>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                                </table>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Tổng tiền: </label>
+                                                <span for="">
+                                                    <%= formattedAmount(data.tongtien) %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Trạng thái: </label>
+                                                <span for="">
+                                                    <%if(data.trangthai===0){ %>
+                                                        chờ xác nhận
+                                                        <% }else if(data.trangthai===1){%>
+                                                            chờ nhận
+                                                            <% }else if(data.trangthai===2){%>
+                                                                đang thuê
+                                                                <% }else if(data.trangthai===3){%>
+                                                                    chờ trả
+                                                                    <% }else if(data.trangthai===4){%>
+                                                                        hoàn tất
+                                                                        <% } %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Người cho thuê: </label>
+                                                <span for="">
+                                                    <%= data.nguoidang %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Người thuê: </label>
+                                                <span for="">
+                                                    <%= data.nguoithue %>
+                                                </span>
+                                            </div>
+                                            <%if(data.trangthai=== 2 || data.trangthai===3 || data.trangthai===4){ %>
+                                                <div class="form-group">
+                                                    <label for="">Ngày nhận: </label>
+                                                    <span for="">
+                                                        <%= formatDate(data.ngaynhan) %>
+                                                    </span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="">Ngày trả: </label>
+                                                    <span for="">
+                                                        <%= formatDate(data.ngaytra) %>
+                                                    </span>
+                                                </div>
+                                                <% } %>
+                                                    <a name="" id="" class="btn btn-default float-right"
+                                                        href="/rental"><i class="fa fa-arrow-left"
+                                                            aria-hidden="true"></i> Quay
+                                                        Lại</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <!-- /.box-footer-->
+
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
+        </div>
+
+        <%- include('../page/footer')%>
+
+
+            </body>
+
+            </html>
+            <!-- /.content-wrapper -->

@@ -188,6 +188,48 @@ user.DisableBook = (data) => {
     })
 }
 
+
+user.rentalBanFee = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userModel = {}
+            let sql = "UPDATE users SET camthue=? WHERE id=?"
+            const [result, fields] = await pool.execute(sql, [data.camthue, data.id])
+            if (result) {
+                userModel = {
+                    errcode: 0,
+                    message: "thành công"
+                }
+            } else {
+                userModel = {
+                    errcode: 1,
+                    message: "thất bại"
+                }
+            }
+            resolve(userModel)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+user.checkUserRentalBan = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT id FROM users where id= ? AND camthue = 1', [id])
+            let users = rows[0];
+            if (users) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
 // ma hoa mat khau
 let hashUsePassword = (matkhau) => {
     return new Promise(async (resolve, reject) => {
@@ -324,7 +366,7 @@ user.getId = (id) => {
         try {
             console.log('check', id)
             let usersModel = {}
-            let sql = "SELECT id, ten, hinh, email, cambl, camdang, loai, diachi, sdt  FROM users WHERE id =?"
+            let sql = "SELECT id, ten, hinh, email, cambl,camthue, camdang, loai, diachi, sdt  FROM users WHERE id =?"
             const [result] = await pool.execute(sql, [id])
             let dataUser = result[0]
             if (dataUser) {

@@ -64,7 +64,6 @@ const detailBroweBook = async (req, res) => {
                 errBook: req.flash('errBook'),
             });
         } else {
-            console.error("Data or Data.book is undefined or does not have 'id' property");
             return res.redirect('/get-broweBook');
         }
     } catch (error) {
@@ -77,10 +76,15 @@ const detailBroweBook = async (req, res) => {
 const getDetailBook = async (req, res) => {
     let id = req.query.id;
     let data = await book.getId(id)
-    return res.render('book/detailBook.ejs', {
-        data: data.book, msgBook: req.flash('msgBook'),
-        errBook: req.flash('errBook'),
-    });
+    if (data.errcode === 0) {
+        return res.render('book/detailBook.ejs', {
+            data: data.book, msgBook: req.flash('msgBook'),
+            errBook: req.flash('errBook'),
+        });
+    } else {
+        return res.redirect('/book');
+    }
+
 }
 
 //cập nhật trạng thái duyệt sách

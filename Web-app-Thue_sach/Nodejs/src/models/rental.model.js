@@ -15,6 +15,8 @@ let generateRandomCode = (length) => {
     return result;
 }
 
+
+
 rental.create = function (data) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -41,7 +43,7 @@ rental.create = function (data) {
                 let phieuthue_id = result.insertId;
                 for (let bookId of bookIds) {
                     await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
-                    let sqlUpdate = `UPDATE sach SET trangthaithue = dangthue WHERE id=?`
+                    let sqlUpdate = `UPDATE sach SET trangthaithue = 'dangthue' WHERE id=?`
                     const [result, fields] = await pool.execute(sqlUpdate, [bookId])
                     if (result) {
 
@@ -62,7 +64,7 @@ rental.create = function (data) {
 let checkbook = (sach_id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let sqlCheck = "SELECT sach.ten FROM sach WHERE sach.id = ? AND trangthaithue = dangthue"
+            let sqlCheck = "SELECT sach.ten FROM sach WHERE sach.id = ? AND trangthaithue = 'dangthue'"
             const [result, fields] = await pool.execute(sqlCheck, [sach_id])
             if (result.length > 0) {
                 const tenSach = result[0].ten;
@@ -295,7 +297,7 @@ rental.getRenalByIdRental = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue, chutiem_sach.ten AS nguoidang, ngaythue,nguoithue_phieuthue.email, ngaynhan, ngaytra, tongtien,phieuthue.trangthai FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
@@ -337,7 +339,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.id, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
@@ -388,6 +390,54 @@ rental.calculateOverallRevenue = (name) => {
                 }
             } else {
                 dataRental = {
+                    errcode: 1,
+                    message: 'không có data'
+                }
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+rental.getAll = (page, name) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let limit = '5';
+            let sqlRental = 'select phieuthue.id,maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien,phieuthue.trangthai from phieuthue'
+            sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
+            sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
+            sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '
+            sqlRental += ' INNER JOIN users AS chutiem_sach on sach.id_users = chutiem_sach.id '
+            let sqlTotal = "SELECT COUNT(*) as total FROM phieuthue"
+            if (name) {
+                sqlTotal += " WHERE maphieu LIKE '%" + name + "%' "
+                sqlRental += " WHERE maphieu LIKE '%" + name + "%' "
+            }
+            sqlRental += 'GROUP BY phieuthue_id'
+            const [counts] = await pool.execute(sqlTotal)
+            let totalRow = counts[0].total
+            let totalPage = Math.ceil(totalRow / limit)
+            page = page > 0 ? Math.floor(page) : 1;
+            page = page <= totalPage ? Math.floor(page) : totalPage;
+            let start = (page - 1) * limit;
+            start = start > 0 ? start : 0;
+            const [rows, fields] = await pool.execute(sqlRental + ' ' + 'LIMIT ' + start + ',' + limit)
+            let dataRow = rows
+            if (dataRow.length > 0) {
+                dataRental = {
+                    totalPage,
+                    name,
+                    data: dataRow,
+                    errcode: 0,
+                    message: 'ok'
+                }
+            } else {
+                dataRental = {
+                    totalPage,
+                    name,
                     errcode: 1,
                     message: 'không có data'
                 }

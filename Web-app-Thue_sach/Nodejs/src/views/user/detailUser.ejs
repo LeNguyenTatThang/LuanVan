@@ -64,6 +64,11 @@
                                             <%=data.camdang===0 ? "Không cấm" :"Bị Cấm" %>
                                         </a>
                                     </li>
+                                    <li class="list-group-item">
+                                        <b>Cấm thuê sách: </b> <a class="float-right">
+                                            <%=data.camthue===0 ? "Không cấm" :"Bị Cấm" %>
+                                        </a>
+                                    </li>
                                 </ul>
                                 <div>
                                     <div style="display: flex; justify-content: space-between;">
@@ -92,6 +97,18 @@
                                                     <button class="btn btn-success">Bỏ
                                                         Cấm
                                                         bình luận</button>
+                                                    <% } %>
+                                        </form>
+                                        <form action="rentalBan" method="post">
+                                            <input name="id" value="<%= data.id%>" class="d-none" />
+                                            <% if(data.camthue===0) { %>
+
+                                                <input type=" hidden" name="camthue" value="1" class="d-none" />
+                                                <button class="btn btn-danger">Cấm thuê sách</button>
+                                                <% } else { %>
+                                                    <input type="hidden" name="camthue" value="0" class="d-none" />
+                                                    <button class="btn btn-success">Bỏ
+                                                        Cấm thuê sách</button>
                                                     <% } %>
                                         </form>
                                         <a name="" id="" class="btn btn-default float-right" href="/user"><i

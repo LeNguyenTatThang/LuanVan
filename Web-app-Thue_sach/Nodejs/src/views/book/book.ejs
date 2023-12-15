@@ -301,3 +301,47 @@
                     };
                     var chart = new ApexCharts(document.querySelector("#chart"), options);
                     chart.render();
+
+                    function fetchChartRevenue(name) {
+                    $.ajax({
+                    url: '/calculateOverallRevenue',
+                    method: 'POST',
+                    data: { name: name },
+                    dataType: "JSON",
+                    success: function (chartData) {
+                    console.log('Dữ liệu từ server:', chartData);
+                    var hasData
+                    if (chartData.message) {
+                    hasData = false
+                    } else {
+                    hasData = true
+                    }
+                    console.log('có dâtta', hasData)
+                    if (!chartRevenue) {
+                    var options = {
+                    chart: {
+                    type: 'line'
+                    },
+                    series: chartData.series,
+                    xaxis: {
+                    categories: chartData.options.xaxis.categories
+                    }
+                    };
+                    chartRevenue = new ApexCharts(document.querySelector("#chart"), options);
+                    chartRevenue.render();
+                    chartHasData = hasNewData;
+                    } else {
+                    chartRevenue.updateOptions({
+                    xaxis: {
+                    categories: chartData.options.xaxis.categories
+                    }
+                    });
+                    chartRevenue.updateSeries(chartData.series);
+
+                    }
+                    },
+                    error: function (error) {
+                    console.error('Lỗi trong quá trình gửi yêu cầu Ajax:', error);
+                    }
+                    });
+                    }

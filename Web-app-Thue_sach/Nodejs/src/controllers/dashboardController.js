@@ -9,8 +9,6 @@ const dashboardPage = async (req, res) => {
         // const chartNewAccount = await newAccountStatistics(req, res);
         const users = await user.getUsers()
         const usersYear = await user.getYear()
-        console.log('chủ tiệm', users)
-        console.log('user', usersYear)
         // console.log('bieu do', chartData)
         // console.log('tai khoan', chartNewAccount)
         return res.render('dashboard/dashboard.ejs', {
@@ -68,10 +66,13 @@ const calculateOverallRevenue = async (req, res) => {
     try {
         let name = req.body.name
         let data = await rental.calculateOverallRevenue(name)
+        if (!data.data || data.data.length === 0) {
+            return res.json({ message: 'Không có dữ liệu' });
+        }
         const dataArray = Array.isArray(data.data) ? data.data : [data.data];
         dataArray.sort((a, b) => a.chutiem_id - b.chutiem_id || (a.nam * 12 + a.thang) - (b.nam * 12 + b.thang));
         const groupedData = groupBy(dataArray.filter(item => item && item.chutiem_id), 'chutiem_id');
-        console.log('dârr', dataArray)
+
         const series = Object.values(groupedData).map(group => ({
             name: `Chủ tiệm ${group[0].chutiem_id}`,
             data: group.map(row => ({
@@ -91,7 +92,7 @@ const calculateOverallRevenue = async (req, res) => {
                 }
             }
         };
-        console.log('dữ liệu doanh thu', chartData)
+
         res.json(chartData)
     } catch (error) {
         console.error("Lỗi trong quá trình tính toán doanh thu:", error);

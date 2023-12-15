@@ -47,7 +47,7 @@ const getFromCatetoryByID = async (req, res) => {
             errCatetory: req.flash('errCatetory'),
         });
     } else {
-        return res.render('/category')
+        return res.redirect('/category')
     }
 }
 
