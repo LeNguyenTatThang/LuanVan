@@ -33,9 +33,15 @@
                                                     src="/img/<%= data.hinh %>" alt="">
                                             </div>
                                             <div class="form-group">
-                                                <label for="">Tên SÁch: </label>
+                                                <label for="">Tên sách: </label>
                                                 <span for="">
                                                     <%= data.ten %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Mã sách: </label>
+                                                <span for="">
+                                                    <%= data.masach %>
                                                 </span>
                                             </div>
                                             <div class="form-group">
@@ -69,18 +75,18 @@
                                                 </span>
                                             </div>
                                             <%if(data.loai==0) {%>
-                                                <li class="mb-3">
-                                                    <span class="h6">giá</span>
-                                                    <span>
-                                                        <%= data.gia %>
+                                                <div class="form-group">
+                                                    <label for="">Giá: </label>
+                                                    <span for="">
+                                                        <%= formattedAmount(data.gia) %>
                                                     </span>
-                                                </li>
-                                                <li class="mb-3">
-                                                    <span class="h6">tiền cọc</span>
-                                                    <span>
-                                                        <%= data.tiencoc %>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="">Tiền cọc: </label>
+                                                    <span for="">
+                                                        <%= formattedAmount(data.tiencoc) %>
                                                     </span>
-                                                </li>
+                                                </div>
                                                 <% } %>
                                                     <button type="submit" class="btn btn-primary"><i
                                                             class="fa fa-save"></i>Duyệt</button>

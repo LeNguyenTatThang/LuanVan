@@ -300,7 +300,7 @@ const apiUpdateUser = async (req, res) => {
             }
             return res.status(401).json({
                 status: 401,
-                message: 'cập nhật thất bại'
+                message: userData.message
             })
         }
     } catch (error) {

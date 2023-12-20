@@ -391,19 +391,65 @@ user.UpdateUser = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         let userData = {};
         try {
-            await pool.execute('update users set hinh = ?,sdt =?, ten = ?, diachi = ? where id=?',
-                [hinhmoi, data.sdt, data.ten, data.diachi, data.id])
-            userData = {
-                errcode: 0
+            // const phoneNumberRegex = /^(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9])\d{8}$/;
+            // if (phoneNumberRegex.test(data.sdt)) {
+
+            // }
+            let check = await user.checkNameUpdate(data)
+            if (check) {
+                userData = {
+                    errcode: 1,
+                    message: 'tên tài khoản này đã tồn tại'
+                }
+            } else {
+                await pool.execute('update users set hinh = ?,sdt =?, ten = ?, diachi = ? where id=?',
+                    [hinhmoi, data.sdt, data.ten, data.diachi, data.id])
+                userData = {
+                    errcode: 0,
+                    message: 'cập nhập thành công'
+                }
             }
-            console.log("check user data update", userData)
-            console.log("image>>>>: ", hinhmoi)
-            console.log("data>>>>>: ", data)
             resolve(userData)
         } catch (e) {
             reject(e)
         }
     })
+}
+
+user.checkPhoneNumber = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT sdt FROM users where sdt= ? AND id !=?', [data.sdt, data.id])
+            let users = rows[0];
+            if (users) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
+user.checkNameUpdate = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let ten1 = data.ten.trim();
+            let ten2 = ten1.replace(/\s+/g, ' ');
+            const [rows, fields] = await pool.execute('SELECT * FROM users where ten= ? AND id !=?', [ten2, data.id])
+            let users = rows[0];
+            if (users) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
 }
 
 user.newAccountStatistics = (nam) => {

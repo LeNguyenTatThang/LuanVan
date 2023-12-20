@@ -90,7 +90,7 @@ book.getTrangthai1 = (page) => {
     })
 }
 
-book.getBookByCatetoryAndAuthor = (theloai_id, id_tacgia, loai, ten) => {
+book.getBookByCatetoryAndAuthor = (theloai_id, loai, ten) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
@@ -100,14 +100,11 @@ book.getBookByCatetoryAndAuthor = (theloai_id, id_tacgia, loai, ten) => {
             if (theloai_id) {
                 sql += ` AND theloai_id=${theloai_id}`
             }
-            if (id_tacgia) {
-                sql += ` AND id_tacgia=${id_tacgia}`
-            }
             if (loai) {
-                sql += ` AND loai=${loai}`
+                sql += ` AND sach.loai=${loai}`
             }
             if (ten) {
-                sql += `AND sach.ten LIKE '%" ${ten} "%`
+                sql += ` AND (sach.ten LIKE '%${ten}%' OR tentacgia LIKE '%${ten}%')`
             }
             let [rows, fields] = await pool.execute(sql)
             console.log(rows)
@@ -151,27 +148,35 @@ book.create = (bookData) => {
             let sql1 = 'insert into sach(hinh, ten ,masach, trangthai, loai, theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?)';
             let trangthai = 1;
             if (bookData.loai == 0) {
-
-                if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang) {
-                    data = {
-                        errcode: 1,
-                        message: 'không được để trống dữ liệu'
-                    }
-                } else {
-                    let user = await checkuser(bookData.id_users)
-                    if (user) {
+                let checkPhone = await book.checkPhoneNumberUsers(bookData.id_users)
+                console.log('test', checkPhone)
+                if (checkPhone) {
+                    if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang) {
                         data = {
-                            errcode: 2,
-                            message: 'Bạn đã bị cấm đăng sách'
+                            errcode: 1,
+                            message: 'không được để trống dữ liệu'
                         }
                     } else {
-                        let dataAuthorID = await checkAuthor(bookData.tentacgia)
-                        let id_tacgia = dataAuthorID;
-                        await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
-                        data = {
-                            errcode: 0,
-                            message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
+                        let user = await checkuser(bookData.id_users)
+                        if (user) {
+                            data = {
+                                errcode: 2,
+                                message: 'Bạn đã bị cấm đăng sách'
+                            }
+                        } else {
+                            let dataAuthorID = await checkAuthor(bookData.tentacgia)
+                            let id_tacgia = dataAuthorID;
+                            await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
+                            data = {
+                                errcode: 0,
+                                message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
+                            }
                         }
+                    }
+                } else {
+                    data = {
+                        errcode: 5,
+                        message: 'Vui lòng cập nhập thông tin liên lạc trước khi thêm sách cho thuê'
                     }
                 }
             } else {
@@ -206,6 +211,23 @@ book.create = (bookData) => {
     })
 }
 
+book.checkPhoneNumberUsers = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT sdt FROM users where id =?', [id])
+            let users = rows[0];
+            if (users.sdt.length > 0) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
 let checkuser = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -229,8 +251,10 @@ let checkAuthor = (tentacgia) => {
     return new Promise(async (resolve, reject) => {
         try {
             let author = {};
+            let data1 = tentacgia.trim();
+            let data2 = data1.replace(/\s+/g, ' ');
             let sql = 'SELECT id FROM tacgia where tentacgia= ?'
-            const [rows, fields] = await pool.execute(sql, [tentacgia])
+            const [rows, fields] = await pool.execute(sql, [data2])
             let check = rows[0]
             if (check) {
                 author = check.id

@@ -31,7 +31,8 @@
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="img-user img-fluid img-circle" src="img/<%= data.hinh %>"
+                                    <img class="img-user img-fluid img-circle"
+                                        src="/img/<%= data.hinh ? data.hinh : '/image/avatar.png' %> "
                                         alt="User profile picture">
                                 </div>
 

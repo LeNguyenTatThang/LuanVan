@@ -1,0 +1,111 @@
+<html>
+
+<head>
+    <title>Thuê Sách</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .large-text {
+            font-size: 20px;
+
+        }
+
+        .currency {
+            font-size: 18px;
+
+        }
+
+        body {
+            text-align: center;
+        }
+
+        table {
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .container .khung {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Chào, <%= data.nguoithue %>
+    </p>
+    <p>Chúng tôi xin thông báo rằng phiếu thuê của bạn với mã <%= data.maphieu %> đã được hủy. </p>
+    <p>Dưới đây là một số thông tin liên quan:</p>
+    <p>Mã Phiếu: <%= data.maphieu %>
+    </p>
+    <p>Người thuê: <%= data.nguoithue %>
+    </p>
+    <p>Người cho thuê: <%= data.nguoidang %>
+    </p>
+    <p>Ngày thuê: <%= data.ngaythue %>
+    </p>
+    <p>Email: <%= data.email %>
+    </p>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Hình</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Tiền cọc</th>
+            </tr>
+            <% for (let i=0; i < books.length; i++) { %>
+                <tr>
+                    <td class="khung">
+                        <img src="cid:<%= books[i].tensach.replace(/\s/g, '') %>" alt="Hình ảnh sách" width="100"
+                            height="100">
+                    </td>
+                    <td>
+                        <%= books[i].tensach %>
+                    </td>
+                    <td>
+                        <%= formatCurrency(books[i].gia) %>
+                    </td>
+                    <td>
+                        <%= formatCurrency(books[i].tiencoc) %>
+                    </td>
+                </tr>
+                <% } %>
+        </table>
+    </div>
+
+    <p class="large-text">Tổng tiền: <span class="currency">
+            <%= formatCurrency(data.tongtien) %>
+        </span></p>
+    </p>
+    <p>
+        Chúng tôi rất tiếc vì bất kỳ bất tiện nào mà điều này có thể gây ra. Nếu có bất kỳ thắc mắc hoặc cần hỗ trợ, vui
+        lòng liên hệ với chúng tôi qua đia chỉ email: 2023luanvan@gmail.com
+    </p>
+    <p>
+        Chân thành cảm ơn sự hiểu biết của bạn.
+    </p>
+    <p>
+        Trân trọng.
+    </p>
+</body>
+
+</html>

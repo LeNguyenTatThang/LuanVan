@@ -161,6 +161,8 @@ const postBook = async (req, res, next) => {
     }
 }
 
+
+
 //api ds sach
 const postApiListBookUser = async (req, res) => {
     try {
@@ -296,10 +298,9 @@ const updateBook = async (req, res) => {
 const bookByCatetoryAndAuthor = async (req, res) => {
     try {
         let theloai_id = req.query.theloai_id
-        let id_tacgia = req.query.id_tacgia
         let loai = req.query.loai
         let ten = req.query.ten
-        let data = await book.getBookByCatetoryAndAuthor(theloai_id, id_tacgia, loai, ten)
+        let data = await book.getBookByCatetoryAndAuthor(theloai_id, loai, ten)
         if (data.errcode === 0) {
             return res.status(200).json({
                 status: 200,

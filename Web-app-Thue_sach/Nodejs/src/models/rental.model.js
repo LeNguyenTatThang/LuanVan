@@ -261,6 +261,62 @@ rental.upStatus4 = (data) => {
     })
 }
 
+
+//hủy phiếu thuê
+rental.upStatus5 = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let trangthai = 5;
+            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let sqlRental_book = "SELECT sach_id FROM phieuthue_sach WHERE phieuthue_id = ? "
+            let check = await checkRental(data.id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
+                if (result) {
+                    const [rows, fields] = await pool.execute(sqlRental_book, [data.id])
+                    if (rows) {
+                        for (let bookId of rows) {
+                            let sqlUpdate = 'UPDATE sach SET trangthaithue = ? WHERE id=?'
+                            const [updeteBook] = await pool.execute(sqlUpdate, ['chuathue', bookId.sach_id])
+                            if (updeteBook) {
+                                dataRental = {
+                                    errcode: 0,
+                                    message: 'thành công'
+                                }
+                            } else {
+                                dataRental = {
+                                    errcode: 3,
+                                    message: 'thất bại'
+                                }
+                            }
+                        }
+                    } else {
+                        dataRental = {
+                            errcode: 2,
+                            message: 'thất bại'
+                        }
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            console.log(dataRental)
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 //danh sach đơn hàng thuê
 rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {

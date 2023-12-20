@@ -12,6 +12,15 @@ import uploadTxt from "../multerFile"
 let router = express.Router();
 
 let initApiRouter = (app) => {
+    const pendingNotifications = new Map();
+
+    // API để thêm thông báo vào danh sách
+    app.post('/addNotification', (req, res) => {
+        const { rentalId, message } = req.body;
+        // Lưu thông báo vào danh sách
+        pendingNotifications.set(rentalId, message);
+        res.status(200).end();
+    });
 
     //api đăng nhập admin
     router.post('/api-adminlogin', loginController.getApiLogin);
@@ -52,7 +61,7 @@ let initApiRouter = (app) => {
     //lấy ds sách theo id_users(id_users)
     router.get('/api/bookByIdUsers', bookController.bookByIdUsers)
 
-    //lấy ds sách theo theloai va tacgia
+    //lấy ds sách theo ten,loai, theloai va tacgia (ten, loai, id_theloai)
     router.get('/api/bookByCatetoryAndAuthor', bookController.bookByCatetoryAndAuthor)
     //tac gia
     router.get('/get-api-randomAuthor', authorController.apiRandomAuthor)
@@ -77,14 +86,18 @@ let initApiRouter = (app) => {
     //api cập nhật trạng thái phiếu thuê thành xác nhận cho thuê(có id của phiếu thuê)
     router.patch('/api/confirmRental', rentalController.confirmRental)
 
-    // api xác nhận nhận hàng có các thuộc tính(id , ngày thuê)
+    // api xác nhận nhận hàng (id , ngày thuê)
     router.patch('/api/receivedRental', rentalController.received)
 
-    //api trả hàng có các thuộc tính(id)
+    //api trả hàng (id)
     router.patch('/api/returnedRental', rentalController.returned)
 
-    //api hoàn tất có các thuộc tính(id)
+    //api hoàn tất phiếu thuê (id)
     router.patch('/api/completedRental', rentalController.completed)
+
+    //api hủy phiếu thuê  (id)
+    router.patch('/api/cancelRental', rentalController.cancelRental)
+
 
     //lấy danh sách đơn hàng thuê có các thuộc tính(users_id, trangthai)
     router.post('/api/listRent', rentalController.ListRent)
@@ -101,7 +114,12 @@ let initApiRouter = (app) => {
     //lấy danh sách đơn hàng thuê trạng thái 4
     router.post('/api/listRent4', rentalController.ListRent4)
 
+    //lấy danh sách đơn hàng thuê trạng thái 5 đã hủy(users_id)
+    router.post('/api/listRent5', rentalController.ListRent5)
+
+
     //lấy danh sách đơn hàng cho thuê
+
     // có các thuộc tính(chutiem_id, trangthai)
     router.post('/api/RentOrder', rentalController.rentalOrders)
 
@@ -116,6 +134,9 @@ let initApiRouter = (app) => {
 
     //lấy danh sách đơn hàng cho thuê trạng thái 4(hoàn tất)
     router.post('/api/RentOrder4', rentalController.rentalOrders4)
+
+    //lấy danh sách đơn hàng cho thuê trạng thái 5 bị hủy (chutiem_id)
+    router.post('/api/RentOrder5', rentalController.rentalOrders5)
 
     //bình luận
 

@@ -1,6 +1,16 @@
 <%- include('../page/header')%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
+        function checkImageExists(imageUrl, callback) {
+            var img = new Image();
+            img.onload = function () {
+                callback(true);
+            };
+            img.onerror = function () {
+                callback(false);
+            };
+            img.src = imageUrl;
+        }
         $(document).ready(function () {
             $(".btnDelete").click(function () {
                 const id = $(this).attr('data-id');
@@ -69,7 +79,21 @@
                                                         <td scope="row">
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar avatar-sm me-3">
-                                                                    <img src="/img/<%= data.hinh %>" class="img-list" />
+                                                                    <% var imageUrl="/img/" + (data.hinh); %>
+                                                                        <div class="avatar avatar-sm me-3">
+                                                                            <img id="authorImage_<%= index %>"
+                                                                                src="<%= imageUrl %>"
+                                                                                class="img-list rounded-circle" />
+                                                                        </div>
+                                                                        <script>
+                                                                            checkImageExists('<%= imageUrl %>', function (exists) {
+                                                                                var img = document.getElementById('authorImage_<%= index %>');
+                                                                                if (!exists) {
+                                                                                    img.src = "/img/image/avatar.png";
+
+                                                                                }
+                                                                            });
+                                                                        </script>
                                                                 </div>
                                                             </div>
                                                         </td>

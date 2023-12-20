@@ -1,16 +1,27 @@
 <%- include('../page/header')%>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const socket = io();
-            socket.on('updateData', function (data) {
-                console.log('Received updateData event:', data);
-                const dataList = document.getElementById('dataList');
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+        const socket = io();
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        const data = JSON.parse('<%- JSON.stringify(data) %>');
+        data.forEach(item => {
+            socket.on(`nearDueDate_${item.id}`, (data) => {
+                console.log('Received nearDueDate event:', data);
+                const rentalElement = document.querySelector(`tr[data-rental-id="${data.rentalId}"]`);
+                if (rentalElement) {
+                    const alertMessageElement = rentalElement.querySelector('.alert-message .message-content');
+                    if (alertMessageElement) {
+                        alertMessageElement.innerText = data.messageRentail;
+                        console.log("Updated alert message:", alertMessageElement);
+                    }
+                }
             });
         });
     </script>
+
+
     <%- include('../page/aside')%>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -47,6 +58,7 @@
                                             <th class="text-truncate">Người Cho Thuê</th>
                                             <th class="text-truncate">Ngày thuê</th>
                                             <th class="text-truncate">Trạng thái</th>
+                                            <th class="text-truncate">Thông báo</th>
                                             <th class="text-truncate text-right">Action</th>
                                         </tr>
                                     </thead>
@@ -61,7 +73,7 @@
                                         <% }else { %>
                                             <tbody>
                                                 <% for(let i=0; i < data.length; i++) { %>
-                                                    <tr>
+                                                    <tr data-rental-id="<%= data[i].id %>">
                                                         <td scope="row">
                                                             <%= i+1 %>
                                                         </td>
@@ -96,11 +108,18 @@
                                                                             chờ trả
                                                                             <% }else if(data[i].trangthai===4){%>
                                                                                 hoàn tất
-                                                                                <% } %>
+                                                                                <% } else if(data[i].trangthai===5){%>
+                                                                                    bị hủy
+                                                                                    <% } %>
                                                         </td>
+                                                        <td scope="row" class="alert-message">
+                                                            <span class="message-content">
+                                                                <%= data[i].alertMessage %>
+                                                            </span>
+                                                        </td>
+
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
-                                                                data-id="<%= data[i].id %>"
                                                                 href="/detailRentals?id=<%= data[i].id %>">Chi tiết</a>
                                                         </td>
                                                     </tr>

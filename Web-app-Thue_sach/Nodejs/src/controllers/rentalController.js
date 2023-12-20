@@ -1,5 +1,7 @@
 import rental from '../models/rental.model'
 import user from "../models/user.model"
+const io = require('socket.io-client');
+const socket = io('http://localhost:8000');
 
 const schedule = require('node-schedule');
 const nodemailer = require('nodemailer');
@@ -126,10 +128,6 @@ const sendEmail = async (dataMail) => {
             filename: `${book.tensach.replace(/\s/g, '')}.jpg`,
             path: `http://localhost:8000/img/${book.hinh}`,
             cid: `${book.tensach.replace(/\s/g, '')}`,
-            // encoding: 'base64',
-            // contentDisposition: 'inline',
-            // width: 100,
-            // height: 100,
         };
         attachments.push(attachment);
     }
@@ -169,16 +167,21 @@ const received = async (req, res, io) => {
         let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
         let data = await rental.upStatus2(rentalData, ngaynhan, ngaytra)
         if (data.errcode === 0) {
-            const job = schedule.scheduleJob('*/5 * * * *', async () => {
-                // io.emit('nearDueDate', { rentalId: data.id, messageRentail: 'Cảnh báo: Còn hai ngày đến ngày trả' });
+            const job = schedule.scheduleJob('*/1 * * * *', async () => {
+                req.io.emit(`nearDueDate_${rentalData.id}`, { rentalId: rentalData.id, messageRentail: `Cảnh báo: Còn hai ngày đến ngày trả` });
                 console.log('sắp tới ngày trả hàng')
+                job.cancel();
             });
-
-            const updateStatus3 = schedule.scheduleJob('*/2 * * * *', async () => {
-                //chuyển sang trạng thái chờ trả
-                let update = await rental.upStatus3(rentalData.id)
-                console.log('chuyển sang trạng thái chờ trả')
+            const job2 = schedule.scheduleJob('*/3 * * * *', async () => {
+                req.io.emit(`nearDueDate_${rentalData.id}`, { rentalId: rentalData.id, messageRentail: `Cảnh báo: Còn một ngày đến ngày trả` });
+                console.log('sắp tới ngày trả hàng')
+                job2.cancel();
             });
+            // const updateStatus3 = schedule.scheduleJob('*/2 * * * *', async () => {
+            //     //chuyển sang trạng thái chờ trả
+            //     let update = await rental.upStatus3(rentalData.id)
+            //     console.log('chuyển sang trạng thái chờ trả')
+            // });
             return res.status(200).json({
                 status: 200,
                 message: data.message
@@ -245,6 +248,74 @@ const completed = async (req, res) => {
             status: 500,
             message: 'lỗi Server'
         })
+    }
+}
+
+//Api hủy đơn hàng
+const cancelRental = async (req, res) => {
+    try {
+        let rentalData = req.body
+        let data = await rental.upStatus5(rentalData)
+        if (data.errcode === 0) {
+            let dataMail = await rental.getRenalByIdRental(rentalData.id)
+            await sendEmailCancel(dataMail);
+            return res.status(200).json({
+                status: 200,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const sendEmailCancel = async (dataMail) => {
+    const viewsPath = path.join(__dirname, '../views');
+    const sourcePath = path.join(viewsPath, 'email/emailRentalCancel.ejs');
+    const source = fs.readFileSync(sourcePath, 'utf8');
+    const template = ejs.compile(source);
+    const html = template({ data: dataMail.data, books: dataMail.books, formatCurrency: formatCurrency });
+    const attachments = [];
+
+    for (const book of dataMail.books) {
+        const attachment = {
+            filename: `${book.tensach.replace(/\s/g, '')}.jpg`,
+            path: `http://localhost:8000/img/${book.hinh}`,
+            cid: `${book.tensach.replace(/\s/g, '')}`,
+        };
+        attachments.push(attachment);
+    }
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: '2023luanvan@gmail.com',
+            pass: 'jsnn awej cdqo grmq'
+        }
+    });
+    // Soạn email
+    const mailOptions = {
+        from: 'Thuê sách',
+        to: dataMail.data.email,
+        subject: `Thông Báo Hủy Phiếu Thuê: ${dataMail.data.maphieu}`,
+        html: html,
+        attachments: attachments,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully!');
+    } catch (error) {
+        console.error('Error sending email:', error);
     }
 }
 
@@ -382,6 +453,32 @@ const ListRent4 = async (req, res) => {
     }
 }
 
+//api ds dơn hàng thuê đã hủy
+const ListRent5 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        rentalData.trangthai = 5
+        let data = await rental.getRent(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
 //api danh sách đơn hàng cho thuê
 const rentalOrders = async (req, res) => {
     try {
@@ -519,6 +616,34 @@ const rentalOrders4 = async (req, res) => {
     }
 }
 
+//api danh sách đơn hàng cho thuê đã hủy
+const rentalOrders5 = async (req, res) => {
+    try {
+        let rentalData = req.body
+        console.log('ddd0', rentalData)
+        rentalData.trangthai = 5
+        let data = await rental.getRentOrder(rentalData)
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data,
+                message: data.message
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: data.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
 function formatCurrency(number) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
 }
@@ -554,5 +679,8 @@ module.exports = {
     rentalOrders4,
     testthuhtmlemail,
     listRentals,
-    detailRentals
+    detailRentals,
+    cancelRental,
+    ListRent5,
+    rentalOrders5
 }
