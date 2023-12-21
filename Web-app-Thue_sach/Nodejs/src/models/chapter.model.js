@@ -49,7 +49,7 @@ chapter.getChaptersByBookId = (data) => {
             let page = data.page ? data.page : 1
             let chap = {}
             let limit = '20';
-            const sql = "SELECT id, chuong FROM noidungsach WHERE sach_id = ? LIMIT ?, ?";
+            const sql = "SELECT id, chuong,tieude FROM noidungsach WHERE sach_id = ? LIMIT ?, ?";
             let sqlTotal = "SELECT COUNT(*) as total FROM noidungsach WHERE sach_id = ?"
             const [counts] = await pool.execute(sqlTotal, [data.sach_id])
             let totalRow = counts[0].total
@@ -82,7 +82,7 @@ chapter.getContentChapters = (sach_id, chuong) => {
     return new Promise(async (resolve, reject) => {
         try {
             let chap = {}
-            let sql = "SELECT noidungsach.id, chuong, noidungsach.noidung FROM noidungsach";
+            let sql = "SELECT noidungsach.id, chuong,tieude, noidungsach.noidung FROM noidungsach";
             sql += " INNER JOIN sach ON noidungsach.sach_id = sach.id"
             sql += " WHERE sach_id= ? AND noidungsach.chuong= ? "
             const [chapters, fields] = await pool.execute(sql, [sach_id, chuong]);
