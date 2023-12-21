@@ -46,17 +46,18 @@ chapter.createChap = (data) => {
 chapter.getChaptersByBookId = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('sss', data)
+            let page = data.page ? data.page : 1
             let chap = {}
             let limit = '20';
-            let start = (data.page - 1) * limit
-            const sql = "SELECT id, chuong, FROM noidungsach WHERE sach_id = ? LIMIT ?, ?";
+            const sql = "SELECT id, chuong FROM noidungsach WHERE sach_id = ? LIMIT ?, ?";
             let sqlTotal = "SELECT COUNT(*) as total FROM noidungsach WHERE sach_id = ?"
             const [counts] = await pool.execute(sqlTotal, [data.sach_id])
             let totalRow = counts[0].total
             let totalPage = Math.ceil(totalRow / limit)
-            data.page = data.page > 0 ? Math.floor(data.page) : 1
-            data.page = data.page <= totalPage ? Math.floor(data.page) : totalPage
+            page = page > 0 ? Math.floor(page) : 1
+            page = page <= 0 ? Math.floor(page) : 1
+            page = page <= totalPage ? Math.floor(page) : totalPage
+            let start = (page - 1) * limit
             const [chapters, fields] = await pool.execute(sql, [data.sach_id, start, limit]);
             if (chapters.length > 0) {
                 chap = {

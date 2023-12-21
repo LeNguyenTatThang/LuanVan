@@ -68,7 +68,6 @@ const disableCommentsUsers = async (req, res) => {
 }
 
 const DisableBookPosting = async (req, res) => {
-
     try {
         let data = req.body
         let dataUsers = await user.DisableBook(data)
@@ -269,6 +268,30 @@ const apiUpdateUser = async (req, res) => {
     try {
         let data = req.body
         let hinhmoi = {}
+        if (data.sdt.length > 0) {
+            const phoneNumberRegex = /^(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9])\d{8}$/;
+            if (!phoneNumberRegex.test(data.sdt)) {
+                if (req.file || req.file !== undefined) {
+                    try {
+                        fs.unlink('src/public/img/' + req.file.filename, function (err) {
+                        });
+                    } catch (error) {
+                        throw error
+                    }
+                }
+                return res.status(422).json({
+                    status: 422,
+                    message: "số điện thoại này không hợp lệ"
+                })
+            }
+            let checkPhone = await user.checkPhoneNumber(data)
+            if (checkPhone) {
+                return res.status(409).json({
+                    status: 409,
+                    message: "số điện thoại này đã tồn tại"
+                })
+            }
+        }
         if (req.file || req.file !== undefined) {
             hinhmoi = req.file.filename
         } else {

@@ -428,10 +428,10 @@ rental.calculateOverallRevenue = (name) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            console.log('tên', name)
-            let sqlRental = `SELECT chutiem_id, SUM(tongtien) AS tongdoanhthu, YEAR(ngaynhan) AS nam, 
+            let sqlRental = `SELECT chutiem_id,users.ten, SUM(tongtien) AS tongdoanhthu, YEAR(ngaynhan) AS nam, 
             MONTH(ngaynhan) AS thang
-            FROM phieuthue WHERE (trangthai =2 OR trangthai=3 OR trangthai =4)`
+            FROM phieuthue INNER JOIN users ON users.id = phieuthue.chutiem_id 
+            WHERE (trangthai =2 OR trangthai=3 OR trangthai =4)`
             if (name !== null && name !== "") {
                 sqlRental += ` AND chutiem_id = ${name}`;
             }

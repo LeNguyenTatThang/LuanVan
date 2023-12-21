@@ -74,13 +74,12 @@ const calculateOverallRevenue = async (req, res) => {
         const groupedData = groupBy(dataArray.filter(item => item && item.chutiem_id), 'chutiem_id');
 
         const series = Object.values(groupedData).map(group => ({
-            name: `Chủ tiệm ${group[0].chutiem_id}`,
+            name: `Chủ tiệm ${group[0].ten}`,
             data: group.map(row => ({
                 x: `${row.nam}-${row.thang}`,
                 y: parseInt(row.tongdoanhthu)
             }))
         }));
-
         const chartData = {
             series: series,
             options: {
@@ -116,7 +115,6 @@ function groupBy(arr, property) {
 const job = schedule.scheduleJob('*0 0 1 * *', async () => {
     console.log('Thực hiện thống kê doanh thu theo tháng...');
     let data = await calculateOverallRevenue();
-    console.log(data)
 });
 
 const dashboardLogAccess = async (req, res, next) => {

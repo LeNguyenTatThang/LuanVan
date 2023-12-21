@@ -364,7 +364,6 @@ user.getUsers = () => {
 user.getId = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('check', id)
             let usersModel = {}
             let sql = "SELECT id, ten, hinh, email, cambl,camthue, camdang, loai, diachi, sdt  FROM users WHERE id =?"
             const [result] = await pool.execute(sql, [id])
@@ -391,10 +390,6 @@ user.UpdateUser = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         let userData = {};
         try {
-            // const phoneNumberRegex = /^(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9])\d{8}$/;
-            // if (phoneNumberRegex.test(data.sdt)) {
-
-            // }
             let check = await user.checkNameUpdate(data)
             if (check) {
                 userData = {
@@ -465,7 +460,6 @@ user.newAccountStatistics = (nam) => {
             sql += ` GROUP BY YEAR(ngaytao), MONTH(ngaytao)
                         ORDER BY nam, thang`
             let [rows, fields] = await pool.execute(sql)
-            console.log(rows)
             if (rows.length > 0) {
                 userData = {
                     rows,
@@ -477,7 +471,6 @@ user.newAccountStatistics = (nam) => {
                     errcode: 1
                 }
             }
-            console.log('có ko', userData)
             resolve(userData)
         } catch (e) {
             reject(e)
