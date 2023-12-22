@@ -144,14 +144,14 @@ book.create = (bookData) => {
         try {
             let data = {};
             let masach = "ms" + generateRandomCode(10)
-            let sql0 = 'insert into sach(hinh, ten ,masach, trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
-            let sql1 = 'insert into sach(hinh, ten ,masach, trangthai, loai, theloai_id, id_tacgia, id_users ) values (?, ?, ?, ?, ?, ?, ?, ?)';
+            let sql0 = 'insert into sach(hinh, ten ,masach, trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users,noidung ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)';
+            let sql1 = 'insert into sach(hinh, ten ,masach, trangthai, loai, theloai_id, id_tacgia, id_users,noidung ) values (?, ?, ?, ?, ?, ?, ?, ?,?)';
             let trangthai = 1;
             if (bookData.loai == 0) {
                 let checkPhone = await book.checkPhoneNumberUsers(bookData.id_users)
                 console.log('test', checkPhone)
                 if (checkPhone) {
-                    if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang) {
+                    if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang || !bookData.noidung) {
                         data = {
                             errcode: 1,
                             message: 'không được để trống dữ liệu'
@@ -166,7 +166,7 @@ book.create = (bookData) => {
                         } else {
                             let dataAuthorID = await checkAuthor(bookData.tentacgia)
                             let id_tacgia = dataAuthorID;
-                            await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users]);
+                            await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users, bookData.noidung]);
                             data = {
                                 errcode: 0,
                                 message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
@@ -180,7 +180,7 @@ book.create = (bookData) => {
                     }
                 }
             } else {
-                if (!bookData.hinh || !bookData.ten || !bookData.theloai_id || !bookData.tentacgia || !bookData.id_users) {
+                if (!bookData.hinh || !bookData.ten || !bookData.theloai_id || !bookData.tentacgia || !bookData.id_users || !bookData.noidung) {
                     data = {
                         errcode: 3,
                         message: 'không được để trống dữ liệu'
@@ -195,7 +195,7 @@ book.create = (bookData) => {
                     } else {
                         let dataAuthorID = await checkAuthor(bookData.tentacgia)
                         let id_tacgia = dataAuthorID;
-                        await pool.execute(sql1, [bookData.hinh, bookData.ten, masach, trangthai, bookData.loai, bookData.theloai_id, id_tacgia, bookData.id_users]);
+                        await pool.execute(sql1, [bookData.hinh, bookData.ten, masach, trangthai, bookData.loai, bookData.theloai_id, id_tacgia, bookData.id_users, bookData.noidung]);
                         data = {
                             errcode: 0,
                             message: 'Thêm sách đọc online thành công vui lòng chờ Admin duyệt'
@@ -400,7 +400,7 @@ book.update = (data, hinhmoi) => {
         try {
             let bookModel = {}
             let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = dangthue"
-            let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?, trangthai=?, gia=?, tiencoc=? WHERE id= ?"
+            let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
             if (check.length > 0) {
                 bookModel = {
@@ -409,7 +409,7 @@ book.update = (data, hinhmoi) => {
                 }
             }
             else {
-                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.tinhtrang, data.trangthai, data.gia, data.tiencoc, data.id])
+                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.tinhtrang, data.trangthai, data.gia, data.tiencoc, data.noidung, data.id])
                 if (result) {
                     bookModel = {
                         errcode: 0,
@@ -434,7 +434,7 @@ book.getBookByIdUsers = async (id_users, loai) => {
         try {
 
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet,id_users, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE id_users=? AND sach.loai=? "
             const [rows, fields] = await pool.execute(sql, [id_users, loai])

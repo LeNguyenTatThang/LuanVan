@@ -50,19 +50,19 @@
 </head>
 
 <body>
-    <p>Xin chào ! <%= data.nguoithue %>
+    <p>Xin chào ! <%= data?.nguoithue %>
     </p>
     <p>Đơn hàng của bạn đã được xác nhận. Cảm ơn bạn đã thuê sách.</p>
     <p>Thông tin phiếu thuê:</p>
-    <p>Mã Phiếu: <%= data.maphieu %>
+    <p>Mã Phiếu: <%= data?.maphieu %>
     </p>
-    <p>Người thuê: <%= data.nguoithue %>
+    <p>Người thuê: <%= data?.nguoithue %>
     </p>
-    <p>Người cho thuê: <%= data.nguoidang %>
+    <p>Người cho thuê: <%= data?.nguoidang %>
     </p>
-    <p>Ngày thuê: <%= data.ngaythue %>
+    <p>Ngày thuê: <%= data?.ngaythue %>
     </p>
-    <p>Email: <%= data.email %>
+    <p>Email: <%= data?.email %>
     </p>
     <div class="container">
         <table>
@@ -72,20 +72,20 @@
                 <th>Giá</th>
                 <th>Tiền cọc</th>
             </tr>
-            <% for (let i=0; i < books.length; i++) { %>
+            <% for (let i=0; i < books?.length; i++) { %>
                 <tr>
                     <td class="khung">
-                        <img src="cid:<%= books[i].tensach.replace(/\s/g, '') %>" alt="Hình ảnh sách" width="100"
+                        <img src="cid:<%= books[i]?.tensach.replace(/\s/g, '') %>" alt="Hình ảnh sách" width="100"
                             height="100">
                     </td>
                     <td>
-                        <%= books[i].tensach %>
+                        <%= books[i]?.tensach %>
                     </td>
                     <td>
-                        <%= formatCurrency(books[i].gia) %>
+                        <%= formatCurrency(books[i]?.gia) %>
                     </td>
                     <td>
-                        <%= formatCurrency(books[i].tiencoc) %>
+                        <%= formatCurrency(books[i]?.tiencoc) %>
                     </td>
                 </tr>
                 <% } %>
@@ -93,7 +93,7 @@
     </div>
 
     <p class="large-text">Tổng tiền: <span class="currency">
-            <%= formatCurrency(data.tongtien) %>
+            <%= formatCurrency(data?.tongtien) %>
         </span></p>
     </p>
 </body>

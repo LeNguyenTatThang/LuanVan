@@ -30,12 +30,14 @@
                                 <h5 class="mr-3">Chủ tiệm:</h5>
                                 <select id="selectUser" class="js-example-basic-single" name="state"
                                     style="width: 30%;">
-                                    <option value="null">Tất cả</option>
-                                    <% for (const chutiem of users.rows) { %>
-                                        <option value="<%= chutiem.id %>">
-                                            <%= chutiem.ten %>
-                                        </option>
-                                        <% } %>
+                                    <% if (users && users.rows) { %>
+                                        <option value="null">Tất cả</option>
+                                        <% for (const chutiem of users.rows) { %>
+                                            <option value="<%= chutiem?.id %>">
+                                                <%= chutiem?.ten %>
+                                            </option>
+                                            <% } %>
+                                                <%}%>
                                 </select>
                             </div>
                             <hr>
@@ -57,12 +59,14 @@
                                 <h5 class="mr-3">Năm:</h5>
                                 <select id="selectYear" class="js-example-basic-single" name="state"
                                     style="width: 30%;">
-                                    <option value="" selected disabled>Chọn năm</option>
-                                    <% for (const years of usersYear.rows) { %>
-                                        <option value="<%= years.nam %>">
-                                            <%= years.nam %>
-                                        </option>
-                                        <% } %>
+                                    <% if (usersYear && usersYear.rows) { %>
+                                        <option value="" selected disabled>Chọn năm</option>
+                                        <% for (const years of usersYear.rows) { %>
+                                            <option value="<%= years?.nam %>">
+                                                <%= years?.nam %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
                                 </select>
                             </div>
                             <hr>

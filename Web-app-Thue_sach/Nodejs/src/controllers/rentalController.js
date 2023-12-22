@@ -158,7 +158,7 @@ const sendEmail = async (dataMail) => {
 
 
 //xác nhận nhận hàng 
-const received = async (req, res, io) => {
+const received = async (req, res) => {
     try {
         let rentalData = req.body
         console.log(rentalData)
@@ -168,13 +168,23 @@ const received = async (req, res, io) => {
         let data = await rental.upStatus2(rentalData, ngaynhan, ngaytra)
         if (data.errcode === 0) {
             const job = schedule.scheduleJob('*/1 * * * *', async () => {
-                req.io.emit(`nearDueDate_${rentalData.id}`, { rentalId: rentalData.id, messageRentail: `Cảnh báo: Còn hai ngày đến ngày trả` });
-                console.log('sắp tới ngày trả hàng')
+                let message = "còn 2 ngày nữa là tới ngày trả hàng"
+                let dataMsg = await rental.updateMessage(rentalData.id, message)
+                if (dataMsg.errcode !== 0) {
+                    console.log('Lỗi khi cập nhật thông báo');
+                } else {
+                    console.log('Sắp tới ngày trả hàng');
+                }
                 job.cancel();
             });
-            const job2 = schedule.scheduleJob('*/3 * * * *', async () => {
-                req.io.emit(`nearDueDate_${rentalData.id}`, { rentalId: rentalData.id, messageRentail: `Cảnh báo: Còn một ngày đến ngày trả` });
-                console.log('sắp tới ngày trả hàng')
+            const job2 = schedule.scheduleJob('*/2 * * * *', async () => {
+                let message = "còn 1 ngày nữa là tới ngày trả hàng"
+                let dataMsg = await rental.updateMessage(rentalData.id, message)
+                if (dataMsg.errcode !== 0) {
+                    console.log('Lỗi khi cập nhật thông báo');
+                } else {
+                    console.log('Sắp tới ngày trả hàng');
+                }
                 job2.cancel();
             });
             // const updateStatus3 = schedule.scheduleJob('*/2 * * * *', async () => {

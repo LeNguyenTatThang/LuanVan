@@ -112,12 +112,11 @@
                                                                                     bị hủy
                                                                                     <% } %>
                                                         </td>
-                                                        <td scope="row" class="alert-message">
-                                                            <span class="message-content">
-                                                                <%= data[i].alertMessage %>
-                                                            </span>
+                                                        <td scope="row">
+                                                            <% if(data[i].thongbao.length>0){ %>
+                                                                <%= data[i].thongbao %>
+                                                                    <% } %>
                                                         </td>
-
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
                                                                 href="/detailRentals?id=<%= data[i].id %>">Chi tiết</a>
