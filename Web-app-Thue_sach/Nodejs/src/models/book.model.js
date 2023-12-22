@@ -400,7 +400,7 @@ book.update = (data, hinhmoi) => {
         try {
             let bookModel = {}
             let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = dangthue"
-            let sqlUpdate = "UPDATE sach SET hinh=?, tinhtrang =?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"
+            let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
             if (check.length > 0) {
                 bookModel = {
@@ -409,7 +409,7 @@ book.update = (data, hinhmoi) => {
                 }
             }
             else {
-                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.tinhtrang, data.trangthai, data.gia, data.tiencoc, data.noidung, data.id])
+                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.ten, data.trangthai, data.gia, data.tiencoc, data.noidung, data.id])
                 if (result) {
                     bookModel = {
                         errcode: 0,

@@ -55,7 +55,7 @@ let initApiRouter = (app) => {
     //api chi tiết sách trang user
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)
 
-    //cập nhật sách(có id, hinh, tinhtrang, gia, tiencoc )
+    //cập nhật sách(có id, hinh,ten, noidung,trangthai, gia, tiencoc )
     router.patch('/api/book/update', upload.single('hinh'), bookController.updateBook)
 
     //lấy ds sách theo id_users(id_users)
