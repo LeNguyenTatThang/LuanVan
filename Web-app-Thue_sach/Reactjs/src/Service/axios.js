@@ -4,7 +4,6 @@ const instance = axios.create({
     baseURL: 'http://localhost:8000'
 });
 instance.interceptors.response.use(function (response) {
-    console.log(response.data)
     return response.data ? response.data : { statusCode: response.status };
 }, function (error) {
     let res = {};

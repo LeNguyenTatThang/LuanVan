@@ -31,6 +31,11 @@ export default function AddProduct() {
     const [id_users, setId_user] = useState()
     const userData = useSelector((state) => state.user);
     const [category, setCategory] = useState();
+    const [noidung, setNoidung] = useState('');
+
+    const handleContentChange = (e) => {
+        setNoidung(e.target.value);
+    };
     useEffect(() => {
         if (!userData.isLogin) {
             navigate(-1);
@@ -60,15 +65,13 @@ export default function AddProduct() {
 
     const handleSend = async (e) => {
         e.preventDefault();
-
-        if (!ten || !hinh.data || !tentacgia) {
+        if (!ten || !hinh.data || !tentacgia || !noidung) {
             iziToast.error({
                 title: "Opzzz!!",
                 position: "topRight",
                 message: "Vui lòng không để trống"
             });
         }
-
         if (book === '') {
             iziToast.info({
                 title: "Opzzz!!",
@@ -77,24 +80,25 @@ export default function AddProduct() {
             });
         }
         //thêm các thuộc tính                hinh, ten, tinhtrang,loai, theloai_id, gia, tiencoc, tentacgia, id_users
-        let res = await addBook(hinh.data, ten, tinhtrang?.value, book, theloai_id, gia, tiencoc, tentacgia, id_users);
 
+        let res = await addBook(hinh.data, ten, tinhtrang?.value, book, theloai_id, gia, tiencoc, tentacgia, id_users, noidung);
         if (res && res.status === 200) {
             iziToast.success({
                 title: "Succes",
                 position: "topRight",
                 message: res.message
             });
-            setTentacgia('');
-            setTen('');
-            setHinh({ preview: '', data: '' });
-            setTinhTrang('');
-            setGia('');
-            setTiencoc('');
-            setTheloai_id('');
         }
-    }
 
+        setTentacgia('');
+        setTen('');
+        setHinh({ preview: '', data: '' });
+        setTinhTrang('');
+        setGia('');
+        setTiencoc('');
+        setTheloai_id('');
+
+    }
 
     const array = category?.map((res) => {
         return {
@@ -155,6 +159,15 @@ export default function AddProduct() {
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Hình ảnh</label>
                                     <input type="file" onChange={handleChange} />
                                     {hinh.preview && <img src={hinh.preview} alt="Preview" />}
+                                </div>
+                                <div>
+                                    <label htmlFor="contentInput">Nội dung:</label>
+                                    <input
+                                        type="text"
+                                        id="contentInput"
+                                        value={noidung}
+                                        onChange={handleContentChange}
+                                    />
                                 </div>
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-900 ">Tên tác giả</label>

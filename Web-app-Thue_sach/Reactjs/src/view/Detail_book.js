@@ -1,24 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiSendComment, callApiComment, detailBookUser } from '../Service/UserService';
+import { apiChapter, apiSendComment, callApiComment, detailBookUser } from '../Service/UserService';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import iziToast from 'izitoast';
-
+import ReactPaginate from 'react-paginate';
 export default function Detail_book() {
   const [detail, setDetail] = useState({});
   const [noidung, setNoidung] = useState('');
   const [comments, setComments] = useState([]);
-
+  const [listChapter, setListChapter] = useState();
+  const [totalPage, setTotalPage] = useState();
+  const [info, setinfo] = useState(null);
   let { id } = useParams();
+
   const userData = useSelector((state) => state.user);
   let users_id = userData.userInfo;
 
   useEffect(() => {
     detailBook();
     showComment();
+    callApiChapter();
   }, []);
+  //apiChapter
+  const callApiChapter = async (page) => {
+    try {
+      let chapter = await apiChapter(page, id);
 
+      if (chapter && chapter.status === 200) {
+        console.log('Chapter Data:', chapter.data);
+        setListChapter(chapter.data);
+
+        setTotalPage(chapter.totalPage);
+      } else {
+        setinfo(chapter.data.message)
+        console.error('Error fetching chapter:', chapter);
+      }
+    } catch (error) {
+      console.error('Error calling apiChapter:', error);
+    }
+  }
+  console.log(info)
+  const handlePageClick = (event) => {
+    const selectedPage = +event.selected + 1;
+    console.log('Selected Page:', selectedPage);
+    callApiChapter(selectedPage);
+  }
+
+  console.log("hiển thị các chương", listChapter)
   const detailBook = async () => {
     try {
       let data = await detailBookUser(id);
@@ -27,6 +56,7 @@ export default function Detail_book() {
       console.error('Error fetching book details:', error);
     }
   }
+
 
   const showComment = async () => {
     try {
@@ -48,13 +78,20 @@ export default function Detail_book() {
           title: "Bạn đã đăng một bình luận",
           position: "bottomRight"
         });
+        window.location.reload();
         setComments([...comments, send.data]);
         setNoidung('');
       }
     } catch (error) {
       console.error('Error adding comment:', error);
+      iziToast.error({
+        title: "Lỗi",
+        position: "bottomRight",
+        message: "Đã xảy ra lỗi khi đăng bình luận. Vui lòng thử lại sau."
+      });
     }
-  };
+  }
+
   const addToCart = () => {
 
   }
@@ -62,7 +99,6 @@ export default function Detail_book() {
   return (
     <>
       <div className="container mx-auto my-8 flex">
-        {/* Hình ảnh sách bên trái */}
         <div className="w-1/2 pr-8">
           {detail && detail.hinh && (
             <img
@@ -91,7 +127,6 @@ export default function Detail_book() {
 
 
         </div>
-        {/* Phần chi tiết sách (bao gồm phần bình luận) bên phải */}
         <div className="w-1/2">
           <h2 className="text-3xl font-bold mb-4">{detail.ten}</h2>
           <p className="text-gray-700 mb-4">
@@ -130,9 +165,46 @@ export default function Detail_book() {
           </>}
         </div>
       </div>
-      {/* code bình luận */}
+      {info === null ? <>
+        <div className="container p-4 bg-white rounded-md shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {listChapter && listChapter.map((chapter) => (
+              <div key={chapter.id} className="bg-white p-4 rounded-md shadow-md">
+                <p className="text-gray-600 font-bold">Chương {chapter.chuong}</p>
+                <h3 className="text-xl font-semibold">{chapter.tieude}</h3>
+              </div>
+            ))}
 
-      <div className="w-full mx-auto px-4">
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={3}
+              pageCount={totalPage}
+              previousLabel="< previous"
+              pageClassName='page-item'
+              pageLinkClassName='page-link'
+              previousClassName='page-item'
+              previousLinkClassName='page-link'
+              nextClassName='page-item'
+              nextLinkClassName='page-link'
+              breakClassName='page-item'
+              breakLinkClassName='page-link'
+              containerClassName='pagination'
+              activeClassName='active'
+            />
+          </div>
+        </div>
+      </>
+
+        : <>
+          {info}
+        </>}
+      <br />
+      <div className="w-full mx-auto px-4 shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg lg:text-2xl font-bold text-gray-900">
             Lượt bình luận ({comments.length})
@@ -158,47 +230,46 @@ export default function Detail_book() {
             Gửi bình luận
           </button>
           <div className="my-4" />
-          {comments && comments.length > 0 &&
-            comments.map((show, index) => (
-              <React.Fragment key={index}>
-                <article
-                  className={`p-6 text-base shadow-xl rounded-lg ${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-                    }`}
-                >
-                  <footer className="flex justify-between items-center mb-2">
-                    <div className="flex items-center">
-                      <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                        {show && show.hinh && (
-                          <img
-                            className="mr-2 w-6 h-6 rounded-full"
-                            src={`http://localhost:8000/img/${show.hinh}`}
-                            alt={`${show.hinh}`}
-                          />
-                        )}
-                        {show && show.ten && (
-                          <p>{show.ten}</p>
-                        )}
-
-                      </p>
-                      {show && show.ngaytao && (
-                        <p className="text-sm text-gray-600 ">
-                          {dayjs(show.ngaytao).format(' DD-MM-YYYY')}
-                        </p>
+          {comments?.length > 0 && comments?.map((show, index) => (
+            <React.Fragment key={index}>
+              <article
+                className={`p-6 text-base shadow-xl rounded-lg ${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
+                  }`}
+              >
+                <footer className="flex justify-between items-center mb-2">
+                  <div className="flex items-center">
+                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                      {show && show.hinh && (
+                        <img
+                          className="mr-2 w-6 h-6 rounded-full"
+                          src={`http://localhost:8000/img/${show.hinh}`}
+                          alt={`${show.hinh}`}
+                        />
+                      )}
+                      {show && show.ten && (
+                        <p>{show.ten}</p>
                       )}
 
-                    </div>
-                  </footer>
-                  {show && show.noidung && (
-                    <p className="text-gray-500 ">{show.noidung}</p>
-                  )}
+                    </p>
+                    {show && show.ngaytao && (
+                      <p className="text-sm text-gray-600 ">
+                        {dayjs(show.ngaytao).format(' DD-MM-YYYY')}
+                      </p>
+                    )}
 
-                  {/* Các nút trả lời hoặc báo cáo */}
-                </article>
-                {index !== comments.length - 1 && (
-                  <div className="my-4" />
+                  </div>
+                </footer>
+                {show && show.noidung && (
+                  <p className="text-gray-500 ">{show.noidung}</p>
                 )}
-              </React.Fragment>
-            ))}
+
+                {/* Các nút trả lời hoặc báo cáo */}
+              </article>
+              {index !== comments.length - 1 && (
+                <div className="my-4" />
+              )}
+            </React.Fragment>
+          ))}
         </>}
       </div>
     </>

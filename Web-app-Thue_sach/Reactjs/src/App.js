@@ -21,7 +21,8 @@ import Chat from './view/Chat';
 import DetailChapter from './view/DetailChapter';
 import RegistrationSuccess from './view/Accept';
 import ReadBook from './view/ReadBook';
-import Blog from './Blog';
+import Blog from './view/Blog';
+import PostChapter from './view/PostChapter';
 
 
 
@@ -36,7 +37,7 @@ function App() {
         <Route path="/products" element={<div className="p-4 sm:ml-64"> <Product /> </div>} />
         <Route path="/profiles" element={<div className="p-4 sm:ml-64"><Profile />  </div>} />
         <Route path="/signin" element={<div className="p-4 sm:ml-64"><Login />  </div>} />
-        <Route path="/search" element={<div className="p-4 sm:ml-64"> <Search /> </div>} />
+        <Route path="/post-chapter/:itemId" element={<div className="p-4 sm:ml-64"> <PostChapter /> </div>} />
         <Route path="/blogs" element={<div className="p-4 sm:ml-64"> <Blog /> </div>} />
         <Route path="/authur" element={<div className="p-4 sm:ml-64"><Authur /> </div>} />
         <Route path="/review" element={<div className="p-4 sm:ml-64"><Review /> </div>} />

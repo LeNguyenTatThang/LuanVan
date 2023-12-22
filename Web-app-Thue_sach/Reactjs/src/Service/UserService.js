@@ -12,9 +12,9 @@ const apiRegister = (ten, email, matkhau,) => {
 const apiDetailUser = (id) => {
     return axios.get(`/api/getUserByID?id=${id}`)
 }
-const addBook = (hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users) => {
+const addBook = (hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users, noidung) => {
 
-    return axios.post("/post-api-book", { hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users },
+    return axios.post("/post-api-book", { hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users, noidung },
         {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -140,19 +140,42 @@ const apigetBookRead = (id_users, loai) => {
         },
     })
 }
+
+const apiPostCHapter = (noidung, sach_id, tieude) => {
+    return axios.post('/api/chapter/create', { noidung, sach_id, tieude },
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
+}
+
 const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);
 }
+const callApiSearch = (ten, loai, theloai_id) => {
+    return axios.get('/api/bookByCatetoryAndAuthor', {
+        params: {
+            ten: ten,
+            loai: loai,
+            theloai_id: theloai_id,
+        },
+    })
+}
+const apiChapter = (page, sach_id) => {
+    return axios.post('/api/chapter/listchapter', { page: page, sach_id: parseInt(sach_id, 10) })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
-    addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom,
+    addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch,
     callApiCreateRental,
-    callApiComment, apiSendComment,
+    callApiComment, apiSendComment, apiChapter,
     apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrderThree, apiRentOrderFour,
     apiConfirmRental, apiConfirmRentOne,
     apiRentOrder, apiRentOrderOne, apiRentOrderTwo, apiOrderThree, apiOrderFour,
     apiConfirmRentThree,
     apiCompleted,
-    callApiChapter, apigetBookRead,
+    callApiChapter, apigetBookRead, apiPostCHapter,
     callApiMail,
 };

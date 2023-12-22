@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { REMOVE_FROM_CART, REMOVE_ALL } from '../app/userCard';
+import { REMOVE_FROM_CART, REMOVE_ALL, TOGGLE_CHECKBOX } from '../app/userCard';
 import { useNavigate } from 'react-router-dom';
 import Avt from '../avatar-authur.png';
 import axios from 'axios';
 import Select from 'react-select';
 import { callApiCreateRental } from '../Service/UserService';
 import iziToast from 'izitoast';
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 export default function CustomerCard() {
 
     const card = useSelector((state) => state.shop.cart);
-
+    const dispatch = useDispatch();
     const userData = useSelector((state) => state.user);
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,11 +25,7 @@ export default function CustomerCard() {
     }, [userData]);
 
 
-    let TotalCart = 0;
 
-    Object.keys(card).forEach(function (item) {
-        TotalCart += card[item].gia;
-    });
 
     console.log(">>>check card: ", card)
     let chutiem_id = ''
@@ -43,13 +41,43 @@ export default function CustomerCard() {
     });
     console.log(">>>check sach_id: ", sach_id)
 
-    const dispatch = useDispatch();
+
 
     const DeleteCart = (_value) => {
         dispatch(REMOVE_FROM_CART(_value));
     }
 
     const [selectedValue, setSelectedValue] = useState('7');
+    let TotalCart = 0;
+    let Total = 0;
+
+    Object.keys(card).forEach(function (item) {
+        const productPrice = card[item].gia;
+        let increaseRate = 0;
+
+        if (selectedValue === '7') {
+            // Nếu selectedValue là '7', tăng giá 5%
+            increaseRate = 0.05;
+        } else if (selectedValue === '15') {
+            // Nếu selectedValue là '15', tăng giá 10%
+            increaseRate = 0.1;
+        } else if (selectedValue === '30') {
+            // Nếu selectedValue là '30', tăng giá 15%
+            increaseRate = 0.15;
+        }
+
+        // Tính toán giá cuối cùng cho mỗi cuốn sách
+        const increasedPrice = productPrice * (1 + increaseRate);
+
+        // Tính toán tổng giá của từng cuốn sách
+        TotalCart += Math.floor(increasedPrice);
+
+        // Tính toán tổng giá mà không có tăng giá
+        Total += productPrice;
+    });
+
+    console.log(`Tổng giá sau khi tăng giá ${selectedValue} ngày cho tất cả sách: ${TotalCart}`);
+    console.log(`Tổng giá mà không có tăng giá cho tất cả sách: ${Total}`);
 
     const handleSelectChange = (event) => {
         const value = event.target.value;
@@ -66,10 +94,10 @@ export default function CustomerCard() {
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedWard, setSelectedWard] = useState(null);
     const [result, setResult] = useState('');
-
     useEffect(() => {
         // Hàm này sẽ được gọi mỗi khi có sự thay đổi ở selectedProvince, selectedDistrict, hoặc selectedWard
         printResult();
+
     }, [selectedProvince, selectedDistrict, selectedWard]);
 
     const callAPI = (api) => {
@@ -139,12 +167,12 @@ export default function CustomerCard() {
     let ngaythue = selectedValue
     console.log(ngaythue)
 
-    const onClickXuatHoaDon = async (_value) => {
-        if (diachi === "") {
+    const onClickXuatHoaDon = async () => {
+        if (diachi === "" || selectedNguoiDang.length !== 1) {
             iziToast.error({
                 title: "Thiếu thông tin",
                 position: "topRight",
-                message: "Thiếu địa chỉ rồi"
+                message: "Thiếu địa chỉ hoặc chỉ chọn một người đăng"
             });
         } else {
             let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, sach_id, diachi, ngaythue)
@@ -154,7 +182,7 @@ export default function CustomerCard() {
                     position: "topRight",
                     message: "Đã xác nhận đơn hàng, hãy chờ phản hồi từ chủ shop"
                 });
-                dispatch(REMOVE_ALL(_value));
+                dispatch(REMOVE_ALL());
             }
             else {
                 iziToast.error({
@@ -166,57 +194,247 @@ export default function CustomerCard() {
         }
 
     }
+    const [nguoiDang, setNguoiDang] = useState([]);
+
+    useEffect(() => {
+        const nguoiDangList = card.map(item => item.nguoidang);
+        setNguoiDang([...new Set(nguoiDangList)]); // Sử dụng Set để loại bỏ các giá trị trùng lặp
+    }, [card,]);
+    Object.keys(card).forEach(function (item) {
+        const nguoidang = card[item].nguoidang;
+        // Now, 'nguoidang' contains the value of 'nguoidang' property for the current item in the 'card' array
+
+        // ... rest of your code ...
+        console.log(nguoidang)
+    });
+
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-    const handleCheckboxChange = () => {
-        setAgreedToTerms(!agreedToTerms);
+
+    const handleCheckboxChange = (productId, isChecked) => {
+        console.log('Dispatching TOGGLE_CHECKBOX with:', { productId, isChecked });
+        dispatch(TOGGLE_CHECKBOX({ productId, isChecked }));
     };
-    //console.log(">>check address: ", result)
+    const [selectedNguoiDang, setSelectedNguoiDang] = useState([]);
+
+    const chutiem_ids = Object.values(card).map(item => item.id_users).filter(id => id);
+
+    // Lấy danh sách tất cả các sach_id từ tất cả các sản phẩm trong giỏ hàng
+    const sach_ids = Object.values(card).flatMap(item => {
+        // Kiểm tra xem thuộc tính 'id' có phải là mảng không
+        return Array.isArray(item.id) ? item.id : [item.id];
+    });
+
+    console.log(">>>check chutiem_ids: ", chutiem_ids);
+    console.log(">>>check sach_ids: ", sach_ids);
+    const groupedByNguoiDang = card.reduce((acc, data) => {
+        const nguoidang = data.nguoidang;
+        if (!acc[nguoidang]) {
+            acc[nguoidang] = [];
+        }
+        acc[nguoidang].push(data);
+        return acc;
+    }, {});
+
+
+
+    useEffect(() => {
+        console.log("Updated SelectedNguoiDang:", selectedNguoiDang);
+    }, [selectedNguoiDang]);
+
+
+    const [parentChecked, setParentChecked] = React.useState({});
+    const [childrenChecked, setChildrenChecked] = React.useState({});
+    const maxChildren = 3;
+    useEffect(() => {
+        // Initialize state when the component mounts
+        const initialParentChecked = {};
+        const initialChildrenChecked = {};
+
+        Object.keys(groupedByNguoiDang).forEach((nguoiDang, parentIndex) => {
+            initialParentChecked[parentIndex] = false;
+
+            const parentChildren = groupedByNguoiDang[nguoiDang];
+            if (Array.isArray(parentChildren)) {
+                parentChildren.forEach((child, childIndex) => {
+                    initialChildrenChecked[parentIndex * maxChildren + childIndex] = false;
+                });
+            }
+        });
+
+        setParentChecked(initialParentChecked);
+        setChildrenChecked(initialChildrenChecked);
+    }, []);
+    const handleParentChange = (parentIndex) => {
+        setParentChecked((prev) => {
+            const newChecked = {};
+            newChecked[parentIndex] = !prev[parentIndex];
+            return newChecked;
+        });
+
+        const parentKey = Object.keys(groupedByNguoiDang)[parentIndex];
+        const parentChildren = groupedByNguoiDang[parentKey];
+
+        // Uncheck all other parents
+        setParentChecked((prev) => {
+            const newChecked = { ...prev };
+            Object.keys(newChecked).forEach((key) => {
+                if (key !== parentIndex.toString()) {
+                    newChecked[key] = false;
+                }
+            });
+            return newChecked;
+        });
+
+        if (Array.isArray(parentChildren)) {
+            setChildrenChecked((prev) => {
+                const newChecked = { ...prev };
+                parentChildren.forEach((child, index) => {
+                    newChecked[parentIndex * maxChildren + index] = !prev[parentIndex];
+                });
+                return newChecked;
+            });
+        }
+    };
+
+
+
+    const handleChildChange = (parentIndex, childIndex) => {
+        setChildrenChecked((prev) => {
+            const newChecked = { ...prev };
+            newChecked[parentIndex * maxChildren + childIndex] = !prev[parentIndex * maxChildren + childIndex];
+            return newChecked;
+        });
+
+        const parentKey = Object.keys(groupedByNguoiDang)[parentIndex];
+        const parentChildren = groupedByNguoiDang[parentKey];
+
+        if (Array.isArray(parentChildren)) {
+            const allChecked = parentChildren.every((child, index) =>
+                childrenChecked[parentIndex * maxChildren + index]
+            );
+            setParentChecked((prev) => ({
+                ...prev,
+                [parentIndex]: allChecked,
+            }));
+        }
+    };
+
+    const handleChangeParent = (parentIndex) => {
+        setChecked((prevChecked) => {
+            // Create a new array with the same length as the previous one
+            const newChecked = prevChecked.map((value, index) => index === parentIndex);
+
+            return newChecked;
+        });
+    };
+
+
+    const CustomListItem = ({ data, checked, onChange, onDelete }) => {
+        console.log('Data:', data);
+        console.log('Checked:', checked);
+
+        return (
+            <li className="list-item">
+                <div className="flex items-center justify-between border-b p-4">
+                    <Checkbox
+                        checked={checked}
+                        onChange={onChange}
+                        color="primary"
+                    />
+                    <div className="thumbnail">
+                        <img
+                            className="w-12 h-12 rounded-full"
+                            src={`http://localhost:8000/img/${data.hinh}`}
+                            alt={`${data.hinh}`}
+                        />
+                    </div>
+                    <div className="flex-1 min-w-0 ms-4">
+                        <p className="text-sm text-gray-900 truncate">Tên sách: <strong>{data.ten}</strong></p>
+                        <p className="text-sm text-gray-900 truncate">Tác giả: <strong>{data.tentacgia}</strong></p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                        <div className="text-sm  text-gray-900">Giá thuê:<strong>{data.gia} vnđ</strong> </div>
+                        <div className="text-sm  text-gray-900">Giá cọc: <strong>{data.tiencoc} vnđ</strong></div>
+                    </div>
+                    <div className="badge badge-danger px-3 cursor-pointer" onClick={() => onDelete(data)}>
+                        X
+                    </div>
+
+                </div>
+            </li>
+        );
+    };
+    const [checked, setChecked] = React.useState([true, false]);
+    const children = Object.keys(groupedByNguoiDang).map((nguoiDang, parentIndex) => {
+        const parentChildren = groupedByNguoiDang[nguoiDang];
+
+        const handleChange1 = (event) => {
+            setChecked([event.target.checked, event.target.checked]);
+        };
+
+        const handleChange2 = (event) => {
+            setChecked([event.target.checked, checked[1]]);
+        };
+
+        return (
+            <div key={parentIndex}>
+                <FormControlLabel
+                    label={nguoiDang}
+                    control={
+                        <Checkbox
+                            checked={checked[0] && checked[1]}
+                            indeterminate={checked[0] !== checked[1]}
+                            onChange={handleChange1}
+                            color="primary"
+                        />
+                    }
+                />
+                <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+                    {parentChildren && Array.isArray(parentChildren) && (
+                        <ul role="list" className="item-list">
+                            {parentChildren.map((data, childIndex) => (
+                                <CustomListItem
+                                    key={childIndex}
+                                    data={data}
+                                    checked={childrenChecked[parentIndex * maxChildren + childIndex]}
+                                    onChange={() => handleChildChange(parentIndex, childIndex)}
+                                    onDelete={DeleteCart}
+                                    control={
+                                        <Checkbox
+                                            checked={checked[0]}
+                                            onChange={handleChange2}
+                                        />
+                                    }
+                                />
+                            ))}
+                        </ul>
+                    )}
+                </Box>
+            </div>
+        );
+    });
+
+
+
+
     return (
         <>
+
             <div className="w-full flex flex-col md:flex-row gap-2">
                 <div className="w-full md:w-3/5 p-4 bg-white border border-gray-200 rounded-lg shadow ">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-center mb-4">
                         <h5 className="text-xl font-bold leading-none text-gray-900 ">Giỏ hàng của bạn</h5>
-
                     </div>
-                    {card.map((value, index) => {
-                        return (
-                            <React.Fragment key={index}>
-                                <div className="flow-root">
-                                    <ul role="list" className="divide-y divide-gray-200 ">
-                                        <li className="py-3 sm:py-4">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0">
-                                                    <img className="w-8 h-8 rounded-full" src={`http://localhost:8000/img/${value.hinh}`}
-                                                        alt={`${value.hinh}`} />
-                                                </div>
-                                                <div className="flex-1 min-w-0 ms-4">
-                                                    <p className="text-sm font-medium text-gray-900 truncate ">
-                                                        {value.ten}
-                                                    </p>
-                                                    <p className="text-sm text-gray-900 truncate">
-                                                        {value.tentacgia}
-                                                    </p>
-                                                </div>
-                                                <div>
-                                                    <div className="block items-center text-base font-semibold text-gray-900 px-3">
-                                                        Giá thuê:{value.gia} vnđ
-                                                    </div>
-                                                    <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
-                                                        Giá cọc:{value.tiencoc} vnđ
-                                                    </div>
-                                                </div>
+                    {children}
 
-                                                <i className="badge badge-danger px-3 cursor-pointer" onClick={(e) => DeleteCart(value)}>X</i>
-                                            </div>
-                                        </li>
 
-                                    </ul>
-                                </div>
-                            </React.Fragment>
-                        )
-                    })}
+                    <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3"> Tổng tiền thuê: {Total} vnđ </div>
+                    <br />
+                    <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
+                        Thời gian thuê là {selectedValue} ngày:
+                        {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
+                    </div>
                     <br />
                     <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
                         <strong>Tổng tiền:</strong> {TotalCart} vnđ
