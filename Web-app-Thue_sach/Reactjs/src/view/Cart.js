@@ -5,6 +5,11 @@ import { Link } from 'react-router-dom';
 export default function Cart() {
     const [count, setCount] = useState()
     const card = useSelector((state) => state.shop.cart);
+    let TotalCart = 0;
+
+    Object.keys(card).forEach(function (item) {
+        TotalCart += card[item].gia;
+    });
     // const a = card.length
     // count = a
     // setCount(a)
@@ -24,7 +29,7 @@ export default function Cart() {
                     <div tabindex="0" className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
                         <div className="card-body">
                             <span className="font-bold text-lg">{card.length} Sản phẩm</span>
-                            <span className="text-info">Tổng: 999 vnđ</span>
+                            <span className="text-info">Tổng: {TotalCart} vnđ</span>
                             <div className="card-actions">
                                 <Link to="/customer-card"><button className="btn btn-primary btn-block">Xem giỏ hàng</button></Link>
                             </div>

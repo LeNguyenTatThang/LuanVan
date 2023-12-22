@@ -48,6 +48,16 @@ const userCard = createSlice({
                 cart: [],
             };
         },
+        TOGGLE_CHECKBOX: (state, action) => {
+            const { productId, isChecked } = action.payload;
+            const updatedCart = state.cart.map((item) =>
+                item.id === productId ? { ...item, isChecked } : item
+            );
+            return {
+                ...state,
+                cart: updatedCart,
+            };
+        },
 
     },
 });
@@ -55,7 +65,8 @@ const userCard = createSlice({
 export const {
     ADD_TO_CART,
     REMOVE_FROM_CART,
-    REMOVE_ALL
+    REMOVE_ALL,
+    TOGGLE_CHECKBOX
 } = userCard.actions;
 
 export default userCard.reducer;
