@@ -42,6 +42,15 @@ const detailBookUser = async (id) => {
     return await axios.get(`/get-api-detailBook?id=${id}`);
 }
 
+const apiUpdateBook = (id, hinh, tinhtrang, gia, tiencoc, noidung) => {
+    return axios.patch('/api/book/update', { id, hinh, tinhtrang, gia, tiencoc, noidung },
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
+}
 const apiAuthurRandom = () => {
     return axios.get('/get-api-randomAuthor');
 }
@@ -168,7 +177,7 @@ const apiChapter = (page, sach_id) => {
 }
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
-    addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch,
+    addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook,
     callApiCreateRental,
     callApiComment, apiSendComment, apiChapter,
     apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrderThree, apiRentOrderFour,

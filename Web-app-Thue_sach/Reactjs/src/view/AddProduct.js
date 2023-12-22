@@ -88,15 +88,23 @@ export default function AddProduct() {
                 position: "topRight",
                 message: res.message
             });
+
+            setTentacgia('');
+            setTen('');
+            setHinh({ preview: '', data: '' });
+            setTinhTrang('');
+            setGia('');
+            setNoidung('');
+            setTiencoc('');
+            setTheloai_id('');
+        } else {
+            iziToast.error({
+                title: "Opzz!",
+                position: "topRight",
+                message: res.message
+            });
         }
 
-        setTentacgia('');
-        setTen('');
-        setHinh({ preview: '', data: '' });
-        setTinhTrang('');
-        setGia('');
-        setTiencoc('');
-        setTheloai_id('');
 
     }
 
@@ -161,10 +169,8 @@ export default function AddProduct() {
                                     {hinh.preview && <img src={hinh.preview} alt="Preview" />}
                                 </div>
                                 <div>
-                                    <label htmlFor="contentInput">Nội dung:</label>
-                                    <input
-                                        type="text"
-                                        id="contentInput"
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 ">Nội dung:</label>
+                                    <input type="text" name="tentacgia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
                                         value={noidung}
                                         onChange={handleContentChange}
                                     />
