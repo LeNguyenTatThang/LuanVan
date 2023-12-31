@@ -399,7 +399,7 @@ book.update = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
             let bookModel = {}
-            let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = dangthue"
+            let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = 'dangthue'"
             let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
             if (check.length > 0) {
