@@ -168,7 +168,8 @@ export default function CustomerCard() {
     console.log(ngaythue)
 
     const onClickXuatHoaDon = async () => {
-        if (diachi === "" || selectedNguoiDang.length !== 1) {
+        //|| selectedNguoiDang.length !== 1
+        if (diachi === "") {
             iziToast.error({
                 title: "Thiếu thông tin",
                 position: "topRight",

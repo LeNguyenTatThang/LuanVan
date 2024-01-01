@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { apiChapter, apiSendComment, callApiComment, detailBookUser } from '../Service/UserService';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
@@ -169,10 +169,12 @@ export default function Detail_book() {
         <div className="container p-4 bg-white rounded-md shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {listChapter && listChapter.map((chapter) => (
-              <div key={chapter.id} className="bg-white p-4 rounded-md shadow-md">
-                <p className="text-gray-600 font-bold">Chương {chapter.chuong}</p>
-                <h3 className="text-xl font-semibold">{chapter.tieude}</h3>
-              </div>
+              <Link key={chapter.id} to={`/detailchapter/${detail.id}/${chapter.chuong}`}>
+                <div className="bg-white p-4 rounded-md shadow-md">
+                  <p className="text-gray-600 font-bold">Chương {chapter.chuong}</p>
+                  <h3 className="text-xl font-semibold">{chapter.tieude}</h3>
+                </div>
+              </Link>
             ))}
 
           </div>

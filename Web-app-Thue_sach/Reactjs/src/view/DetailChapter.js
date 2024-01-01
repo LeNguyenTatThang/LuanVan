@@ -1,35 +1,25 @@
 import React, { useState, useEffect } from 'react';
-
-import { callApiChapter } from '../Service/UserService';
+import { callApiChapter, detailBookUser } from '../Service/UserService';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function DetailChapter() {
-    // Khai báo state để lưu trữ giá trị của id và sach_id
-    const [id, setId] = useState(1);
-    const [sachId, setSachId] = useState(13);
     const [chapterData, setChapterData] = useState([]);
-    const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // Mặc định là màu trắng
-    const [fontSize, setFontSize] = useState(16); // Mặc định là cỡ chữ 16px
+    const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+    const [fontSize, setFontSize] = useState(16);
+    const { sach_id, chuong: initialChuong } = useParams();
+    const [chuong, setChuong] = useState(initialChuong);
+    const navigate = useNavigate();
 
     const response = async () => {
-        let res = await callApiChapter(id, sachId);
+        let res = await callApiChapter(sach_id, chuong);
         setChapterData(res.data);
-    }
-    console.log(chapterData)
+    };
+
     useEffect(() => {
         response();
+        detailBook();
+    }, [sach_id, chuong]);
 
-    }, [id, sachId]);
-    const handleNextChapter = () => {
-        // Logic để chuyển đến chương kế tiếp
-        setId(id + 1);
-    };
-
-    const handlePreviousChapter = () => {
-        // Logic để chuyển đến chương trước đó
-        if (id > 1) {
-            setId(id - 1);
-        }
-    };
     const handleBackgroundColorChange = (color) => {
         setBackgroundColor(color);
     };
@@ -38,39 +28,52 @@ function DetailChapter() {
         setFontSize(size);
     };
 
+    const handleNextChapter = () => {
+        // Logic to switch to the next chapter
+        const nextChapter = parseInt(chuong, 10) + 1;
+        navigate(`/detailchapter/${sach_id}/${nextChapter}`);
+    };
+
+    const handlePreviousChapter = () => {
+        // Logic to switch to the previous chapter
+        const previousChapter = parseInt(chuong, 10) - 1;
+        if (previousChapter > 0) {
+            navigate(`/detailchapter/${sach_id}/${previousChapter}`);
+        }
+    };
+    const [detail, setDetail] = useState({});
+    const detailBook = async () => {
+        try {
+            let data = await detailBookUser(sach_id);
+            setDetail(data.data);
+        } catch (error) {
+            console.error('Error fetching book details:', error);
+        }
+
+    }
+    console.log(detail)
     return (
         <div className="container mx-auto p-1">
-            <h1 className="text-3xl font-bold mb-4">Tên sách</h1>
+            <h1 className="text-3xl font-bold mb-4">Tên sách: {detail.ten}</h1>
             <div className="mt-1 flex justify-between">
-                <button
-                    onClick={handlePreviousChapter}
-                    className="bg-blue-500 text-white p-1 rounded"
-                >
-                    Previous
-                </button>
-                <div className="mb-2 flex items-center">
+
+                <div className="mb-2 flex items-center mx-auto">
                     <label className="mr-2">Chương:</label>
                     <input
                         type="number"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
+                        value={chuong}
+                        onChange={(e) => setChuong(e.target.value)}
                         className="border rounded p-2 w-full"
                     />
                 </div>
 
-                <button
-                    onClick={handleNextChapter}
-                    className="bg-blue-500 text-white p-3 rounded"
-                >
-                    Next
-                </button>
             </div>
             {chapterData && (
                 <div style={{ alignItems: 'center', backgroundColor, fontSize: `${fontSize}px` }}>
                     {/* Tiêu đề và Các Input */}
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '20px' }}>
                         {/* Tiêu đề */}
-                        <h1 className="text-2xl font-bold mb-2">Chương {chapterData.chuong}: Title</h1>
+                        <h1 className="text-2xl font-bold mb-2">Chương {chapterData.chuong}: {chapterData.tieude}</h1>
 
                         {/* Chọn Màu Nền */}
                         <label className="mb-2">
@@ -101,32 +104,6 @@ function DetailChapter() {
                 </div>
             )}
 
-
-            <div className="mt-1 flex justify-between">
-                <button
-                    onClick={handlePreviousChapter}
-                    className="bg-blue-500 text-white p-1 rounded"
-                >
-                    Previous
-                </button>
-                <div className="mb-2 flex items-center">
-                    <label className="mr-2">Chương:</label>
-                    <input
-                        type="number"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
-                        className="border rounded p-2 w-full"
-                    />
-                </div>
-
-
-                <button
-                    onClick={handleNextChapter}
-                    className="bg-blue-500 text-white p-3 rounded"
-                >
-                    Next
-                </button>
-            </div>
         </div>
     );
 }

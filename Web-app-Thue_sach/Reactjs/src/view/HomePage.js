@@ -110,7 +110,7 @@ export default function HomePage() {
                                                                         <div className='flex items-center py-1 px-1 justify-between w-full'>
                                                                             <div className='py-1 text-clamp-1 w-40 overflow-hidden'>{data.ten}</div>
                                                                             {data.loai === 0 ?
-                                                                                <><div className='text-sm text-lime-600'>Thuê</div></> : <><div className='text-sm text-lime-600'>Đọc miễn phí</div></>
+                                                                                <><div className='text-sm text-lime-600'>Thuê</div></> : <><div className='text-sm text-lime-600'>Đọc</div></>
                                                                             }
                                                                         </div>
                                                                     </div>

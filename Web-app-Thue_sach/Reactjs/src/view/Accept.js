@@ -14,13 +14,16 @@ const RegistrationSuccess = () => {
         verifyEmailUrl();
     }, [id]);
     return (
-        <div className="registration-success">
-            <h2>Đăng ký thành công!</h2>
-            <p>
+        <div className="bg-green-500 text-white p-6 rounded-md text-center">
+            <h2 className="text-2xl font-bold mb-4">Đăng ký thành công!</h2>
+            <p className="text-lg mb-6">
                 Tài khoản của bạn đã được tạo thành công. Bạn có thể đăng nhập ngay bây giờ.
             </p>
-            <strong>Đăng nhập  <Link to='/signin'>tại đây</Link></strong>
+            <strong className="block text-xl">
+                Đăng nhập <Link to="/signin" className="underline">tại đây</Link>
+            </strong>
         </div>
+
     );
 };
 
