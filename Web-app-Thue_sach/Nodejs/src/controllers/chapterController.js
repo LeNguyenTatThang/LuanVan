@@ -104,9 +104,33 @@ const ContentChapter = async (req, res) => {
     }
 }
 
+const updateChapter = async (req, res) => {
+    try {
+        let data = req.body
+        let dataChapter = await chapter.getContentChapters(data)
+        if (dataChapter.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: dataChapter.data,
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: dataChapter.message
+            });
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
 module.exports = {
     postChapter,
     listBookchapter,
     ContentChapter,
-
+    updateChapter
 }

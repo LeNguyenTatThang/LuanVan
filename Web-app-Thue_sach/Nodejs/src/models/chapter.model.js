@@ -106,4 +106,6 @@ chapter.getContentChapters = (sach_id, chuong) => {
         }
     });
 };
+
+
 module.exports = chapter;

@@ -250,13 +250,13 @@ const updateBook = async (req, res) => {
         if (req.file) {
             hinhmoi = req.file.filename
         } else {
-            hinhmoi = dataImage.hinh
+            hinhmoi = dataImage.book.hinh
         }
         let dataBook = await book.update(data, hinhmoi)
         if (dataBook.errcode == 0) {
             if (req.file) {
                 try {
-                    fs.unlink('src/public/img/' + dataImage.hinh, function (err) {
+                    fs.unlink('src/public/img/' + dataImage.book.hinh, function (err) {
                     });
                 } catch (error) {
                     throw error
