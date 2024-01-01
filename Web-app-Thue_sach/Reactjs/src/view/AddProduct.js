@@ -88,7 +88,7 @@ export default function AddProduct() {
                 position: "topRight",
                 message: res.message
             });
-
+            window.location.reload();
             setTentacgia('');
             setTen('');
             setHinh({ preview: '', data: '' });
@@ -101,19 +101,19 @@ export default function AddProduct() {
             iziToast.error({
                 title: "Opzz!",
                 position: "topRight",
-                message: res.message
+                message: res.data.message
             });
         }
 
 
     }
 
-    const array = category?.map((res) => {
-        return {
+    const array = Array.isArray(category)
+        ? category.map((res) => ({
             label: res.ten,
             value: res.id
-        }
-    })
+        }))
+        : [];
 
     const handleChangeCate = (e) => {
         setTheloai_id(e.value)
@@ -255,7 +255,7 @@ export default function AddProduct() {
                                     className="w-full text-black bg-slate-600 hover:bg-red-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center"
                                     onClick={(e) => handleSend(e)}
                                 >
-                                    Send
+                                    Đăng sách
                                 </button>
                             </div>
                         </div>

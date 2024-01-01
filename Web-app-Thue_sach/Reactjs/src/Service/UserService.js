@@ -42,8 +42,8 @@ const detailBookUser = async (id) => {
     return await axios.get(`/get-api-detailBook?id=${id}`);
 }
 
-const apiUpdateBook = (id, hinh, tinhtrang, gia, tiencoc, noidung) => {
-    return axios.patch('/api/book/update', { id, hinh, tinhtrang, gia, tiencoc, noidung },
+const apiUpdateBook = (id, hinh, ten, noidung, trangthai, gia, tiencoc) => {
+    return axios.patch('/api/book/update', { id, hinh, ten, noidung, trangthai, gia, tiencoc },
         {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -132,11 +132,11 @@ const apiSendComment = (sach_id, users_id, noidung) => {
 }
 
 //api get chapter book
-const callApiChapter = (chuong, sachId) => {
+const callApiChapter = (sach_id, chuong) => {
     return axios.get('/api/chapter/detailchapter', {
         params: {
+            sach_id: sach_id,
             chuong: chuong,
-            sach_id: sachId,
         },
     });
 }
@@ -159,6 +159,7 @@ const apiPostCHapter = (noidung, sach_id, tieude) => {
         }
     );
 }
+
 
 const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);

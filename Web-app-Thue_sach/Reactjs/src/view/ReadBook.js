@@ -29,13 +29,13 @@ export default function ReadBook() {
     const [showModal, setShowModal] = React.useState(false);
     const [modalBookId, setModalBookId] = React.useState(null)
     const [detail, setDetail] = useState([]);
-    const [editedContent, setEditedContent] = useState(detail.noidung);
-    const [editedPrice, setEditedPrice] = useState(detail.gia);
-    const [editedDeposit, setEditedDeposit] = useState(detail.tiencoc);
+    const [noidung, setEditedContent] = useState();
+    const [gia, setEditedPrice] = useState();
+    const [tiencoc, setEditedDeposit] = useState();
+    const [ten, setTen] = useState()
     const handleInputChange = (e) => {
     }
-    console.log(editedPrice)
-    console.log(editedDeposit)
+
     const handleEditInfo = async (bookId) => {
         // Sử dụng hook để đặt giá trị id vào state
         setModalBookId(bookId);
@@ -43,6 +43,10 @@ export default function ReadBook() {
             let data = await detailBookUser(bookId);
             if (data && data.status === 200) {
                 setDetail(data.data);
+                setTen(data.data.ten)
+                setEditedDeposit(data.data.tiencoc)
+                setEditedPrice(data.data.gia)
+                setEditedContent(data.data.noidung)
             }
 
         } catch (error) {
@@ -51,6 +55,7 @@ export default function ReadBook() {
         // Hiển thị modal
         setShowModal(true);
     }
+    console.log(ten)
     const [previewImage, setPreviewImage] = useState(null);
     const [hinh, setHinh] = useState(null);
     const handleImageChange = (e) => {
@@ -71,34 +76,33 @@ export default function ReadBook() {
     console.log(detail)
     const [tinhtrang, setTinhTrang] = useState();
     const options = [
-        { value: 1, label: 'Sách cũ' },
-        { value: 0, label: 'Sách mới' },
+        { value: 1, label: 'Hiện sách' },
+        { value: 0, label: 'Ẩn sách' },
     ];
     const handleChangeTinhTrang = (selectedOption) => {
         setTinhTrang(selectedOption);
     };
-    const handlePriceChange = (e) => {
-        // Kiểm tra xem giá trị mới chỉ chứa ký tự số
-        const newValue = e.target.value;
-        if (/^\d*$/.test(newValue)) {
-            setEditedPrice(newValue);
-        }
-    };
 
-    const handleDepositChange = (e) => {
-        // Kiểm tra xem giá trị mới chỉ chứa ký tự số
-        const newValue = e.target.value;
-        if (/^\d*$/.test(newValue)) {
-            setEditedDeposit(newValue);
-        }
-    };
     const handleSaveChange = async (id) => {
-        let change = await apiUpdateBook(id, hinh, tinhtrang, editedPrice, editedDeposit)
+        let trangthai = tinhtrang?.value
+        if (trangthai === null || trangthai === '') {
+            iziToast.info({
+                title: "Thiếu thông tin",
+                position: "topRight",
+            })
+        }
+        let change = await apiUpdateBook(id, hinh, ten, noidung, trangthai, gia, tiencoc)
         if (change && change.status === 200) {
             iziToast.success({
                 title: "Sửa thành công",
                 position: "topRight",
-                message: change.message
+                message: change.message,
+            })
+        } else {
+            iziToast.error({
+                title: "Thất bại",
+                position: "topRight",
+                message: change.data.message,
             })
         }
     }
@@ -106,10 +110,12 @@ export default function ReadBook() {
         setShowModal(false);
         setPreviewImage();
     }
+    console.log(ten)
     return (
         <>
             <div className="max-w-6xl mx-auto overflow-x-auto shadow-md">
                 <h2 className="text-2xl font-bold mb-4">Sách đọc trực tuyến</h2>
+
                 <table className="min-w-full bg-white border border-gray-300">
                     <thead>
                         <tr>
@@ -203,23 +209,7 @@ export default function ReadBook() {
                                                 <span>Sửa thông tin</span>
                                             </button>
 
-                                            <button className="bg-red-500 text-white px-4 py-2 rounded flex items-center space-x-2 mt-4 w-48">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-6 w-6 text-yellow-500"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="2"
-                                                        d="M6 18L18 6M6 6l12 12"
-                                                    />
-                                                </svg>
-                                                <span>Ẩn sách</span>
-                                            </button>
+
                                         </>}
 
                                     </td>
@@ -260,25 +250,16 @@ export default function ReadBook() {
                                             /></div>
                                         <div>
                                             <div className="mt-4">
-                                                <label htmlFor="bookName" className="font-bold block">Tên sách:</label>
+                                                <label className="font-bold block">Tên sách:</label>
                                                 <input
                                                     type="text"
-                                                    id="bookName"
                                                     className="border p-2 w-full"
-                                                    value={JSON.stringify(detail.ten).replace(/^"(.*)"$/, '$1')}
-                                                    onChange={(e) => handleInputChange(e, 'ten')}
+                                                    value={ten}
+                                                    onChange={(e) => setTen(e.target.value)}
                                                 />
+
                                             </div>
-                                            <div className="mt-4">
-                                                <label htmlFor="author" className="font-bold block">Tác giả:</label>
-                                                <input
-                                                    type="text"
-                                                    id="author"
-                                                    className="border p-2 w-full"
-                                                    value={JSON.stringify(detail.tentacgia).replace(/^"(.*)"$/, '$1')}
-                                                    onChange={(e) => handleInputChange(e, 'tentacgia')}
-                                                />
-                                            </div>
+
                                         </div>
 
                                     </div>
@@ -290,7 +271,7 @@ export default function ReadBook() {
                                                     type="text"
                                                     id="author"
                                                     className="border p-2 w-full"
-                                                    value={editedContent}
+                                                    value={noidung}
                                                     onChange={(e) => setEditedContent(e.target.value)}
                                                 />
                                             </p>
@@ -298,10 +279,9 @@ export default function ReadBook() {
                                                 <span className="font-bold">Giá:</span>
                                                 <input
                                                     type="number"
-                                                    id="price"
                                                     className="border p-2 w-full"
-                                                    value={detail.gia}
-                                                    onChange={handlePriceChange}
+                                                    value={gia}
+                                                    onChange={(e) => setEditedPrice(e.target.value)}
                                                 />
                                             </p>
                                             <p>
@@ -310,8 +290,8 @@ export default function ReadBook() {
                                                     type="number"
                                                     id="deposit"
                                                     className="border p-2 w-full"
-                                                    value={detail.tiencoc}
-                                                    onChange={handleDepositChange}
+                                                    value={tiencoc}
+                                                    onChange={(e) => setEditedDeposit(e.target.value)}
                                                 />
                                             </p>
                                         </div>
@@ -320,15 +300,8 @@ export default function ReadBook() {
                                             <Select
                                                 id="bookStatus"
                                                 options={options}
-                                                value={options.find(option => option.value === parseInt(detail.tinhtrang))}
-                                                onChange={(selectedOption) => handleChangeTinhTrang(selectedOption, 'tinhtrang')}
-                                                getOptionLabel={(option) => {
-                                                    if (option.value === 1) {
-                                                        return 'Sách mới';
-                                                    } else {
-                                                        return 'Sách cũ';
-                                                    }
-                                                }}
+                                                onChange={(selectedOption) => handleChangeTinhTrang(selectedOption)}
+
                                             />
                                         </div>
                                     </div>
@@ -344,7 +317,7 @@ export default function ReadBook() {
                                     <button
                                         className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
-                                        onClick={handleSaveChange(detail.id)}
+                                        onClick={() => handleSaveChange(detail.id)}
                                     >
                                         Lưu thay đổi
                                     </button>
