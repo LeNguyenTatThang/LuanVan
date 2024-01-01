@@ -15,35 +15,43 @@ export default function HomePage() {
 
     const [authur, setAuthur] = useState([]);
     const [randomBook, setRandomBook] = useState([]);
-    const checkArray = authur?.length > 0 ? authur[0].id : null;
+
+    const fetchRandomBooks = async () => {
+        try {
+            let newRandomBooks = [];
+
+            for (const author of authur) {
+                const authorId = author.id;
+                const data = await apiRandomBook(authorId);
+                newRandomBooks = [...newRandomBooks, ...data.data];
+            }
+
+            setRandomBook(newRandomBooks);
+        } catch (error) {
+            console.error('Error fetching random books:', error);
+        }
+    };
+
     const getAuthor = async () => {
         try {
-            let res = await apiAuthurRandom(checkArray);
+            let res = await apiAuthurRandom();
             setAuthur(res.data);
         } catch (error) {
             console.error('Error fetching author:', error);
         }
     };
 
-    const getRandomBook = async (authorId) => {
-        try {
-            let data = await apiRandomBook(authorId);
-            setRandomBook(data.data);
-        } catch (error) {
-            console.error('Error fetching random book:', error);
-        }
-    };
-    console.log("check random book>>>>", randomBook)
     useEffect(() => {
         getAuthor();
     }, []);
 
     useEffect(() => {
         if (authur.length > 0) {
-            const authorId = authur[0].id;
-            getRandomBook(authorId);
+            fetchRandomBooks();
         }
     }, [authur]);
+
+    console.log("check random books>>>>", randomBook);
 
     return (
         <>
@@ -65,7 +73,7 @@ export default function HomePage() {
                 <SwiperSlide> <img src='https://wallpapersmug.com/download/3840x2160/f12332/books.jpg' className="w-full h-80 object-cover" /></SwiperSlide>
             </Swiper>
 
-            <div className="max-w-screen-xl mx-auto p-2 sm:p-10 md:p-4">
+            <div className="w-11/12 mx-auto p-2 sm:p-10 md:p-4">
                 <div className="border-b mb-5 flex justify-between text-sm">
 
                     <div className="text-orange-500 flex items-center pb-2 pr-2 border-b-2 border-gray-700 uppercase">

@@ -4,9 +4,7 @@ import './App.css';
 import Footer from './view/Footer';
 import HomePage from './view/HomePage';
 import Login from './view/Login';
-import Navbar from './view/Navbar';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Search from './view/Search';
 import Page404 from './view/Page404';
 import Product from './view/Product';
 import Register from './view/Register';
@@ -23,43 +21,39 @@ import RegistrationSuccess from './view/Accept';
 import ReadBook from './view/ReadBook';
 import Blog from './view/Blog';
 import PostChapter from './view/PostChapter';
-
-
-
+import Menu from './view/Menu';
 function App() {
   return (
-    <Router>
-
-      <Navbar />
-
+    <Router >
+      <Menu />
       <Routes>
-        <Route path="/" element={<div className="p-4 sm:ml-64"> <HomePage /> </div>} />
-        <Route path="/products" element={<div className="p-4 sm:ml-64"> <Product /> </div>} />
-        <Route path="/profiles" element={<div className="p-4 sm:ml-64"><Profile />  </div>} />
-        <Route path="/signin" element={<div className="p-4 sm:ml-64"><Login />  </div>} />
-        <Route path="/post-chapter/:itemId" element={<div className="p-4 sm:ml-64"> <PostChapter /> </div>} />
-        <Route path="/blogs" element={<div className="p-4 sm:ml-64"> <Blog /> </div>} />
-        <Route path="/authur" element={<div className="p-4 sm:ml-64"><Authur /> </div>} />
-        <Route path="/review" element={<div className="p-4 sm:ml-64"><Review /> </div>} />
-        <Route path="/chat" element={<div className="p-4 sm:ml-64"> <Chat /> </div>} />
-        <Route path="/signup" element={<div className="p-4 sm:ml-64"> <Register /> </div>} />
-        <Route path="/add-book" element={<div className="p-4 sm:ml-64"> <AddProduct /> </div>} />
-        <Route path="/customer-card" element={<div className="p-4 sm:ml-64"> <CustomerCard /> </div>} />
-        <Route path="/detail-book/:id" element={<div className="p-4 sm:ml-64"> <Detail_book /> </div>} />
-        <Route path="/manager-book" element={<div className="p-4 sm:ml-64"> <Manager /> </div>} />
-        <Route path="/read-book" element={<div className="p-4 sm:ml-64"> <ReadBook /> </div>} />
-        <Route path="/create-account-ok/:id" element={<div className="p-4 sm:ml-64"> <RegistrationSuccess /> </div>} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/products" element={<Product />} />
+        <Route path="/profiles" element={<Profile />} />
+        <Route path="/signin" element={<Login />} />
+        <Route path="/post-chapter/:itemId" element={<PostChapter />} />
+        <Route path="/blogs" element={<Blog />} />
+        <Route path="/authur" element={<Authur />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="/add-book" element={<AddProduct />} />
+        <Route path="/customer-card" element={<CustomerCard />} />
+        <Route path="/detail-book/:id" element={<Detail_book />} />
+        <Route path="/manager-book" element={<Manager />} />
+        <Route path="/read-book" element={<ReadBook />} />
+        <Route path="/create-account-ok/:id" element={<RegistrationSuccess />} />
         <Route
           path="/detailchapter/:sach_id/:chuong"
           element={
-            <div className="p-4 sm:ml-64">
-              <DetailChapter />
-            </div>
+
+            <DetailChapter />
+
           }
         />
-        <Route path="*" element={<div className="p-4 sm:ml-64"><Page404 /></div>} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
-      <div className="p-4 sm:ml-64"> <Footer /> </div>
+      <Footer />
     </Router>
   );
 }
