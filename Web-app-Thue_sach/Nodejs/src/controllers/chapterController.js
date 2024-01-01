@@ -107,11 +107,11 @@ const ContentChapter = async (req, res) => {
 const updateChapter = async (req, res) => {
     try {
         let data = req.body
-        let dataChapter = await chapter.getContentChapters(data)
+        let dataChapter = await chapter.update(data)
         if (dataChapter.errcode === 0) {
             return res.status(200).json({
                 status: 200,
-                data: dataChapter.data,
+                message: dataChapter.message
             })
         } else {
             return res.status(400).json({

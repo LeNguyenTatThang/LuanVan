@@ -157,6 +157,8 @@ let initApiRouter = (app) => {
     // hiện nội dung chương
     router.get('/api/chapter/detailchapter', chapterController.ContentChapter)
 
+    // api cập nhập chương (id)
+    router.patch('/api/chapter/updateChapter/', chapterController.updateChapter)
 
 
     return app.use("/", router)

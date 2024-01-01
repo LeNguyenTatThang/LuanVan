@@ -107,5 +107,28 @@ chapter.getContentChapters = (sach_id, chuong) => {
     });
 };
 
+chapter.update = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let chap = {}
+            let sql = "UPDATE noidungsach SET tieude =?, noidung=? WHERE id = ?";
+            const [result, fields] = await pool.execute(sql, [data.tieude, data.noidung, data.id]);
+            if (result) {
+                chap = {
+                    errcode: 0,
+                    message: "cập nhập thành công"
+                }
+            } else {
+                chap = {
+                    errcode: 1,
+                    message: "cập nhật thất bại",
+                }
+            }
+            resolve(chap)
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 module.exports = chapter;
