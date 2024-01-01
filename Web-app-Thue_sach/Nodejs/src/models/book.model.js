@@ -398,6 +398,7 @@ book.createChap = (data) => {
 book.update = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(data)
             let bookModel = {}
             let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = 'dangthue'"
             let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"

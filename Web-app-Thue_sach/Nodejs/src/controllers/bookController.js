@@ -245,18 +245,14 @@ const getApiDetailBooks = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         let data = req.body
-        console.log("dữ liệu", data)
-        console.log(req.file)
         let hinhmoi
+        let dataImage = await book.getId(data.id)
         if (req.file) {
             hinhmoi = req.file.filename
         } else {
-            hinhmoi = data.hinh
+            hinhmoi = dataImage.hinh
         }
-        let dataImage = await book.getId(data.id)
-        console.log('hinh', hinhmoi)
         let dataBook = await book.update(data, hinhmoi)
-        console.log(dataBook)
         if (dataBook.errcode == 0) {
             if (req.file) {
                 try {
