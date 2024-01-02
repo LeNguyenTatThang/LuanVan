@@ -289,6 +289,52 @@ const updateBook = async (req, res) => {
     }
 }
 
+const upbookOnline = async (req, res) => {
+    try {
+        let data = req.body
+        let hinhmoi
+        let dataImage = await book.getId(data.id)
+        if (req.file) {
+            hinhmoi = req.file.filename
+        } else {
+            hinhmoi = dataImage.book.hinh
+        }
+        let dataBook = await book.updateBookOnline(data, hinhmoi)
+        if (dataBook.errcode == 0) {
+            if (req.file) {
+                try {
+                    fs.unlink('src/public/img/' + dataImage.book.hinh, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
+            return res.status(200).json({
+                status: 200,
+                message: dataBook.message
+            })
+        } else {
+            if (req.file) {
+                try {
+                    fs.unlink('src/public/img/' + hinhmoi, function (err) {
+                    });
+                } catch (error) {
+                    throw error
+                }
+            }
+            return res.status(400).json({
+                status: 400,
+                message: dataBook.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
 
 //api danh sach theo theloai va tacgia
 const bookByCatetoryAndAuthor = async (req, res) => {
@@ -332,6 +378,7 @@ module.exports = {
     book1,
     detailBroweBook,
     bookByIdUsers,
-    bookByCatetoryAndAuthor
+    bookByCatetoryAndAuthor,
+    upbookOnline
 }
 

@@ -58,6 +58,9 @@ let initApiRouter = (app) => {
     //cập nhật sách(có id, hinh,ten, noidung,trangthai, gia, tiencoc )
     router.patch('/api/book/update', upload.single('hinh'), bookController.updateBook)
 
+    //cập nhật sách đọc online(có id, hinh,ten, noidung,trangthai)
+    router.patch('/api/book/upbookOnline', upload.single('hinh'), bookController.upbookOnline)
+
     //lấy ds sách theo id_users(id_users)
     router.get('/api/bookByIdUsers', bookController.bookByIdUsers)
 

@@ -430,6 +430,31 @@ book.update = (data, hinhmoi) => {
     })
 }
 
+book.updateBookOnline = (data, hinhmoi) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log(data)
+            let bookModel = {}
+            let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai =?, noidung =? WHERE id =?"
+            const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.ten, data.trangthai, data.noidung, data.id])
+            if (result) {
+                bookModel = {
+                    errcode: 0,
+                    message: "Cập nhập thành công"
+                }
+            } else {
+                bookModel = {
+                    errcode: 2,
+                    message: "cập nhật thất bại"
+                }
+            }
+            resolve(bookModel)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 book.getBookByIdUsers = async (id_users, loai) => {
     return new Promise(async (resolve, reject) => {
         try {

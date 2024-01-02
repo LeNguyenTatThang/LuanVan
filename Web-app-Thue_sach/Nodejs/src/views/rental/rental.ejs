@@ -58,7 +58,6 @@
                                             <th class="text-truncate">Người Cho Thuê</th>
                                             <th class="text-truncate">Ngày thuê</th>
                                             <th class="text-truncate">Trạng thái</th>
-                                            <th class="text-truncate">Thông báo</th>
                                             <th class="text-truncate text-right">Action</th>
                                         </tr>
                                     </thead>
@@ -111,11 +110,6 @@
                                                                                 <% } else if(data[i].trangthai===5){%>
                                                                                     bị hủy
                                                                                     <% } %>
-                                                        </td>
-                                                        <td scope="row">
-                                                            <% if(data[i].thongbao.length>0){ %>
-                                                                <%= data[i].thongbao %>
-                                                                    <% } %>
                                                         </td>
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success"
