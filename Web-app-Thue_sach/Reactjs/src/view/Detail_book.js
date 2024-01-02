@@ -74,11 +74,16 @@ export default function Detail_book() {
     try {
       let send = await apiSendComment(id, users_id.id, noidung);
       if (send && send.status === 200) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         iziToast.success({
           title: "Bạn đã đăng một bình luận",
-          position: "bottomRight"
+          position: "bottomRight",
+          onClosed: function () {
+            window.location.reload();
+          }
         });
-        window.location.reload();
+
+
         setComments([...comments, send.data]);
         setNoidung('');
       }

@@ -22,6 +22,7 @@ import ReadBook from './view/ReadBook';
 import Blog from './view/Blog';
 import PostChapter from './view/PostChapter';
 import Menu from './view/Menu';
+import Logout from './view/Logout';
 function App() {
   return (
     <Router >
@@ -43,6 +44,7 @@ function App() {
         <Route path="/manager-book" element={<Manager />} />
         <Route path="/read-book" element={<ReadBook />} />
         <Route path="/create-account-ok/:id" element={<RegistrationSuccess />} />
+        <Route path="/logout" element={<Logout />} />
         <Route
           path="/detailchapter/:sach_id/:chuong"
           element={
