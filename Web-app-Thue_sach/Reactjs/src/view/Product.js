@@ -243,7 +243,7 @@ export default function Product() {
                                                 </div>
                                                 <div className='px-4 py-2'><span className="text-xs">Người đăng: <span className='text-lime-600 text-sm'>{item.nguoidang}</span></span></div>
                                                 <p className="text-gray-500 text-sm px-4">
-                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                    {item.noidung}.
                                                 </p>
                                             </div>
                                             <div className="px-6 py-3 flex flex-row items-center justify-between bg-gray-100">
