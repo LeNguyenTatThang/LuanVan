@@ -78,6 +78,30 @@ chapter.getChaptersByBookId = (data) => {
     });
 };
 
+chapter.getAllChaptersByBookId = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const sql = "SELECT id, chuong,tieude FROM noidungsach WHERE sach_id = ? ";
+            const [chapters, fields] = await pool.execute(sql, [data.sach_id]);
+            if (chapters.length > 0) {
+                chap = {
+                    totalPage,
+                    errcode: 0,
+                    chapters: chapters
+                }
+            } else {
+                chap = {
+                    errcode: 1,
+                    message: "Không tìm thấy chương nào cho quyển sách này",
+                }
+            }
+            resolve(chap)
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 chapter.getContentChapters = (sach_id, chuong) => {
     return new Promise(async (resolve, reject) => {
         try {

@@ -28,6 +28,32 @@ const listBookchapter = async (req, res) => {
     }
 }
 
+const listAllBookchapter = async (req, res) => {
+    try {
+        let data = req.body
+        let dataChap = await chapter.getAllChaptersByBookId(data)
+        console.log('code', dataChap)
+        if (dataChap.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                data: dataChap.chapters,
+                totalPage: dataChap.totalPage
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: dataChap.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
 const postChapter = async (req, res) => {
     try {
         let data = req.body
@@ -132,5 +158,6 @@ module.exports = {
     postChapter,
     listBookchapter,
     ContentChapter,
-    updateChapter
+    updateChapter,
+    listAllBookchapter
 }
