@@ -37,7 +37,6 @@ const listAllBookchapter = async (req, res) => {
             return res.status(200).json({
                 status: 200,
                 data: dataChap.chapters,
-                totalPage: dataChap.totalPage
             })
         } else {
             return res.status(400).json({

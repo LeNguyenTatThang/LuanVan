@@ -85,7 +85,6 @@ chapter.getAllChaptersByBookId = (data) => {
             const [chapters, fields] = await pool.execute(sql, [data.sach_id]);
             if (chapters.length > 0) {
                 chap = {
-                    totalPage,
                     errcode: 0,
                     chapters: chapters
                 }
