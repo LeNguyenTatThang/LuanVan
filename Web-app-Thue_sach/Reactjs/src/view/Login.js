@@ -22,7 +22,7 @@ export default function Login() {
         if (!email || !matkhau) {
             iziToast.error({
                 title: 'Cảnh báo',
-                position: 'topRight',
+                position: 'bottomRight',
                 message: 'Không được để trống'
             });
             return;

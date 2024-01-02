@@ -11,6 +11,7 @@ import 'swiper/css/autoplay';
 import { apiAuthurRandom, apiRandomBook } from '../Service/UserService';
 import avtAuthur from '../avatar-authur.png';
 import Image from '../components/Image';
+import ShiftingCountdown from '../components/CountDown';
 
 export default function HomePage() {
 
@@ -331,7 +332,8 @@ export default function HomePage() {
             </div>
             <div className='container'>
                 <div className='w-full mx-auto'><Image /></div>
-
+                <br />
+                <ShiftingCountdown />
 
             </div>
 

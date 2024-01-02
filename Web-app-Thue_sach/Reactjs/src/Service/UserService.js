@@ -180,6 +180,13 @@ const callApiSearch = (ten, loai, theloai_id) => {
 const apiChapter = (page, sach_id) => {
     return axios.post('/api/chapter/listchapter', { page: page, sach_id: parseInt(sach_id, 10) })
 }
+
+const apiListChapter = (sach_id) => {
+    return axios.post('/api/chapter/listAllBookchapter', { sach_id })
+}
+const apiUpdateChapter = (id, tieude, noidung) => {
+    return axios.patch('/api/chapter/updateChapter/', { id, tieude, noidung })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook,
@@ -190,6 +197,6 @@ export {
     apiRentOrder, apiRentOrderOne, apiRentOrderTwo, apiOrderThree, apiOrderFour,
     apiConfirmRentThree,
     apiCompleted,
-    callApiChapter, apigetBookRead, apiPostCHapter,
+    callApiChapter, apigetBookRead, apiPostCHapter, apiListChapter, apiUpdateChapter,
     callApiMail,
 };
