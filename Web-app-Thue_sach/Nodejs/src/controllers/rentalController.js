@@ -167,6 +167,7 @@ const received = async (req, res) => {
         let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
         let data = await rental.upStatus2(rentalData, ngaynhan, ngaytra)
         if (data.errcode === 0) {
+            let thoiGianTruoc2Ngay = new Date(ngaytra.getTime() - (2 * 24 * 60 * 60 * 1000));
             const job = schedule.scheduleJob('*/1 * * * *', async () => {
                 let message = "còn 2 ngày nữa là tới ngày trả hàng"
                 let dataMsg = await rental.updateMessage(rentalData.id, message)
@@ -177,6 +178,7 @@ const received = async (req, res) => {
                 }
                 job.cancel();
             });
+            let thoiGianTruoc1Ngay = new Date(ngaytra.getTime() - (1 * 24 * 60 * 60 * 1000));
             const job2 = schedule.scheduleJob('*/2 * * * *', async () => {
                 let message = "còn 1 ngày nữa là tới ngày trả hàng"
                 let dataMsg = await rental.updateMessage(rentalData.id, message)
@@ -187,11 +189,12 @@ const received = async (req, res) => {
                 }
                 job2.cancel();
             });
-            // const updateStatus3 = schedule.scheduleJob('*/2 * * * *', async () => {
-            //     //chuyển sang trạng thái chờ trả
-            //     let update = await rental.upStatus3(rentalData.id)
-            //     console.log('chuyển sang trạng thái chờ trả')
-            // });
+            const updateStatus3 = schedule.scheduleJob('*/3 * * * *', async () => {
+                //chuyển sang trạng thái chờ trả
+                let update = await rental.upStatus3(rentalData.id)
+                console.log('chuyển sang trạng thái chờ trả')
+                updateStatus3.cancel();
+            });
             return res.status(200).json({
                 status: 200,
                 message: data.message
