@@ -81,6 +81,7 @@ chapter.getChaptersByBookId = (data) => {
 chapter.getAllChaptersByBookId = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let chap = {}
             const sql = "SELECT id, chuong,tieude FROM noidungsach WHERE sach_id = ? ";
             const [chapters, fields] = await pool.execute(sql, [data.sach_id]);
             if (chapters.length > 0) {
