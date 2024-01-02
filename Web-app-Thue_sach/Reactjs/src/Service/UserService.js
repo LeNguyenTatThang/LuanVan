@@ -102,6 +102,10 @@ const apiRentOrder = (chutiem_id, trangthai) => {
 const apiConfirmRental = (id) => {
     return axios.patch('/api/confirmRental', { id });
 }
+//Hủy đơn hàng
+const apiCancel = (id) => {
+    return axios.patch('/api/cancelRental', { id })
+}
 //lấy danh sách đơn hàng cho thuê trạng thái 1(chờ gửi)
 const apiRentOrderOne = (chutiem_id) => {
     return axios.post('/api/RentOrder1', { chutiem_id });
@@ -181,7 +185,7 @@ export {
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook,
     callApiCreateRental,
     callApiComment, apiSendComment, apiChapter,
-    apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrderThree, apiRentOrderFour,
+    apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrderThree, apiRentOrderFour, apiCancel,
     apiConfirmRental, apiConfirmRentOne,
     apiRentOrder, apiRentOrderOne, apiRentOrderTwo, apiOrderThree, apiOrderFour,
     apiConfirmRentThree,

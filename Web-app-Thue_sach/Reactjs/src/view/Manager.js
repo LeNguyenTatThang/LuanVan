@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { apiCompleted, apiConfirmRentOne, apiConfirmRentThree, apiConfirmRentTwo, apiConfirmRental, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
+import { apiCancel, apiCompleted, apiConfirmRentOne, apiConfirmRentThree, apiConfirmRentTwo, apiConfirmRental, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
 import iziToast from 'izitoast';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -191,7 +191,17 @@ const Manager = () => {
         }
     }, [userData])
 
-
+    //apiCancel
+    const handleCanClick = async (id) => {
+        let cancel = await apiCancel(id);
+        if (cancel && cancel.status === 200) {
+            iziToast.success({
+                title: "Hủy đơn hàng",
+                position: "topRight",
+            })
+        }
+        navigate('/manager-book');
+    };
 
     // Các điều kiện để xuất switch case
     const getContent = (status, isForRent) => {
@@ -221,13 +231,21 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">
                                                         {confirmedRentals.includes(item.id) ? (
                                                             <span className="text-green-500">Đã xác nhận</span>
-                                                        ) : (
+                                                        ) : (<>
                                                             <button
-                                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-1"
                                                                 onClick={() => handleConfirmClick(item.id)}
                                                             >
                                                                 Xác nhận
                                                             </button>
+
+                                                            <button
+                                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded m-1"
+                                                                onClick={() => handleCanClick(item.id)}
+                                                            >
+                                                                Hủy đơn
+                                                            </button>
+                                                        </>
                                                         )}
                                                     </td>
                                                 </tr>
@@ -279,19 +297,21 @@ const Manager = () => {
                                             <th className="py-2 px-4 border-b">Tên sách</th>
                                             <th className="py-2 px-4 border-b">Người thuê</th>
                                             <th className="py-2 px-4 border-b">Trạng thái</th>
+                                            <th className="py-2 px-4 border-b">Thông báo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {RentOrderTwo && RentOrderTwo.length > 0 &&
                                             RentOrderTwo.map((item, index) => (
-                                                <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
+                                                <tr key={index} className={`${index % 2 === 0 ? 'hover:bg-gray-100' : 'hover:bg-gray-200'
                                                     } hover:bg-gray-300`}>
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
                                                     <td className="py-2 px-4 border-b">{item.nguoithue}</td>
-                                                    <td className="py-2 px-4 border-b">Sách được thuê từ ngày: {dayjs(item.ngaynhan).format(' DD-MM-YYYY')}<br />
-                                                        Ngày trả sách vào: {dayjs(item.ngaytra).format(' DD-MM-YYYY')}
+                                                    <td className="py-2 px-4 border-b">Ngày nhận: {dayjs(item.ngaynhan).format(' DD-MM-YYYY')}<br />
+                                                        Ngày trả: {dayjs(item.ngaytra).format(' DD-MM-YYYY')}
                                                     </td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.thongbao}</td>
                                                 </tr>
                                             ))}
                                     </tbody>
@@ -430,6 +450,8 @@ const Manager = () => {
                                             <th className="py-2 px-4 border-b">Tên sách</th>
                                             <th className="py-2 px-4 border-b">Chủ tiệm</th>
                                             <th className="py-2 px-4 border-b">Trạng thái</th>
+                                            <th className="py-2 px-4 border-b">Giá thuê</th>
+                                            <th className='py-2 px-4 border-b'>Thông báo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -440,9 +462,11 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">{index + 1}</td>
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
                                                     <td className="py-2 px-4 border-b">{item.nguoidang}</td>
-                                                    <td className="py-2 px-4 border-b">Bạn đã thuê sách từ ngày: {dayjs(item.ngaynhan).format(' DD-MM-YYYY')}<br />
-                                                        Ngày trả sách của bạn vào ngày: {dayjs(item.ngaytra).format(' DD-MM-YYYY')}
+                                                    <td className="py-2 px-4 border-b">Ngày thuê: {dayjs(item.ngaynhan).format(' DD-MM-YYYY')}<br />
+                                                        Ngày trả: {dayjs(item.ngaytra).format(' DD-MM-YYYY')}
                                                     </td>
+                                                    <td className="py-2 px-4 border-b">{item.tongtien}vnđ</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.thongbao}</td>
                                                 </tr>
                                             ))}
                                     </tbody>

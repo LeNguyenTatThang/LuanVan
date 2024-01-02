@@ -10,6 +10,7 @@ import 'swiper/css/scrollbar';
 import 'swiper/css/autoplay';
 import { apiAuthurRandom, apiRandomBook } from '../Service/UserService';
 import avtAuthur from '../avatar-authur.png';
+import Image from '../components/Image';
 
 export default function HomePage() {
 
@@ -328,6 +329,12 @@ export default function HomePage() {
                 </div>
 
             </div>
+            <div className='container'>
+                <div className='w-full mx-auto'><Image /></div>
+
+
+            </div>
+
         </>
     )
 }

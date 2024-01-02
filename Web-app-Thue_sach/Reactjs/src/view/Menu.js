@@ -1,37 +1,26 @@
 import React from "react";
 import { Navbar } from 'flowbite-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Cart from './Cart';
 import StaggeredDropDown from "../components/StaggeredDropdown";
-import iziToast from "izitoast";
-import { LOG_OUT } from "../app/userReducer";
 import { Outlet } from 'react-router-dom';
 
 export default function Menu() {
     const userData = useSelector((state) => state.user);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const handleLogout = async () => {
-        navigate('/');
-        iziToast.success({
-            position: 'topRight',
-            message: 'Bạn đã đăng xuất'
-        });
-        await dispatch(LOG_OUT());
-    };
+
     return (
         < >
             <div className="pt-[92px] ">
                 <Navbar fluid rounded className="bg-zinc-300 text-black bg-opacity-70 fixed top-0 z-50 flex-1 w-full">
-                    <Navbar.Brand as={Link} className=" w-2/5">
+                    <Navbar.Brand as={Link} className=" w-3/5">
                         <Link to="/">
                             <span className="self-center  text-xl font-semibold dark:text-white">
                                 THUÊ SÁCH ONLINE
                             </span>
                         </Link>
                     </Navbar.Brand>
-                    <Navbar.Collapse className="w-3/5">
+                    <Navbar.Collapse className="w-2/5">
                         <Link to="/"><div className="flex p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
 
                             <svg className="flex-shrink-0 w-5 h-5 transition duration-75  text-gray-400  group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">
@@ -71,12 +60,7 @@ export default function Menu() {
                                     <div className='col-2 flex items-center'>
                                         <StaggeredDropDown userName={userData.userInfo.ten} />
                                         <Cart />
-                                        <div className="fixed top-10 right-16 flex items-center ml-auto p-2 text-gray-900 rounded-lg hover:bg-gray-400 group cursor-pointer" onClick={() => handleLogout()}>
-                                            <svg className="w-5 h-5 text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 23 23">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z" />
-                                            </svg>
-                                            <span className="ml-3 whitespace-nowrap font-roboto">Đăng xuất</span>
-                                        </div>
+
                                     </div>
 
 

@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import { FiEdit, FiChevronDown, FiTrash, FiShare, FiPlusSquare } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import iziToast from "izitoast";
+import { LOG_OUT } from "../app/userReducer";
+import { useDispatch } from "react-redux";
+import Logout from "../view/Logout";
 
 const StaggeredDropDown = ({ userName }) => {
     const [open, setOpen] = useState(false);
-
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handleLogout = async (e) => {
+        alert('ok')
+        // navigate('/');
+        // iziToast.success({
+        //     position: 'topRight',
+        //     message: 'Bạn đã đăng xuất'
+        // });
+        // await dispatch(LOG_OUT());
+    };
 
     return (
         <div className=" flex items-center justify-center">
@@ -43,6 +57,7 @@ const StaggeredDropDown = ({ userName }) => {
                     <Option setOpen={setOpen} Icon={FiPlusSquare} text="Thêm sách mới" to="/add-book" />
                     <Option setOpen={setOpen} Icon={FiShare} text="Quản lý phiếu thuê" to="/manager-book" />
                     <Option setOpen={setOpen} Icon={FiTrash} text="Quản lý sách" to="/read-book" />
+                    <Logout setOpen={setOpen} />
                 </motion.ul>
             </motion.div>
         </div>
