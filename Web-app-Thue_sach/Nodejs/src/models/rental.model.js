@@ -415,7 +415,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra,chutiem_sach.sdt AS sdtnguoidang,nguoithue_phieuthue.sdt AS sdtnguoithue, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
