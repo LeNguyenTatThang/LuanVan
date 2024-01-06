@@ -13,14 +13,14 @@ export default function Menu() {
         < >
             <div className="pt-[92px] ">
                 <Navbar fluid rounded className="bg-zinc-300 text-black bg-opacity-70 fixed top-0 z-50 flex-1 w-full">
-                    <Navbar.Brand as={Link} className=" w-3/5">
+                    <Navbar.Brand as={Link} className=" w-7/12">
                         <Link to="/">
                             <span className="self-center  text-xl font-semibold dark:text-white">
                                 THUÊ SÁCH ONLINE
                             </span>
                         </Link>
                     </Navbar.Brand>
-                    <Navbar.Collapse className="w-2/5">
+                    <Navbar.Collapse className="w-5/12">
                         <Link to="/"><div className="flex p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
 
                             <svg className="flex-shrink-0 w-5 h-5 transition duration-75  text-gray-400  group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">

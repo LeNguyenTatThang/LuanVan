@@ -5,6 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { addBook, apiListCate } from '../Service/UserService';
 import Select from 'react-select';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import { Button, Input } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Grid } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 export default function AddProduct() {
 
     const navigate = useNavigate();
@@ -49,12 +55,18 @@ export default function AddProduct() {
 
     const dispatch = useDispatch();
     const handleChange = (e) => {
-        const img = {
-            preview: URL.createObjectURL(e.target.files[0]),
-            data: e.target.files[0],
+        const selectedFile = e.target.files[0];
+
+        if (selectedFile) {
+            const img = {
+                preview: URL.createObjectURL(selectedFile),
+                data: selectedFile,
+            };
+            setHinh(img);
+
         }
-        setHinh(img)
-    }
+    };
+
 
     const getCategory = async () => {
         let cate = await apiListCate();
@@ -130,137 +142,172 @@ export default function AddProduct() {
     return (
         <div>
             <section className="bg-gray-50 ">
-                <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto min-h-screen lg:py-0">
-                    <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 ">
-                        <img className="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
-                        Thêm sách mới
-                    </div>
-                    <div className="w-full bg-white rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0 ">
-                        <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-
-                            <div className="space-y-4 md:space-y-6">
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 ">Tên sách</label>
-                                    <input type="text" name="ten" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder='Nhập tên sách' required=""
-                                        value={ten}
-                                        onChange={(event) => { setTen(event.target.value) }} />
-                                </div>
-                                <select
-                                    value={book}
-                                    onChange={(e) => setBook(Number(e.target.value))}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder='thuesach@gmail.com'"
-                                >
-                                    <option value={0}>Sách cho thuê</option>
-                                    <option value={1}>Sách đọc miễn phí</option>
-                                </select>
-                                <Select
-                                    placeholder="Chọn thể loại"
-                                    options={array}
-
-                                    onChange={(e) => {
-                                        handleChangeCate(e)
-                                    }}
-                                />
 
 
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 ">Hình ảnh</label>
-                                    <input type="file" onChange={handleChange} />
-                                    {hinh.preview && <img src={hinh.preview} alt="Preview" />}
-                                </div>
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 ">Nội dung:</label>
-                                    <input type="text" name="tentacgia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
-                                        value={noidung}
-                                        onChange={handleContentChange}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 ">Tên tác giả</label>
-                                    <input type="text" name="tentacgia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
-                                        value={tentacgia}
-                                        onChange={(event) => { setTentacgia(event.target.value) }} />
-                                </div>
+                <div className="w-full bg-white rounded-lg shadow py-4">
+                    <div className="w-4/5 mx-auto">
+                        <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 ">
+                            <img className="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
+                            Thêm sách mới
+                        </div>
+                        <div className="space-y-4 md:space-y-6">
+                            <Grid container spacing={2}>
+                                <Grid xs={6}>
+                                    <Box
+                                        component="form"
+                                        sx={{
+                                            '& > :not(style)': { m: 1, width: '40ch' },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                    >
+                                        <TextField id="outlined-basic" label="Tên sách" variant="outlined"
+                                            value={ten}
+                                            onChange={(event) => { setTen(event.target.value) }} />
+                                        <br /><br />
+                                        <select
+                                            value={book}
+                                            onChange={(e) => setBook(Number(e.target.value))}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                        >
+                                            <option value={0}>Sách cho thuê</option>
+                                            <option value={1}>Sách đọc miễn phí</option>
+                                        </select>
+                                        <br />
+                                        <Select
+                                            placeholder="Chọn thể loại"
+                                            options={array}
+
+                                            onChange={(e) => {
+                                                handleChangeCate(e)
+                                            }}
+                                        />
+                                        <br />
+                                        {book === 0 ?
+                                            <>
+                                                <div>
+                                                    <label>Tình trạng sách:</label>
+                                                    <Select
+                                                        placeholder='Tình trạng sách'
+                                                        value={tinhtrang}
+                                                        onChange={handleChangeTinhTrang}
+                                                        options={options}
+                                                    />
+                                                    {tinhtrang && (
+                                                        <p>Bạn đã chọn: {tinhtrang.label}</p>
+                                                    )}
+                                                </div>
+                                                <br />
+                                                <div>
+                                                    <TextField id="outlined-basic" label="Giá" variant="outlined"
+                                                        type="number" name="gia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
+                                                        value={gia}
+                                                        onChange={(event) => {
+                                                            if (event && event.target && event.target.value !== undefined) {
+                                                                const inputValue = event.target.value;
+                                                                if (/^\d+$/.test(inputValue)) {
+                                                                    setGia(event.target.value);
+                                                                } else {
+                                                                    iziToast.error({
+                                                                        title: "Wrong!!",
+                                                                        position: "topRight",
+                                                                        message: "Vui lòng không nhập số âm"
+                                                                    });
+                                                                }
+                                                            }
+                                                        }} />
+                                                </div>
+                                                <br />
+                                                <div>
+                                                    <TextField id="outlined-basic" label="Tiền cọc" variant="outlined"
+                                                        type="number"
+                                                        name="tiencoc"
+                                                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                                        required=""
+                                                        value={tiencoc}
+                                                        onChange={(event) => {
+                                                            // Ensure event.target and event.target.value are defined
+                                                            if (event && event.target && event.target.value !== undefined) {
+                                                                const inputValue = event.target.value;
+                                                                if (/^\d+$/.test(inputValue)) {
+                                                                    setTiencoc(inputValue);
+                                                                } else {
+                                                                    iziToast.error({
+                                                                        title: "Wrong!!",
+                                                                        position: "topRight",
+                                                                        message: "Vui lòng không nhập số âm"
+                                                                    });
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
 
 
-                                {book === 0 ?
-                                    <>
+                                            </>
+                                            :
+                                            <>
+
+
+                                            </>
+                                        }
+                                    </Box>
+                                </Grid>
+                                <Grid xs={6}>
+                                    <Box
+                                        component="form"
+                                        sx={{
+                                            '& > :not(style)': { m: 1, width: 'full' },
+                                        }}
+                                        noValidate
+                                        autoComplete="off">
                                         <div>
-                                            <label>Tình trạng sách:</label>
-                                            <Select
-                                                placeholder='Tình trạng sách'
-                                                value={tinhtrang}
-                                                onChange={handleChangeTinhTrang}
-                                                options={options}
-                                            />
-                                            {tinhtrang && (
-                                                <p>Bạn đã chọn: {tinhtrang.label}</p>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 ">Giá tiền</label>
-                                            <input type="number" name="gia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
-                                                value={gia}
-                                                onChange={(event) => {
-                                                    if (event && event.target && event.target.value !== undefined) {
-                                                        const inputValue = event.target.value;
-                                                        if (/^\d+$/.test(inputValue)) {
-                                                            setGia(event.target.value);
-                                                        } else {
-                                                            iziToast.error({
-                                                                title: "Wrong!!",
-                                                                position: "topRight",
-                                                                message: "Vui lòng không nhập số âm"
-                                                            });
-                                                        }
-                                                    }
-                                                }} />
-                                        </div>
-                                        <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 ">Tiền cọc</label>
                                             <input
-                                                type="number"
-                                                name="tiencoc"
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                                required=""
-                                                value={tiencoc}
-                                                onChange={(event) => {
-                                                    // Ensure event.target and event.target.value are defined
-                                                    if (event && event.target && event.target.value !== undefined) {
-                                                        const inputValue = event.target.value;
-                                                        if (/^\d+$/.test(inputValue)) {
-                                                            setTiencoc(inputValue);
-                                                        } else {
-                                                            iziToast.error({
-                                                                title: "Wrong!!",
-                                                                position: "topRight",
-                                                                message: "Vui lòng không nhập số âm"
-                                                            });
-                                                        }
-                                                    }
-                                                }}
+                                                accept="image/*"
+                                                style={{ display: 'none' }}
+                                                id="contained-button-file"
+                                                type="file"
+                                                onChange={handleChange}
+                                            />
+                                            <br />
+                                            <label htmlFor="contained-button-file">
+                                                <Button
+                                                    component="span"
+                                                    variant="contained"
+                                                    startIcon={<CloudUploadIcon />}
+                                                >
+                                                    Thêm hình ảnh
+                                                </Button>
+                                            </label>
+                                            <br />
+                                            {hinh.preview && <img src={hinh.preview} alt="Preview" />}
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <TextField id="outlined-basic" label="Tên tác giả" variant="outlined"
+                                                type="text" name="tentacgia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
+                                                value={tentacgia}
+                                                onChange={(event) => { setTentacgia(event.target.value) }} />
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <label className="block mb-2 text-sm font-medium text-gray-900 ">Nội dung:</label>
+                                            <textarea type="text" name="tentacgia" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required=""
+                                                value={noidung}
+                                                onChange={handleContentChange}
                                             />
                                         </div>
-
-
-                                    </>
-                                    :
-                                    <>
-
-
-                                    </>
-                                }
-                                <button
-                                    type="submit"
-                                    className="w-full text-black bg-slate-600 hover:bg-red-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center"
-                                    onClick={(e) => handleSend(e)}
-                                >
-                                    Đăng sách
-                                </button>
-                            </div>
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                            <Button variant="contained" endIcon={<SendIcon />} onClick={(e) => handleSend(e)}>
+                                Đăng sách
+                            </Button>
+                            <br />
                         </div>
                     </div>
                 </div>
+
             </section>
 
         </div>

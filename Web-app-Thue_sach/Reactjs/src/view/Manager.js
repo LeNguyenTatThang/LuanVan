@@ -485,6 +485,7 @@ const Manager = () => {
                                             <th className="py-2 px-4 border-b">Tên sách</th>
                                             <th className="py-2 px-4 border-b">Chủ tiệm</th>
                                             <th className="py-2 px-4 border-b">Trạng thái</th>
+                                            <th className="py-2 px-4 border-b">In hóa đơn</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -496,6 +497,10 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">{item.tensach}</td>
                                                     <td className="py-2 px-4 border-b">{item.nguoidang}</td>
                                                     <td className="py-2 px-4 border-b">Đang chờ chủ tiệm nhận sách
+                                                    </td>
+                                                    <td className="py-2 px-4 border-b flex items-center justify-evenly">
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded">Xem</button>
+                                                        <button className="bg-green-500 text-white px-3 py-1 rounded">In</button>
                                                     </td>
                                                 </tr>
                                             ))}

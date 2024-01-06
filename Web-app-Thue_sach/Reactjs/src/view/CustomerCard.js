@@ -7,9 +7,17 @@ import axios from 'axios';
 import Select from 'react-select';
 import { callApiCreateRental } from '../Service/UserService';
 import iziToast from 'izitoast';
-import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { Link } from 'react-router-dom';
+
+const steps = ['Chọn sản phẩm', 'Địa chỉ giao hàng', 'Điều khoản'];
 export default function CustomerCard() {
 
     const card = useSelector((state) => state.shop.cart);
@@ -24,9 +32,6 @@ export default function CustomerCard() {
         }
     }, [userData]);
 
-
-
-
     console.log(">>>check card: ", card)
     let chutiem_id = ''
     Object.keys(card).forEach(function (item) {
@@ -34,14 +39,11 @@ export default function CustomerCard() {
     });
     console.log(">>>check chutiem_id: ", chutiem_id)
 
-
     let sach_id = Object.keys(card).flatMap(item => {
         // Kiểm tra xem thuộc tính 'id' có phải là mảng không
         return Array.isArray(card[item].id) ? { ...card[item].id } : [card[item].id];
     });
     console.log(">>>check sach_id: ", sach_id)
-
-
 
     const DeleteCart = (_value) => {
         dispatch(REMOVE_FROM_CART(_value));
@@ -195,6 +197,7 @@ export default function CustomerCard() {
         }
 
     }
+
     const [nguoiDang, setNguoiDang] = useState([]);
 
     useEffect(() => {
@@ -210,7 +213,6 @@ export default function CustomerCard() {
     });
 
     const [agreedToTerms, setAgreedToTerms] = useState(false);
-
 
     const handleCheckboxChange = (productId, isChecked) => {
         console.log('Dispatching TOGGLE_CHECKBOX with:', { productId, isChecked });
@@ -236,8 +238,6 @@ export default function CustomerCard() {
         acc[nguoidang].push(data);
         return acc;
     }, {});
-
-
 
     useEffect(() => {
         console.log("Updated SelectedNguoiDang:", selectedNguoiDang);
@@ -299,7 +299,6 @@ export default function CustomerCard() {
     };
 
 
-
     const handleChildChange = (parentIndex, childIndex) => {
         setChildrenChecked((prev) => {
             const newChecked = { ...prev };
@@ -329,7 +328,6 @@ export default function CustomerCard() {
             return newChecked;
         });
     };
-
 
     const CustomListItem = ({ data, checked, onChange, onDelete }) => {
         console.log('Data:', data);
@@ -416,129 +414,216 @@ export default function CustomerCard() {
         );
     });
 
+    //Xử lý các bước trong giỏ hàng
+    const [activeStep, setActiveStep] = React.useState(0);
+    const [skipped, setSkipped] = React.useState(new Set());
 
+    const isStepOptional = (step) => {
+        return step === 1;
+    };
 
+    const isStepSkipped = (step) => {
+        return skipped.has(step);
+    };
+
+    const handleNext = () => {
+        let newSkipped = skipped;
+        if (isStepSkipped(activeStep)) {
+            newSkipped = new Set(newSkipped.values());
+            newSkipped.delete(activeStep);
+        }
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setSkipped(newSkipped);
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleReset = () => {
+        setActiveStep(0);
+    };
 
     return (
         <>
+            <Box sx={{ width: '100%' }}>
+                <Stepper activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = (
+                                <Typography variant="caption">Vui lòng chọn địa chỉ</Typography>
+                            );
+                        }
+                        if (isStepSkipped(index)) {
+                            stepProps.completed = false;
+                        }
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <br />
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+                {activeStep === steps.length ? (
+                    <React.Fragment>
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            <div className='w-3/5 mx-auto'>
+                                <div className='w-full mx-auto'>Bạn đã hoàn thành các bước nhấn xác nhận để hoản thành quá trình</div>
+                                <br />
+                                <div
+                                    onClick={onClickXuatHoaDon}
+                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+                                    style={{ textAlign: 'center' }}
+                                >
+                                    Hoàn thành
+                                </div></div>
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Button
+                                color="inherit"
+                                disabled={activeStep === 0}
+                                onClick={handleBack}
+                                sx={{ mr: 1 }}
+                            >
+                                Trở về
+                            </Button>
+                        </Box>
+                    </React.Fragment>
+                ) : (
+                    <React.Fragment>
+                        <Typography sx={{ mt: 2, mb: 1 }}>Bước {activeStep + 1}
+                            {activeStep === 0 && (
+                                <Typography>
+                                    <div className="w-4/5 p-4 bg-white border border-gray-200 rounded-lg shadow mx-auto">
+                                        <div className="flex items-center justify-center mb-4">
+                                            <h5 className="text-xl font-bold leading-none text-gray-900 ">Giỏ hàng của bạn</h5>
+                                        </div>
+                                        {children}
+                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3"> Tổng tiền thuê: {Total} vnđ </div>
+                                        <br />
+                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
+                                            Thời gian thuê là {selectedValue} ngày:
+                                            {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
+                                        </div>
+                                        <br />
+                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
+                                            <strong>Tổng tiền:</strong> {TotalCart} vnđ
+                                        </h3>
+                                        <hr className="border-gray-300" />
+                                        <div className="bg-white text-black p-4 rounded-md shadow-md">
+                                            <label className="text-lg font-bold">Chọn khoảng thời gian:</label>
+                                            <select
+                                                className="p-2 border rounded-md mt-2"
+                                                value={selectedValue}
+                                                onChange={handleSelectChange}
+                                            >
+                                                <option value="7">7 ngày</option>
+                                                <option value="15">15 ngày</option>
+                                                <option value="30">30 ngày</option>
+                                            </select>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <strong>Lưu ý:</strong><span className='text-amber-500'> &nbsp;Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (người đăng)</span>
+                                        </div>
+                                        <br />
 
-            <div className="w-full flex flex-col md:flex-row gap-2">
-                <div className="w-full md:w-3/5 p-4 bg-white border border-gray-200 rounded-lg shadow ">
-                    <div className="flex items-center justify-center mb-4">
-                        <h5 className="text-xl font-bold leading-none text-gray-900 ">Giỏ hàng của bạn</h5>
-                    </div>
-                    {children}
 
-
-                    <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3"> Tổng tiền thuê: {Total} vnđ </div>
-                    <br />
-                    <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
-                        Thời gian thuê là {selectedValue} ngày:
-                        {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
-                    </div>
-                    <br />
-                    <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
-                        <strong>Tổng tiền:</strong> {TotalCart} vnđ
-                    </h3>
-                    <br />
-                    <div>
-                        <strong>Lưu ý:</strong><span className='text-amber-500'> &nbsp;Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (người đăng)</span>
-                    </div>
-                    <br />
-                    <div className="ml-3 text-sm flex">
-                        <label htmlFor="terms" className="font-light text-gray-500 flex">
-                            <input
-                                type="checkbox"
-                                id="terms"
-                                checked={agreedToTerms}
-                                onChange={handleCheckboxChange}
-                                className="mr-2"
-                            />
-                            Tôi đồng ý &nbsp;
-                            <div className="font-medium text-primary-600 hover:underline" href="#">
-                                điều khoản và chính sách
-                            </div>
-                        </label>
-                    </div>
-                    <div
-                        onClick={onClickXuatHoaDon}
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
-                        style={{ textAlign: 'center' }}
-                        disabled={!agreedToTerms}
-                    >
-                        Xác nhận
-                    </div>
-                </div>
-
-                <div className="w-full md:w-2/5 p-4 bg-white border border-gray-200 rounded-lg shadow">
-                    <div className="mb-4">
-                        <h5 className="text-xl font-bold leading-none text-gray-900">Thông tin cá nhân</h5>
-                    </div>
-
-                    <div className="flex items-center mb-4">
-                        <div className="flex-shrink-0">
-                            <img className="w-8 h-8 rounded-full" src={Avt} alt={`${userData?.hinh}`} />
-                            {/* {`http://localhost:8000/img/${userData.hinh}`} */}
-                        </div>
-
-                        <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-900">{userData?.userInfo?.ten}</p>
-                            <p className="text-sm text-gray-900">{userData?.userInfo?.email}</p>
-                            <p className="text-sm text-gray-900">{/* Thêm số điện thoại ở đây */} 0367431233</p>
-                        </div>
-                    </div>
-
-                    <div className="mb-4">
-                        <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow-lg">
-                            <label className="block mb-2">
-                                Tỉnh/Thành phố:
-                                <Select
-                                    placeholder="Chọn tỉnh/thành phố"
-                                    value={selectedProvince}
-                                    onChange={handleProvinceChange}
-                                    options={provinces.map(province => ({ value: province.code, label: province.name }))}
-                                />
-                            </label>
-
-                            <label className="block mb-2">
-                                Quận/Huyện:
-                                <Select
-                                    placeholder="Chọn quận/huyện"
-                                    value={selectedDistrict}
-                                    onChange={handleDistrictChange}
-                                    options={districts.map(district => ({ value: district.code, label: district.name }))}
-                                />
-                            </label>
-
-                            <label className="block mb-2">
-                                Phường/Xã:
-                                <Select
-                                    placeholder='Chọn phường/xã'
-                                    value={selectedWard}
-                                    onChange={handleWardChange}
-                                    options={wards.map(ward => ({ value: ward.code, label: ward.name }))}
-                                />
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* Thêm khoảng trắng giữa các phần nếu cần */}
-                    <hr className="border-gray-300" />
-                    <div className="bg-blue-500 text-black p-4 rounded-md shadow-md">
-                        <label className="text-lg font-bold">Chọn khoảng thời gian:</label>
-                        <select
-                            className="p-2 border rounded-md mt-2"
-                            value={selectedValue}
-                            onChange={handleSelectChange}
-                        >
-                            <option value="7">7 ngày</option>
-                            <option value="15">15 ngày</option>
-                            <option value="30">30 ngày</option>
-                        </select>
-                    </div>
-                </div>
-
-            </div>
+                                    </div>
+                                </Typography>
+                            )}
+                            {activeStep === 1 && (
+                                <Typography>
+                                    <div className="w-4/5 p-4 bg-white border border-gray-200 rounded-lg shadow mx-auto">
+                                        <div className="mb-4">
+                                            <h5 className="text-xl font-bold leading-none text-gray-900">Thông tin cá nhân</h5>
+                                        </div>
+                                        <div className="flex items-center mb-4">
+                                            <div className='w-2/5 flex'>
+                                                <div className="flex-shrink-0">
+                                                    <img className="w-8 h-8 rounded-full" src={Avt} alt={`${userData?.hinh}`} />
+                                                    {/* {`http://localhost:8000/img/${userData.hinh}`} */}
+                                                </div>
+                                                <div className="ml-3">
+                                                    <p className="text-sm font-medium text-gray-900">{userData?.userInfo?.ten}</p>
+                                                    <p className="text-sm text-gray-900">{userData?.userInfo?.email}</p>
+                                                    <p className="text-sm text-gray-900">{userData?.userInfo?.sdt}</p>
+                                                </div>
+                                            </div>
+                                            <div className="w-3/5">
+                                                <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow-lg">
+                                                    <label className="block mb-2">
+                                                        Tỉnh/Thành phố:
+                                                        <Select
+                                                            placeholder="Chọn tỉnh/thành phố"
+                                                            value={selectedProvince}
+                                                            onChange={handleProvinceChange}
+                                                            options={provinces.map(province => ({ value: province.code, label: province.name }))}
+                                                        />
+                                                    </label>
+                                                    <label className="block mb-2">
+                                                        Quận/Huyện:
+                                                        <Select
+                                                            placeholder="Chọn quận/huyện"
+                                                            value={selectedDistrict}
+                                                            onChange={handleDistrictChange}
+                                                            options={districts.map(district => ({ value: district.code, label: district.name }))}
+                                                        />
+                                                    </label>
+                                                    <label className="block mb-2">
+                                                        Phường/Xã:
+                                                        <Select
+                                                            placeholder='Chọn phường/xã'
+                                                            value={selectedWard}
+                                                            onChange={handleWardChange}
+                                                            options={wards.map(ward => ({ value: ward.code, label: ward.name }))}
+                                                        />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Typography>
+                            )}
+                            {activeStep === 2 && (
+                                <Typography>
+                                    <div className='w-full'>
+                                        <div className='w-4/5 mx-auto shadow-lg p-4 bg-amber-50'>
+                                            - Tiệm có 3 mức thuê cố định là: 7 ngày, 15 ngày và 30 ngày. <br />
+                                            - Khi người thuê muốn trả sách sớm trước ngày dự kiến trả. Thì giá thuê không thay đổi.<br />
+                                            - Khi người thuê trả sách sớm hay trả đúng dự kiến thì vẫn tất cả sách có trong phiếu thuê.<br />
+                                            - Nếu có hư hỏng trong quá trình thuê, phí phát sinh sẽ được thỏa thuận giữa người cho thuê với người thuê
+                                            và sẽ được trừ vào tiền cọc. <br />
+                                            - Phương thức thanh toán tiền thuê với tiền cọc sẽ do người cho thuê và người thuê tự trao đổi.<br />
+                                            - Hình thức giao nhận do người cho thuê và người thuê tự trao đổi.<br />
+                                            - Nếu người thuê không nhận hàng thì sẽ bị cấm thuê sách tại Thuê sách Online.<br />
+                                            - Nếu người thuê nhận hàng không đúng với sản phẩm trên phiếu thuê thì có thể quay video hoặc chụp hình lại và <Link to='/blogs'>liên hệ</Link> với Thuê sách Online.
+                                        </div>
+                                    </div>
+                                </Typography>
+                            )}
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Button
+                                color="inherit"
+                                disabled={activeStep === 0}
+                                onClick={handleBack}
+                                sx={{ mr: 1 }}
+                            >
+                                Trở về
+                            </Button>
+                            <Box sx={{ flex: '1 1 auto' }} />
+                            <Button onClick={handleNext}>
+                                {activeStep === steps.length - 1 ? 'Kết thúc' : 'Tiếp'}
+                            </Button>
+                        </Box>
+                    </React.Fragment>
+                )}
+            </Box>
         </>
     )
 }

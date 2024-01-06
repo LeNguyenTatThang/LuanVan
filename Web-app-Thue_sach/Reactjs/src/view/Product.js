@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import iziToast from 'izitoast';
 import Select from 'react-select';
 import LazyLoad from 'react-lazyload';
+import { Rating, Stack } from '@mui/material';
 
 export default function Product() {
 
@@ -23,7 +24,6 @@ export default function Product() {
     const [dataSearch, setDataSearch] = useState();
     const [status, setStatus] = useState('');
     const loai = status?.value;
-
     useEffect(() => {
         getListBook();
         getCategory();
@@ -71,7 +71,16 @@ export default function Product() {
             });
 
         } else {
-            dispatch(ADD_TO_CART(_item));
+            if (login.userInfo.ten === _item.nguoidang) {
+                iziToast.warning({
+                    title: "Không thể thuê sản phẩm của bạn!",
+                    position: "center",
+                })
+                return;
+            } else {
+                dispatch(ADD_TO_CART(_item));
+            }
+
         }
     }
 
@@ -200,7 +209,7 @@ export default function Product() {
                                             <div className="relative">
                                                 <LazyLoad height={200} offset={100}>
                                                     <img
-                                                        className="w-full h-56 object-cover border border-gray-200 shadow-md transform transition-transform duration-300 ease-in-out group-hover:scale-105"
+                                                        className="w-3/5 mx-auto h-56 object-cover border border-gray-200 shadow-md transform transition-transform duration-300 ease-in-out group-hover:scale-105"
                                                         src={`http://localhost:8000/img/${item.hinh}`}
                                                         alt={`${item.hinh}`}
                                                     />
@@ -232,44 +241,29 @@ export default function Product() {
                                                     </div></>
                                                 }
                                             </div>
-                                            <div className="py-2 mb-auto">
+                                            <Link to={`/detail-book/${item.id}`} >
+                                                <div className="py-2 w-full">
 
-                                                <div className="px-6 flex flex-row items-center justify-center">
-                                                    <Link to={`/detail-book/${item.id}`} >
-                                                        <div className=" font-medium text-lg cursor-pointer hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">
-                                                            <span >{item.ten}</span>
+                                                    <div className="px-4 mx-auto ">
+
+                                                        <div className=" cursor-pointer mb-2">
+                                                            <span className='uppercase hover:text-slate-500 font-medium text-lg transition duration-500'>{item.ten}</span>
                                                         </div>
-                                                    </Link>
+
+                                                    </div>
+                                                    {item.loai === 0 ? <>
+                                                        <div className="flex gap-2 w-full justify-around">
+                                                            <div className="text-sm hover:text-slate-500"><strong>Tiền cọc:</strong> <span className='text-red-500 font-bold'>{item.tiencoc}</span> vnđ</div>
+                                                            <div className="text-sm hover:text-slate-500"><strong>Giá:</strong> <span className='text-red-500 font-bold'>{item.gia}</span> vnđ</div>
+
+                                                        </div>
+                                                    </> : <>
+                                                    </>}
+                                                    <div className="flex flex-col gap-2 items-center justify-center">
+                                                        <Rating name="size-large" defaultValue={item.danhgia} size="small" />
+                                                    </div>
                                                 </div>
-                                                <div className='px-4 py-2'><span className="text-xs">Người đăng: <span className='text-lime-600 text-sm'>{item.nguoidang}</span></span></div>
-                                                <p className="text-gray-500 text-sm px-4">
-                                                    {item.noidung}.
-                                                </p>
-                                            </div>
-                                            <div className="px-6 py-3 flex flex-row items-center justify-between bg-gray-100">
-                                                <span className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
-                                                    <svg height="13px" width="13px" version="1.1" id="Layer_1"
-                                                        xmlns="http://www.w3.org/2000/svg" x="0px"
-                                                        y="0px" viewBox="0 0 512 512">
-                                                        <g>
-                                                            <g>
-                                                                <path
-                                                                    d="M256,0C114.837,0,0,114.837,0,256s114.837,256,256,256s256-114.837,256-256S397.163,0,256,0z M277.333,256 c0,11.797-9.536,21.333-21.333,21.333h-85.333c-11.797,0-21.333-9.536-21.333-21.333s9.536-21.333,21.333-21.333h64v-128 c0-11.797,9.536-21.333,21.333-21.333s21.333,9.536,21.333,21.333V256z">
-                                                                </path>
-                                                            </g>
-                                                        </g>
-                                                    </svg>
-                                                    <span className="ml-1">6 mins ago</span>
-                                                </span>
-                                                <span className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
-                                                    <svg className="h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
-                                                        </path>
-                                                    </svg>
-                                                    <span className="ml-1">39 Comments</span>
-                                                </span>
-                                            </div>
+                                            </Link>
                                         </div>
                                     </>
                                 )
