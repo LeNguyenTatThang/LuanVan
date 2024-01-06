@@ -118,6 +118,66 @@ const updateBlog = async (req, res, next) => {
 
 }
 
+const apiGetBlog = async (req, res) => {
+    try {
+        let page = req.query.page ? req.query.page : 1;
+        let name = req.query.name;
+        let data
+        if (name) {
+            data = await blog.getAll(page, name);
+        } else {
+            data = await blog.getAll(page);
+        }
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data.rows,
+                totalPage: data.totalPage,
+                page: parseInt(page)
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: data.message,
+                totalPage: data.totalPage,
+                page: parseInt(page)
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: "lỗi Server"
+        })
+    }
+}
+
+const apiGetBlogById = async (req, res) => {
+    try {
+        let id = req.query.id;
+        let data = await blog.getId(id)
+        if (data.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                data: data.data,
+            })
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: data.message,
+            })
+        }
+    } catch (e) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: "lỗi Server"
+        })
+    }
+}
+
+
+
 module.exports = {
     getBlog,
     addBlogPage,
@@ -125,4 +185,6 @@ module.exports = {
     deleteBlog,
     detaiBlog,
     updateBlog,
+    apiGetBlog,
+    apiGetBlogById,
 }

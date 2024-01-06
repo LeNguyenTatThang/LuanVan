@@ -1,8 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/home" class="brand-link">
-        <img src="../../dist/img/AdminLTELogo.png" alt="Thuê Sách" class="brand-image img-circle elevation-3"
-            style="opacity: .8">
+        <img src="img/image/images.png" alt="Thuê Sách" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Thuê Sách</span>
     </a>
 
@@ -62,18 +61,21 @@
                                 </a>
                             </li>
                             <li class="nav-item has-treeview">
-                                <a href="" class="nav-link">
+                                <a href="#" class="nav-link" onclick="getCountBook()">
                                     <i class="nav-icon fas fa-book"></i>
                                     <p>
                                         Sách
-                                        <i class="right fas fa-angle-left"></i>
+                                        <i class="fas fa-angle-left right"></i>
+                                        <span class="badge badge-info right countBookBadgeMain"></span>
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="/book" class="nav-link">
+                                        <a href="/book" class="nav-link" onclick="getCountBook()">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Sách chưa duyệt</p>
+                                            <p>Sách chưa duyệt
+                                                <span class="badge badge-info right countBookBadgeSub"></span>
+                                            </p>
                                         </a>
                                     </li>
                                     <li class="nav-item">

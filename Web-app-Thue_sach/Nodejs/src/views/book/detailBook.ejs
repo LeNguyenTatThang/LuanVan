@@ -74,6 +74,18 @@
                                                     <%= data.nguoidang %>
                                                 </span>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="">Địa chỉ: </label>
+                                                <span for="">
+                                                    <%= data.diachi %>
+                                                </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Số điện thoại: </label>
+                                                <span for="">
+                                                    <%= data.sdt %>
+                                                </span>
+                                            </div>
                                             <%if(data.loai==0) {%>
                                                 <div class="form-group">
                                                     <label for="">Giá: </label>
@@ -95,13 +107,16 @@
                                                         Lại</a>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-8">
                                         <div class="card-body">
                                             <div class="form-group">
-                                                <label for="">Mô tả</label>
-                                                <div>
-                                                    <%= data.mota %>
+                                                <label for="">Nội dung: </label>
+                                                <div class="overflow-hidden"
+                                                    style="max-height: 200px; overflow: hidden;">
+                                                    <%= data.noidung %>
                                                 </div>
+                                                <button type="button" class="btn btn-link" onclick="toggleContent()">Xem
+                                                    thêm</button>
                                             </div>
                                         </div>
                                     </div>
@@ -181,6 +196,24 @@
                                                     }
                                                 })
                                             </script>
+                                            <script>
+                                                var isContentVisible = false;
+                                                var buttonTexts = {
+                                                    show: 'Xem thêm',
+                                                    hide: 'Ẩn đi'
+                                                };
+
+                                                function toggleContent() {
+                                                    var content = document.querySelector('.card-body .form-group .overflow-hidden');
+                                                    content.style.maxHeight = isContentVisible ? '200px' : null;  // Đảo ngược giá trị ở đây
+
+                                                    var button = document.querySelector('.btn-link');
+                                                    button.innerText = isContentVisible ? buttonTexts.show : buttonTexts.hide;
+
+                                                    isContentVisible = !isContentVisible;
+                                                }
+                                            </script>
+
                                             </body>
 
                                             </html>

@@ -10,7 +10,7 @@ import commentController from "../controllers/commentController";
 import rentalController from "../controllers/rentalController"
 import auth from "../middelware/auth";
 import upload from "../multer"
-
+import pool from "../config/connectDB";
 
 let router = express.Router();
 
@@ -28,6 +28,18 @@ let initWebRouter = (app) => {
         };
         next();
     });
+
+    app.get('/api/countBook', async (req, res) => {
+        try {
+            const [counts, fields] = await pool.execute("SELECT COUNT(*) AS sl FROM sach WHERE trangthaiduyet = 'choduyet'");
+            const count = counts[0].sl;
+            res.json({ count });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
 
 
     app.use((req, res, next) => {

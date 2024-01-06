@@ -23,7 +23,7 @@ rental.create = function (data) {
             let maphieu = generateRandomCode(8)
             let dataRental = {}
             let trangthai = 0;
-            let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, diachi, ngaythue, trangthai, maphieu) values (?,?,?,?,?,?,?)'
+            let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, diachi, ngaythue, trangthai, maphieu,sdt) values (?,?,?,?,?,?,?,?)'
             let sqlRental_Book = 'insert into phieuthue_sach(sach_id, phieuthue_id) VALUES (?, ?)'
             let bookIds = Array.isArray(data.sach_id) ? data.sach_id : [data.sach_id];
             let checkedBooks = [];
@@ -39,7 +39,7 @@ rental.create = function (data) {
                     message: `Quyển sách ${checkedBooks.map(book => `"${book.tensach}"`)} đã được thuê không thể thuê được`
                 }
             } else {
-                const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu])
+                const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu, data.sdt])
                 let phieuthue_id = result.insertId;
                 for (let bookId of bookIds) {
                     await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
@@ -322,7 +322,7 @@ rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,maphieu, phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,nguoithue_phieuthue.sdt AS sdtnguoithue ,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang,chutiem_sach.sdt AS sdtnguoidang, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id,maphieu, phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,phieuthue.sdt AS sdtnguoithue ,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang,chutiem_sach.sdt AS sdtnguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '
@@ -353,7 +353,7 @@ rental.getRenalByIdRental = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id, phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,nguoithue_phieuthue.sdt AS sdtnguoithue, chutiem_sach.ten AS nguoidang, ngaythue,nguoithue_phieuthue.email,chutiem_sach.sdt AS sdtnguoidang, ngaynhan, ngaytra, tongtien,phieuthue.trangthai FROM phieuthue'
+            let sqlRental = 'select phieuthue.id,chutiem_sach.diachi AS diachinguoidang, phieuthue.diachi AS diachinguoithue, phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,phieuthue.sdt AS sdtnguoithue, chutiem_sach.ten AS nguoidang, ngaythue,nguoithue_phieuthue.email,chutiem_sach.sdt AS sdtnguoidang, ngaynhan, ngaytra, tongtien,phieuthue.trangthai FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
@@ -415,7 +415,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra,chutiem_sach.sdt AS sdtnguoidang,phieuthue.sdt AS sdtnguoithue,chutiem_sach.diachi AS diachinguoidang, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
@@ -483,7 +483,7 @@ rental.getAll = (page, name) => {
         try {
             let dataRental = {};
             let limit = '5';
-            let sqlRental = 'select phieuthue.id,maphieu ,phieuthue.thongbao, GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien,phieuthue.trangthai from phieuthue'
+            let sqlRental = 'select phieuthue.id,maphieu ,phieuthue.thongbao,phieuthue.diachi AS diachinguoithue,chutiem_sach.diachi AS diachinguoidang, GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang, tongtien,phieuthue.trangthai,phieuthue.sdt AS sdtnguoithue, chutiem_sach.sdt AS sdtnguoidang from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '

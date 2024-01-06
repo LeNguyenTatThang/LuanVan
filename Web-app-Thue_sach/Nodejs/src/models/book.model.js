@@ -10,7 +10,7 @@ book.getApprovalStatus = async (page, name, trangthaiduyet) => {
 
             let data = {};
             let limit = '5';
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,sach.noidung, sach.ten,sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " WHERE sach.trangthaiduyet=? "
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthaiduyet=?"
@@ -58,9 +58,10 @@ book.getTrangthai1 = (page) => {
         try {
             let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh,sach.noidung,sdt, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            let sql = "SELECT sach.id,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.hinh,sach.noidung,sdt,users.diachi, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-            sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet'"
+            sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id "
+            sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet' GROUP BY sach.id"
             let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthai=1 AND trangthaiduyet ='duocduyet'"
             let [counts] = await pool.execute(sqlTotal)
             let totalRow = counts[0].total
@@ -94,8 +95,9 @@ book.getBookByCatetoryAndAuthor = (theloai_id, loai, ten) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh,masach, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,masach,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
+            sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
             sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet'"
             if (theloai_id) {
                 sql += ` AND theloai_id=${theloai_id}`
@@ -106,6 +108,7 @@ book.getBookByCatetoryAndAuthor = (theloai_id, loai, ten) => {
             if (ten) {
                 sql += ` AND (sach.ten LIKE '%${ten}%' OR tentacgia LIKE '%${ten}%')`
             }
+            sql += " GROUP BY sach.id"
             let [rows, fields] = await pool.execute(sql)
             console.log(rows)
             if (rows.length === 0) {
@@ -214,9 +217,9 @@ book.create = (bookData) => {
 book.checkPhoneNumberUsers = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const [rows, fields] = await pool.execute('SELECT sdt FROM users where id =?', [id])
+            const [rows, fields] = await pool.execute('SELECT sdt,diachi FROM users where id =?', [id])
             let users = rows[0];
-            if (users.sdt.length > 0) {
+            if (users.sdt.length > 0 && users.diachi.length) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -276,7 +279,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,sach.ten,noidung,sdt,sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,sach.danhgia, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
+            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
@@ -285,14 +288,16 @@ book.getId = (id) => {
                     sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id "
                     sql += " INNER JOIN users ON sach.id_users=users.id "
                     sql += " INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-                    sql += " WHERE sach.id = ? "
+                    sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
+                    sql += " WHERE sach.id = ?  GROUP BY sach.id"
                 } else {
                     sql += ",gia,tiencoc"
                     sql += " FROM sach"
                     sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id "
                     sql += " INNER JOIN users ON sach.id_users=users.id "
                     sql += " INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-                    sql += " WHERE sach.id = ? "
+                    sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
+                    sql += " WHERE sach.id = ?  GROUP BY sach.id"
                 }
                 const [rows, fields] = await pool.execute(sql, [id])
                 let book = rows[0]
@@ -460,9 +465,10 @@ book.getBookByIdUsers = async (id_users, loai) => {
         try {
 
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,sach.danhgia,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-            sql += " WHERE id_users=? AND sach.loai=? "
+            sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
+            sql += " WHERE id_users=? AND sach.loai=? GROUP BY sach.id"
             const [rows, fields] = await pool.execute(sql, [id_users, loai])
             if (rows.length === 0) {
                 data = {
@@ -477,6 +483,49 @@ book.getBookByIdUsers = async (id_users, loai) => {
                 }
             }
             resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+book.rating = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRating = {};
+            let sqlCheck = `SELECT id FROM danhgia WHERE users_id=?`
+            const [check] = await pool.execute(sqlCheck, [data.users_id])
+            console.log(check)
+            if (check[0]) {
+                let sql = `UPDATE danhgia SET danhgia=? WHERE id =?`
+                const [result, fields] = await pool.execute(sql, [data.danhgia, check[0].id])
+                if (result) {
+                    dataRating = {
+                        errcode: '0',
+                        message: 'thêm đánh giá thành công'
+                    }
+                } else {
+                    dataRating = {
+                        errcode: '1',
+                        message: 'đánh giá thất bại'
+                    }
+                }
+            } else {
+                let sql = `INSERT INTO danhgia(danhgia,sach_id,users_id) VALUES(?,?,?)`
+                const [result, fields] = await pool.execute(sql, [data.danhgia, data.sach_id, data.users_id])
+                if (result) {
+                    dataRating = {
+                        errcode: '0',
+                        message: 'thêm đánh giá thành công'
+                    }
+                } else {
+                    dataRating = {
+                        errcode: '1',
+                        message: 'đánh giá thất bại'
+                    }
+                }
+            }
+            resolve(dataRating)
         } catch (e) {
             reject(e);
         }

@@ -7,6 +7,7 @@ import authorController from "../controllers/authorController";
 import rentalController from "../controllers/rentalController";
 import commentController from "../controllers/commentController";
 import chapterController from "../controllers/chapterController";
+import blogController from "../controllers/blogController";
 import upload from "../multer"
 import uploadTxt from "../multerFile"
 let router = express.Router();
@@ -48,6 +49,9 @@ let initApiRouter = (app) => {
 
 
     //sach
+
+    //api thêm đánh giá
+    router.post('/apiRating', bookController.apiRating)
 
     //api thêm sách
     router.post('/post-api-book', upload.single('hinh'), bookController.postBook)
@@ -159,13 +163,19 @@ let initApiRouter = (app) => {
 
     //api hiện tất cả danh sách chương theo id của sách (sach_id)
     router.post('/api/chapter/listAllBookchapter', chapterController.listAllBookchapter)
+
     // hiện nội dung chương
     router.get('/api/chapter/detailchapter', chapterController.ContentChapter)
 
     // api cập nhập chương (id)
     router.patch('/api/chapter/updateChapter/', chapterController.updateChapter)
 
+    //bài viết
+    //api bài viết, có thể tìm kiếm theo tên (page, name)
+    router.get('/api/Blog', blogController.apiGetBlog)
 
+    //api lấy bài viết theo id (id)
+    router.get('/api/apiGetBlogById', blogController.apiGetBlogById)
     return app.use("/", router)
 }
 export default initApiRouter;
