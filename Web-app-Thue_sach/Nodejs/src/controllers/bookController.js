@@ -364,6 +364,35 @@ const bookByCatetoryAndAuthor = async (req, res) => {
     }
 }
 
+const apiRating = async (req, res) => {
+    try {
+        let data = req.body
+        if (!data.users_id) {
+            return res.status(403).json({
+                status: 403,
+                message: "vui lòng đăng nhập trước khi đánh giá",
+            })
+        }
+        let dataRating = await book.rating(data)
+        if (dataRating.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                message: dataRating.message,
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: dataRating.message,
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: "lỗi Server"
+        })
+    }
+}
 
 module.exports = {
     getbook,
@@ -379,6 +408,7 @@ module.exports = {
     detailBroweBook,
     bookByIdUsers,
     bookByCatetoryAndAuthor,
-    upbookOnline
+    upbookOnline,
+    apiRating
 }
 

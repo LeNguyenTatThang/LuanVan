@@ -30,3 +30,29 @@
         height: 300,
     });
 </script>
+<script>
+    function updateCountBookBadge(classSelector, count) {
+        const badgeElements = document.querySelectorAll(`.${classSelector}`);
+        badgeElements.forEach((badgeElement) => {
+            if (count > 0) {
+                badgeElement.innerText = count;
+            } else {
+                badgeElement.innerText = '';
+            }
+        });
+    }
+
+    getCountBook();
+    setInterval(getCountBook, 5000);
+    async function getCountBook() {
+        try {
+            const response = await fetch('/api/countBook');
+            const data = await response.json();
+            console.log(data.count);
+            updateCountBookBadge('countBookBadgeMain', data.count);
+            updateCountBookBadge('countBookBadgeSub', data.count);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+</script>

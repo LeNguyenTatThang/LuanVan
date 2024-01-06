@@ -6,12 +6,12 @@ import initApiRouter from './route/api';
 import session from "express-session";
 import cors from 'cors';
 import auth from "./middelware/auth";
+const path = require('path');
 var flash = require('connect-flash');
 require('dotenv').config();
 const http = require('http');
 const socketIO = require('socket.io');
 let app = express();
-
 const server = http.createServer(app);
 const io = socketIO(server);
 
@@ -19,6 +19,7 @@ app.use(cors({ origin: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(__dirname + '/public'));
+app.use('/static', express.static(__dirname + '/node_modules'));
 app.use(session({
     secret: 'keyboard cat',
     resave: false,

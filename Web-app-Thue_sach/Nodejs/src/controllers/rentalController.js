@@ -59,6 +59,20 @@ const postRental = async (req, res) => {
                 message: 'Vui lòng thêm sách vào giỏ hàng'
             })
         }
+        if (!rentalData.sdt) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Vui lòng nhập thêm số điện thoại'
+            })
+        } else if (rentalData.sdt > 0) {
+            const phoneNumberRegex = /^(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9])\d{8}$/;
+            if (!phoneNumberRegex.test(data.sdt)) {
+                return res.status(422).json({
+                    status: 422,
+                    message: "số điện thoại này không hợp lệ"
+                })
+            }
+        }
         let checkUsers = await user.checkUserRentalBan(rentalData.users_id)
         if (checkUsers) {
             return res.status(403).json({
