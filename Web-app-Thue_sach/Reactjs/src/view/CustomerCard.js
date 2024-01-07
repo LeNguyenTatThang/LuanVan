@@ -187,6 +187,7 @@ export default function CustomerCard() {
                     message: "Đã xác nhận đơn hàng, hãy chờ phản hồi từ chủ shop"
                 });
                 dispatch(REMOVE_ALL());
+                navigate('/');
             }
             else {
                 iziToast.error({
@@ -213,12 +214,7 @@ export default function CustomerCard() {
         console.log(nguoidang)
     });
 
-    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-    const handleCheckboxChange = (productId, isChecked) => {
-        console.log('Dispatching TOGGLE_CHECKBOX with:', { productId, isChecked });
-        dispatch(TOGGLE_CHECKBOX({ productId, isChecked }));
-    };
     const [selectedNguoiDang, setSelectedNguoiDang] = useState([]);
 
     const chutiem_ids = Object.values(card).map(item => item.id_users).filter(id => id);
@@ -245,91 +241,8 @@ export default function CustomerCard() {
     }, [selectedNguoiDang]);
 
 
-    const [parentChecked, setParentChecked] = React.useState({});
     const [childrenChecked, setChildrenChecked] = React.useState({});
     const maxChildren = 3;
-    useEffect(() => {
-        // Initialize state when the component mounts
-        const initialParentChecked = {};
-        const initialChildrenChecked = {};
-
-        Object.keys(groupedByNguoiDang).forEach((nguoiDang, parentIndex) => {
-            initialParentChecked[parentIndex] = false;
-
-            const parentChildren = groupedByNguoiDang[nguoiDang];
-            if (Array.isArray(parentChildren)) {
-                parentChildren.forEach((child, childIndex) => {
-                    initialChildrenChecked[parentIndex * maxChildren + childIndex] = false;
-                });
-            }
-        });
-
-        setParentChecked(initialParentChecked);
-        setChildrenChecked(initialChildrenChecked);
-    }, []);
-    const handleParentChange = (parentIndex) => {
-        setParentChecked((prev) => {
-            const newChecked = {};
-            newChecked[parentIndex] = !prev[parentIndex];
-            return newChecked;
-        });
-
-        const parentKey = Object.keys(groupedByNguoiDang)[parentIndex];
-        const parentChildren = groupedByNguoiDang[parentKey];
-
-        // Uncheck all other parents
-        setParentChecked((prev) => {
-            const newChecked = { ...prev };
-            Object.keys(newChecked).forEach((key) => {
-                if (key !== parentIndex.toString()) {
-                    newChecked[key] = false;
-                }
-            });
-            return newChecked;
-        });
-
-        if (Array.isArray(parentChildren)) {
-            setChildrenChecked((prev) => {
-                const newChecked = { ...prev };
-                parentChildren.forEach((child, index) => {
-                    newChecked[parentIndex * maxChildren + index] = !prev[parentIndex];
-                });
-                return newChecked;
-            });
-        }
-    };
-
-
-    const handleChildChange = (parentIndex, childIndex) => {
-        setChildrenChecked((prev) => {
-            const newChecked = { ...prev };
-            newChecked[parentIndex * maxChildren + childIndex] = !prev[parentIndex * maxChildren + childIndex];
-            return newChecked;
-        });
-
-        const parentKey = Object.keys(groupedByNguoiDang)[parentIndex];
-        const parentChildren = groupedByNguoiDang[parentKey];
-
-        if (Array.isArray(parentChildren)) {
-            const allChecked = parentChildren.every((child, index) =>
-                childrenChecked[parentIndex * maxChildren + index]
-            );
-            setParentChecked((prev) => ({
-                ...prev,
-                [parentIndex]: allChecked,
-            }));
-        }
-    };
-
-    const handleChangeParent = (parentIndex) => {
-        setChecked((prevChecked) => {
-            // Create a new array with the same length as the previous one
-            const newChecked = prevChecked.map((value, index) => index === parentIndex);
-
-            return newChecked;
-        });
-    };
-
     const CustomListItem = ({ data, checked, onChange, onDelete }) => {
         console.log('Data:', data);
         console.log('Checked:', checked);
@@ -365,16 +278,79 @@ export default function CustomerCard() {
             </li>
         );
     };
-    const [checked, setChecked] = React.useState([true, false]);
+    const [selectedParentIndex, setSelectedParentIndex] = React.useState(null);
+    const [checked, setChecked] = React.useState([false, false, false, false]);
     const children = Object.keys(groupedByNguoiDang).map((nguoiDang, parentIndex) => {
         const parentChildren = groupedByNguoiDang[nguoiDang];
+        const handleChange1 = (event, parentIndex) => {
+            const isChecked = event.target.checked;
+            setChecked((prev) => {
+                const newChecked = [...prev];
+                newChecked.forEach((_, index) => {
+                    newChecked[index] = false;
+                });
+                newChecked[parentIndex] = isChecked;
+                setSelectedParentIndex(isChecked ? parentIndex : null);
+                return newChecked;
+            });
+            setChildrenChecked((prev) => {
+                const newChecked = { ...prev };
 
-        const handleChange1 = (event) => {
-            setChecked([event.target.checked, event.target.checked]);
+                // Uncheck all other children
+                Object.keys(newChecked).forEach((key) => {
+                    const otherParentChildren = groupedByNguoiDang[Object.keys(groupedByNguoiDang)[key]];
+                    if (Array.isArray(otherParentChildren)) {
+                        otherParentChildren.forEach((child, index) => {
+                            newChecked[key * maxChildren + index] = false;
+                        });
+                    }
+                });
+
+                // Check or uncheck all children of the clicked parent
+                const parentKey = Object.keys(groupedByNguoiDang)[parentIndex];
+                const parentChildren = groupedByNguoiDang[parentKey];
+                if (Array.isArray(parentChildren)) {
+                    parentChildren.forEach((child, index) => {
+                        newChecked[parentIndex * maxChildren + index] = isChecked;
+                    });
+                }
+
+                return newChecked;
+            });
         };
 
-        const handleChange2 = (event) => {
-            setChecked([event.target.checked, checked[1]]);
+        const handleChange2 = (event, parentIndex, childIndex) => {
+            setChecked((prev) => {
+                const newChecked = [...prev];
+
+                // Uncheck all other children of the current parent
+                const parentChildren = groupedByNguoiDang[Object.keys(groupedByNguoiDang)[parentIndex]];
+                if (Array.isArray(parentChildren)) {
+                    parentChildren.forEach((child, index) => {
+                        newChecked[parentIndex * maxChildren + index] = false;
+                    });
+                }
+
+                // Check the clicked child
+                newChecked[parentIndex * maxChildren + childIndex] = event.target.checked;
+
+                return newChecked;
+            });
+        };
+        const handleChange = (index) => {
+            setChecked((prev) => {
+                const newChecked = [...prev];
+                newChecked[index] = !prev[index];
+
+                // Uncheck other items in the same group (parent)
+                if (index % 2 === 0) {
+                    newChecked[index + 1] = false;
+                } else {
+                    newChecked[index - 1] = false;
+                }
+
+                return newChecked;
+            });
         };
 
         return (
@@ -383,31 +359,27 @@ export default function CustomerCard() {
                     label={nguoiDang}
                     control={
                         <Checkbox
-                            checked={checked[0] && checked[1]}
-                            indeterminate={checked[0] !== checked[1]}
-                            onChange={handleChange1}
-                            color="primary"
+                            checked={checked[parentIndex * 2]}
+                            onChange={() => handleChange(parentIndex * 2)}
                         />
                     }
                 />
                 <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
                     {parentChildren && Array.isArray(parentChildren) && (
-                        <ul role="list" className="item-list">
-                            {parentChildren.map((data, childIndex) => (
+                        <ul className="item-list">
+                            {parentChildren.map((data, childIndex) => (<>
                                 <CustomListItem
                                     key={childIndex}
                                     data={data}
-                                    checked={childrenChecked[parentIndex * maxChildren + childIndex]}
-                                    onChange={() => handleChildChange(parentIndex, childIndex)}
                                     onDelete={DeleteCart}
                                     control={
                                         <Checkbox
-                                            checked={checked[0]}
-                                            onChange={handleChange2}
+                                            checked={checked[parentIndex * 2 + childIndex + 1]}
+                                            onChange={() => handleChange(parentIndex * 2 + childIndex + 1)}
                                         />
                                     }
                                 />
-                            ))}
+                            </>))}
                         </ul>
                     )}
                 </Box>
@@ -440,10 +412,6 @@ export default function CustomerCard() {
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
     };
 
     return (
@@ -560,7 +528,7 @@ export default function CustomerCard() {
                                                 <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow-lg">
                                                     <TextField id="outlined-basic" label="Số điện thoại" variant="outlined"
                                                         value={sdt}
-                                                        onChange={(event) => { setSdt(event.target.value) }} />
+                                                        onChange={(event) => { setSdt(parseInt(event.target.value)) }} />
                                                     <label className="block mb-2">
                                                         Tỉnh/Thành phố:
                                                         <Select

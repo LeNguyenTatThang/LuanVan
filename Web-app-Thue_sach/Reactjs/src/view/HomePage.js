@@ -85,7 +85,7 @@ export default function HomePage() {
 
                         <div className="font-semibold inline-block">Tác giả nổi bật</div>
                     </div>
-                    <div className='text-gray-400 hover:text-red-700'>Xem tất cả</div>
+                    <div className='text-gray-400 hover:text-red-700'></div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
