@@ -110,7 +110,6 @@ book.getBookByCatetoryAndAuthor = (theloai_id, loai, ten) => {
             }
             sql += " GROUP BY sach.id"
             let [rows, fields] = await pool.execute(sql)
-            console.log(rows)
             if (rows.length === 0) {
                 data = {
                     errcode: 1,
@@ -137,7 +136,6 @@ let generateRandomCode = (length) => {
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-
     return result;
 }
 
@@ -152,7 +150,6 @@ book.create = (bookData) => {
             let trangthai = 1;
             if (bookData.loai == 0) {
                 let checkPhone = await book.checkPhoneNumberUsers(bookData.id_users)
-                console.log('test', checkPhone)
                 if (checkPhone) {
                     if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang || !bookData.noidung) {
                         data = {
@@ -236,7 +233,6 @@ let checkuser = (userId) => {
         try {
             const [rows, fields] = await pool.execute('SELECT camdang FROM users where id= ?', [userId])
             let user = rows[0];
-            console.log(user)
             if (user.camdang == 1) {
                 resolve(true);
             } else {
@@ -373,7 +369,6 @@ book.createChap = (data) => {
             let sqlChapter = "insert into noidungsach(chuong, noidung, sach_id) values (?, ?, ?)"
             const [check] = await pool.execute(sqlCheck, [data.sach_id])
             const dataCheck = check[0]
-            console.log(dataCheck)
             if (dataCheck) {
                 const [result, fields] = await pool.execute(sqlChapter, [data.chuong, data.noidung, data.sach_id])
                 if (fields) {
@@ -403,7 +398,6 @@ book.createChap = (data) => {
 book.update = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data)
             let bookModel = {}
             let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = 'dangthue'"
             let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"
@@ -438,7 +432,6 @@ book.update = (data, hinhmoi) => {
 book.updateBookOnline = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data)
             let bookModel = {}
             let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai =?, noidung =? WHERE id =?"
             const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.ten, data.trangthai, data.noidung, data.id])
@@ -463,7 +456,6 @@ book.updateBookOnline = (data, hinhmoi) => {
 book.getBookByIdUsers = async (id_users, loai) => {
     return new Promise(async (resolve, reject) => {
         try {
-
             let data = {};
             let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
@@ -495,7 +487,6 @@ book.rating = async (data) => {
             let dataRating = {};
             let sqlCheck = `SELECT id FROM danhgia WHERE users_id=?`
             const [check] = await pool.execute(sqlCheck, [data.users_id])
-            console.log(check)
             if (check[0]) {
                 let sql = `UPDATE danhgia SET danhgia=? WHERE id =?`
                 const [result, fields] = await pool.execute(sql, [data.danhgia, check[0].id])

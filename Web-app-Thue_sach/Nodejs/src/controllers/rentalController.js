@@ -66,7 +66,7 @@ const postRental = async (req, res) => {
             })
         } else if (rentalData.sdt > 0) {
             const phoneNumberRegex = /^(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9])\d{8}$/;
-            if (!phoneNumberRegex.test(data.sdt)) {
+            if (!phoneNumberRegex.test(rentalData.sdt)) {
                 return res.status(422).json({
                     status: 422,
                     message: "số điện thoại này không hợp lệ"
