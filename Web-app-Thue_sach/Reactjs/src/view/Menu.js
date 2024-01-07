@@ -11,95 +11,65 @@ export default function Menu() {
 
     return (
         < >
-            <div className="pt-[92px] ">
-                <Navbar fluid rounded className="bg-zinc-300 text-black bg-opacity-70 fixed top-0 z-50 flex-1 w-full">
-                    <Navbar.Brand as={Link} className=" w-7/12">
+            <div className="pt-24">
+                <nav className="bg-zinc-300 text-black bg-opacity-70 fixed top-0 z-50 w-full flex flex-row justify-between items-center p-4">
+                    <div className="ml-4">
                         <Link to="/">
-                            <span className="self-center  text-xl font-semibold dark:text-white">
+                            <span className="text-xl font-semibold dark:text-white">
                                 THUÊ SÁCH ONLINE
                             </span>
                         </Link>
-                    </Navbar.Brand>
-                    <Navbar.Collapse className="w-5/12">
-                        <Link to="/"><div className="flex p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
-
-                            <svg className="flex-shrink-0 w-5 h-5 transition duration-75  text-gray-400  group-hover:text-white" fill="none" viewBox="0 0 23 23" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <span className="flex-1 ml-3 whitespace-nowrap text-lg font-roboto">Trang chủ</span>
-
-                        </div></Link>
-                        <Link to="/products"> <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
-
-                            <svg className="flex-shrink-0 w-5 h-5 transition duration-75  text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 23 23">
-                                <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z" />
-                            </svg>
-                            <span className="flex-1 ml-3 whitespace-nowrap text-lg font-roboto">Tủ sách</span>
-
-                        </div></Link>
-                        <Link to="/blogs"> <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
-
-                            <svg className="w-5 h-5 text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 23 23">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z" />
-                            </svg>
-                            <span className="flex-1 ml-3 whitespace-nowrap text-lg font-roboto">Bài viết</span>
-
-                        </div></Link>
-                        <Link to="/blogs"> <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
-
-                            <svg className="w-5 h-5 text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 23 23">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z" />
-                            </svg>
-                            <span className="flex-1 ml-3 whitespace-nowrap text-lg font-roboto">Liên hệ</span>
-
-                        </div></Link>
-
-                        <>
-                            {userData.isLogin === true ? (
-                                <>
-                                    <div className='col-2 flex items-center'>
-                                        <StaggeredDropDown userName={userData.userInfo.ten} />
-                                        <Cart />
-
-                                    </div>
-
-
-                                </>
-                            ) : (
-                                <>
-                                    <Link to="/signin">
-                                        <div className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-400 group">
-                                            <svg
-                                                className="flex-shrink-0 w-5 h-5 duration-75  text-gray-400 group-hover:text-white"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 23 23"
-                                                stroke-width="2"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            >
-                                                <path
-                                                    stroke="currentColor"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
-                                                />
-                                            </svg>
-                                            <span className="flex-1 ml-3 whitespace-nowrap font-sans">
-                                                Đăng nhập
-                                            </span>
-                                        </div>
-                                    </Link>
-                                </>)
-                            }
-                        </>
-
-                    </Navbar.Collapse>
-                </Navbar>
+                    </div>
+                    <div className="flex space-x-4">
+                        <Link to="/" className="nav-link">
+                            Trang chủ
+                        </Link>
+                        <Link to="/products" className="nav-link">
+                            Tủ sách
+                        </Link>
+                        <Link to="/blogs" className="nav-link">
+                            Bài viết
+                        </Link>
+                        <Link to="/contact" className="nav-link">
+                            Liên hệ
+                        </Link>
+                        {userData.isLogin ? (
+                            <div className="col-2 flex items-center">
+                                <StaggeredDropDown userName={userData.userInfo.ten} />
+                                <Cart />
+                            </div>
+                        ) : (
+                            <Link to="/signin" className="nav-link">
+                                <div className="flex items-center">
+                                    <svg
+                                        className="flex-shrink-0 w-5 h-5 duration-75 text-gray-400 group-hover:text-white"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 23 23"
+                                        stroke-width="2"
+                                        stroke="currentColor"
+                                        fill="none"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
+                                        />
+                                    </svg>
+                                    <span className="ml-3 whitespace-nowrap font-sans">
+                                        Đăng nhập
+                                    </span>
+                                </div>
+                            </Link>
+                        )}
+                    </div>
+                </nav>
             </div>
+
             <Outlet />
         </>
     );

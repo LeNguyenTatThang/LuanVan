@@ -63,8 +63,8 @@ const apiRandomBook = (id_tacgia) => {
     return axios.post('/get-api-randomBook', { id_tacgia })
 }
 //call api tạo phiếu thuê khi bấm Xác nhận
-const callApiCreateRental = (users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue) => {
-    return axios.post('/post-api-rental', { users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue })
+const callApiCreateRental = (users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue, sdt) => {
+    return axios.post('/post-api-rental', { users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue, sdt })
 }
 //Call api của người thuê
 const apiPostRent = (users_id, trangthai) => {
