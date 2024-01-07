@@ -16,6 +16,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
+import { TextField } from '@mui/material';
 
 const steps = ['Chọn sản phẩm', 'Địa chỉ giao hàng', 'Điều khoản'];
 export default function CustomerCard() {
@@ -24,7 +25,7 @@ export default function CustomerCard() {
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.user);
     const navigate = useNavigate();
-
+    const [sdt, setSdt] = useState();
     useEffect(() => {
         callAPI(host + "?depth=1");
         if (!userData.isLogin) {
@@ -178,7 +179,7 @@ export default function CustomerCard() {
                 message: "Thiếu địa chỉ hoặc chỉ chọn một người đăng"
             });
         } else {
-            let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, sach_id, diachi, ngaythue)
+            let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, sach_id, diachi, ngaythue, sdt)
             if (res.status === 200) {
                 iziToast.success({
                     title: res.message,
@@ -503,16 +504,6 @@ export default function CustomerCard() {
                                             <h5 className="text-xl font-bold leading-none text-gray-900 ">Giỏ hàng của bạn</h5>
                                         </div>
                                         {children}
-                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3"> Tổng tiền thuê: {Total} vnđ </div>
-                                        <br />
-                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
-                                            Thời gian thuê là {selectedValue} ngày:
-                                            {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
-                                        </div>
-                                        <br />
-                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
-                                            <strong>Tổng tiền:</strong> {TotalCart} vnđ
-                                        </h3>
                                         <hr className="border-gray-300" />
                                         <div className="bg-white text-black p-4 rounded-md shadow-md">
                                             <label className="text-lg font-bold">Chọn khoảng thời gian:</label>
@@ -526,6 +517,17 @@ export default function CustomerCard() {
                                                 <option value="30">30 ngày</option>
                                             </select>
                                         </div>
+                                        <br />
+                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
+                                            Thời gian thuê là {selectedValue} ngày:
+                                            {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
+                                        </div>
+
+                                        <br />
+                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
+                                            <strong>Tổng tiền:</strong> {TotalCart} vnđ
+                                        </h3>
+
                                         <br />
                                         <div>
                                             <strong>Lưu ý:</strong><span className='text-amber-500'> &nbsp;Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (người đăng)</span>
@@ -556,6 +558,9 @@ export default function CustomerCard() {
                                             </div>
                                             <div className="w-3/5">
                                                 <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow-lg">
+                                                    <TextField id="outlined-basic" label="Số điện thoại" variant="outlined"
+                                                        value={sdt}
+                                                        onChange={(event) => { setSdt(event.target.value) }} />
                                                     <label className="block mb-2">
                                                         Tỉnh/Thành phố:
                                                         <Select
