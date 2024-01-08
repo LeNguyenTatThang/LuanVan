@@ -280,6 +280,13 @@ export default function CustomerCard() {
     };
     const [selectedParentIndex, setSelectedParentIndex] = React.useState(null);
     const [checked, setChecked] = React.useState([false, false, false, false]);
+
+    const [checkChildren, setCheckChildren] = React.useState([]);
+    const [boolean1, setBoolean1] = React.useState(true);
+    const [booleanChildren, setBooleanChildren] = React.useState(true)
+
+    const [getDataId, setGetDataId] = React.useState()
+
     const children = Object.keys(groupedByNguoiDang).map((nguoiDang, parentIndex) => {
         const parentChildren = groupedByNguoiDang[nguoiDang];
         const handleChange1 = (event, parentIndex) => {
@@ -337,21 +344,86 @@ export default function CustomerCard() {
                 return newChecked;
             });
         };
-        const handleChange = (index) => {
+        const handleChange = (boolean1, index, data) => {
+            console.log('index', index)
+            console.log('Changedata', data)
+
             setChecked((prev) => {
+                console.log('prev', prev)
                 const newChecked = [...prev];
                 newChecked[index] = !prev[index];
 
                 // Uncheck other items in the same group (parent)
                 if (index % 2 === 0) {
+                    console.log(' + 1 ')
                     newChecked[index + 1] = false;
+                    if (boolean1 == false) {
+                        console.log('false')
+                        setCheckChildren([])
+                        setBoolean1(true)
+                    } else {
+                        console.log('true')
+                        setCheckChildren(data)
+                        setBoolean1(false)
+                    }
                 } else {
+                    console.log(' - 1 ')
                     newChecked[index - 1] = false;
+                    if (boolean1 == true) {
+                        console.log('true')
+                        setCheckChildren([])
+                        setBoolean1(false)
+                    } else {
+                        console.log('false')
+                        setCheckChildren(data)
+                        setBoolean1(true)
+                    }
                 }
 
                 return newChecked;
             });
+            // if (boolean1 == false) {
+            //     console.log('false')
+            //     setCheckChildren([])
+            //     setBoolean1(true)
+            // } else {
+            //     console.log('true')
+            //     setCheckChildren(data)
+            //     setBoolean1(false)
+            // }
+
         };
+        function checkIdChildren(data, index) {
+            let id = data?.id
+
+            if (id == checkChildren[index]?.id) {
+
+            }
+            return data?.id == checkChildren[index]?.id
+        }
+
+        const submitChangeData = (booleanChildren, data, index) => {
+            console.log(checkChildren)
+            console.log(data, index)
+            let values = [...checkChildren]
+            console.log(values)
+
+            let indexw = values.findIndex(_v => _v == data)
+            console.log('indexw',indexw)
+            if (indexw == -1) {
+                console.log(values, 'VALUES')
+                console.log(data, 'data')
+
+                values.push(data)
+
+            } else {
+                console.log('asdasdasd')
+
+                values = values.filter((_value) => _value != data)
+            }
+            setCheckChildren(values)
+            console.log(values, ' checlasd')
+        }
 
         return (
             <div key={parentIndex}>
@@ -359,8 +431,8 @@ export default function CustomerCard() {
                     label={nguoiDang}
                     control={
                         <Checkbox
-                            checked={checked[parentIndex * 2]}
-                            onChange={() => handleChange(parentIndex * 2)}
+                            checked={checked[parentIndex]}
+                            onChange={(e) => handleChange(boolean1, parentIndex, parentChildren)}
                         />
                     }
                 />
@@ -368,16 +440,21 @@ export default function CustomerCard() {
                     {parentChildren && Array.isArray(parentChildren) && (
                         <ul className="item-list">
                             {parentChildren.map((data, childIndex) => (<>
+                                {JSON.stringify(data.id)}
+                                {JSON.stringify(checkChildren[childIndex]?.id)}
                                 <CustomListItem
                                     key={childIndex}
                                     data={data}
                                     onDelete={DeleteCart}
-                                    control={
-                                        <Checkbox
-                                            checked={checked[parentIndex * 2 + childIndex + 1]}
-                                            onChange={() => handleChange(parentIndex * 2 + childIndex + 1)}
-                                        />
-                                    }
+                                    checked={checkChildren.includes(data)}
+                                    onChange={() => submitChangeData(booleanChildren, data, childIndex)}
+                                // control={
+                                //     <Checkbox
+                                //         checked={checkIdChildren(data,childIndex)}
+                                //         value={checkIdChildren(data,childIndex)}
+                                //         onChange={() => submitChangeData()}
+                                //     />
+                                // }
                                 />
                             </>))}
                         </ul>
