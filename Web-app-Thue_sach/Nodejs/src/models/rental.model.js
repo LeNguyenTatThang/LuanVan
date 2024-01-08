@@ -322,7 +322,7 @@ rental.getRent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,maphieu, phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,phieuthue.sdt AS sdtnguoithue ,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang,chutiem_sach.sdt AS sdtnguoidang, tongtien from phieuthue'
+            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.diachi AS diachinguoithue,chutiem_sach.diachi AS diachinguoidang, phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach ,GROUP_CONCAT(masach) AS masach ,nguoithue_phieuthue.ten AS nguoithue,phieuthue.sdt AS sdtnguoithue ,ngaythue, ngaynhan, ngaytra, GROUP_CONCAT(sach.tiencoc) AS tiencoc, chutiem_sach.ten as nguoidang,chutiem_sach.sdt AS sdtnguoidang, tongtien from phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach on phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach on phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue on phieuthue.users_id = nguoithue_phieuthue.id '
@@ -415,7 +415,7 @@ rental.getRentOrder = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.thongbao, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra,chutiem_sach.sdt AS sdtnguoidang,phieuthue.sdt AS sdtnguoithue,chutiem_sach.diachi AS diachinguoidang, tongtien FROM phieuthue'
+            let sqlRental = 'select phieuthue.id,maphieu,phieuthue.thongbao,phieuthue.diachi AS diachinguoithue, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(masach) AS masach , GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,chutiem_sach.ten AS nguoidang,ngaythue, ngaynhan, ngaytra,chutiem_sach.sdt AS sdtnguoidang,phieuthue.sdt AS sdtnguoithue,chutiem_sach.diachi AS diachinguoidang, tongtien FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '

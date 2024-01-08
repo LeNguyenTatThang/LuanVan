@@ -56,45 +56,48 @@
     <p>Dưới đây là một số thông tin liên quan:</p>
     <p>Mã Phiếu: <%= data.maphieu %>
     </p>
-    <p>Người thuê: <%= data.nguoithue %>
     </p>
     <p>Người cho thuê: <%= data.nguoidang %>
     </p>
     <p>Ngày thuê: <%= data.ngaythue %>
     </p>
-    <p>Email: <%= data.email %>
+    <p>Số điện thoại người cho thuê: <%= data?.sdtnguoidang %>
     </p>
-    <div class="container">
-        <table>
-            <tr>
-                <th>Hình</th>
-                <th>Tên</th>
-                <th>Giá</th>
-                <th>Tiền cọc</th>
-            </tr>
-            <% for (let i=0; i < books.length; i++) { %>
-                <tr>
-                    <td class="khung">
-                        <img src="cid:<%= books[i].tensach.replace(/\s/g, '') %>" alt="Hình ảnh sách" width="100"
-                            height="100">
-                    </td>
-                    <td>
-                        <%= books[i].tensach %>
-                    </td>
-                    <td>
-                        <%= formatCurrency(books[i].gia) %>
-                    </td>
-                    <td>
-                        <%= formatCurrency(books[i].tiencoc) %>
-                    </td>
-                </tr>
-                <% } %>
-        </table>
-    </div>
-
-    <p class="large-text">Tổng tiền: <span class="currency">
-            <%= formatCurrency(data.tongtien) %>
-        </span></p>
+    <p>Địa chỉ người cho thuê: <%= data?.diachinguoidang %>
+    </p>
+    <p>Người thuê: <%= data?.nguoithue %>
+    </p>
+    <p>Địa chỉ giao hàng: <%= data.diachinguoithue %>
+            <div class="container">
+                <table>
+                    <tr>
+                        <th>Hình</th>
+                        <th>Tên</th>
+                        <th>Giá</th>
+                        <th>Tiền cọc</th>
+                    </tr>
+                    <% for (let i=0; i < books.length; i++) { %>
+                        <tr>
+                            <td class="khung">
+                                <img src="cid:<%= books[i].tensach.replace(/\s/g, '') %>" alt="Hình ảnh sách"
+                                    width="100" height="100">
+                            </td>
+                            <td>
+                                <%= books[i].tensach %>
+                            </td>
+                            <td>
+                                <%= formatCurrency(books[i].gia) %>
+                            </td>
+                            <td>
+                                <%= formatCurrency(books[i].tiencoc) %>
+                            </td>
+                        </tr>
+                        <% } %>
+                </table>
+            </div>
+            <p class="large-text">Tổng tiền: <span class="currency">
+                    <%= formatCurrency(data.tongtien) %>
+                </span></p>
     </p>
     <p>
         Chúng tôi rất tiếc vì bất kỳ bất tiện nào mà điều này có thể gây ra. Nếu có bất kỳ thắc mắc hoặc cần hỗ trợ, vui

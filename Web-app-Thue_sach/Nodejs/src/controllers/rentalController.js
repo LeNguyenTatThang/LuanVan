@@ -678,7 +678,7 @@ function formatCurrency(number) {
 const testthuhtmlemail = async (req, res) => {
     let rentalData = req.body
     console.log('ggggg')
-    let dataMail = await rental.getRenalByIdRental(15)
+    let dataMail = await rental.getRenalByIdRental(38)
     console.log(dataMail)
     return res.render('email/emailRental.ejs', {
         data: dataMail.data,
