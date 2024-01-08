@@ -202,6 +202,72 @@ const Manager = () => {
         }
         navigate('/manager-book');
     };
+    const [showModal, setShowModal] = React.useState(false);
+    const [filterData, setFilterData] = useState([]);
+    const handleEditInfo = async (id) => {
+
+        const filteredData = RentOrderThree.filter(item => item.id === id);
+        setFilterData(filteredData);
+        // Now 'filteredData' contains only the items with the specified 'id'
+        console.log("filter data", filteredData);
+        setShowModal(true);
+    }
+    const handleCloseChange = () => {
+        setShowModal(false);
+    }
+    const handlePrint = () => {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Hóa đơn Thuê sách online</title>');
+        printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">');
+        printWindow.document.write('<style>');
+        printWindow.document.write('body { font-family: Arial, sans-serif; font-size: 12px; display: flex; justify-content: center; height: 100vh; }');
+        printWindow.document.write('.content-container { max-width: 600px; width: 100%; }'); // Điều chỉnh chiều rộng nếu cần
+        printWindow.document.write('</style></head><body>');
+
+        // Thêm nội dung hóa đơn vào cửa sổ in trước
+        printWindow.document.write('<div class="content-container">');
+        printWindow.document.write('<h1 class="text-2xl font-bold mb-4">Thông tin hóa đơn</h1>');
+
+        // Hiển thị thông tin hàng dọc
+        filterData.forEach((dataFilter, index) => {
+            printWindow.document.write(`
+                <div class="mb-4">
+                    <p class="mb-1"><span class="font-bold">Mã phiếu:</span> ${dataFilter.maphieu}</p>
+                    <p class="mb-1"><span class="font-bold">Mã sách:</span> ${dataFilter.masach}</p>
+                    <p class="mb-1"><span class="font-bold">Người thuê:</span> ${dataFilter.nguoithue}</p>
+                    <p class="mb-1"><span class="font-bold">SĐT người thuê:</span> ${dataFilter.sdtnguoithue}</p>
+                    <p class="mb-1"><span class="font-bold">Địa chỉ người thuê:</span> ${dataFilter.diachinguoithue}</p>
+                    <p class="mb-1"><span class="font-bold">Tên sách:</span> ${dataFilter.tensach}</p>
+                    <p class="mb-1"><span class="font-bold">Số ngày thuê:</span> ${dataFilter.ngaythue} ngày</p>
+                    <p class="mb-1"><span class="font-bold">Ngày nhận:</span> ${dayjs(dataFilter.ngaynhan).format(' DD-MM-YYYY')}</p>
+                    <p class="mb-1"><span class="font-bold">Ngày trả:</span> ${dayjs(dataFilter.ngaytra).format(' DD-MM-YYYY')}</p>
+                    <p class="mb-1"><span class="font-bold">Tiền cọc:</span> ${formatCurrency(dataFilter.tiencoc)}vnd</p>
+                    <p class="mb-1"><span class="font-bold">Tổng tiền:</span> ${formatCurrency(dataFilter.tongtien)}vnd</p>
+                    <p class="mb-1"><span class="font-bold">Người đăng:</span> ${dataFilter.nguoidang}</p>
+                    <p class="mb-1"><span class="font-bold">SDT người đăng:</span> ${dataFilter.sdtnguoidang}</p>
+                    <p class="mb-1"><span class="font-bold">Địa chỉ người đăng:</span> ${dataFilter.diachinguoidang}</p>
+                </tr>
+            `);
+        });
+        printWindow.document.write('</tbody></table>');
+
+        // Kết thúc nội dung và hiển thị trước trang in
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+    const formatCurrency = (value) => {
+        if (typeof value === 'number') {
+            // Nếu là kiểu number, sử dụng toLocaleString để định dạng
+            return value.toLocaleString('en-US');
+        } else if (typeof value === 'string') {
+            // Nếu là kiểu string, chèn dấu "." vào giữa chuỗi để định dạng
+            return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        } else {
+            // Trường hợp khác, trả về giá trị nguyên thủy
+            return value;
+        }
+    };
 
     // Các điều kiện để xuất switch case
     const getContent = (status, isForRent) => {
@@ -499,14 +565,91 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">Đang chờ chủ tiệm nhận sách
                                                     </td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
-                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded">Xem</button>
-                                                        <button className="bg-green-500 text-white px-3 py-1 rounded">In</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo(item.id)}>Xem</button>
                                                     </td>
                                                 </tr>
-                                            ))}
+
+                                            ))
+
+                                        }
                                     </tbody>
                                 </table>
                             </div>
+                            {showModal ? (
+                                <>
+                                    <div
+                                        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                                    >
+                                        <div className="relative w-11/12 my-6 mx-auto">
+                                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                                <div className="flex items-start justify-between p-3 border-b border-solid border-blueGray-200 rounded-t">
+                                                    <h3 className="text-3xl font-semibold w-96">Thông tin chi tiết hóa đơn</h3>
+                                                </div>
+                                                <div className="relative p-6 flex-auto mx-auto">
+                                                    <table className="table-auto bg-white border border-gray-300">
+                                                        <thead>
+                                                            <tr className="bg-gray-200">
+                                                                <th className="border p-2">Mã phiếu thuê</th>
+                                                                <th className="border p-2">Mã sách</th>
+                                                                <th className="border p-2">Người thuê</th>
+                                                                <th className="border p-2">Sdt người thuê</th>
+                                                                <th className="border p-2">Đ/c người thuê</th>
+                                                                <th className="border p-2">Tên sách</th>
+                                                                <th className="border p-2">Số ngày thuê</th>
+                                                                <th className="border p-2">Ngày nhận</th>
+                                                                <th className="border p-2">Ngày trả</th>
+                                                                <th className="border p-2">Tiền cọc</th>
+                                                                <th className="border p-2">Tổng tiền</th>
+                                                                <th className="border p-2">Người đăng</th>
+                                                                <th className="border p-2">Sdt người đăng</th>
+                                                                <th className="border p-2">Đ/c người đăng</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {filterData.map((dataFilter, index) => (
+                                                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}>
+                                                                    <td className="border p-2">{dataFilter.maphieu}</td>
+                                                                    <td className="border p-2">{dataFilter.masach}</td>
+                                                                    <td className="border p-2">{dataFilter.nguoithue}</td>
+                                                                    <td className="border p-2">{dataFilter.sdtnguoithue}</td>
+                                                                    <td className="border p-2">{dataFilter.diachinguoithue}</td>
+                                                                    <td className="border p-2">{dataFilter.tensach}</td>
+                                                                    <td className="border p-2">{dataFilter.ngaythue} ngày</td>
+                                                                    <td className="border p-2">{dayjs(dataFilter.ngaynhan).format(' DD-MM-YYYY')}</td>
+                                                                    <td className="border p-2">{dayjs(dataFilter.ngaynhan).format(' DD-MM-YYYY')}</td>
+                                                                    <td className="border p-2">{formatCurrency(dataFilter.tiencoc)}vnđ</td>
+                                                                    <td className="border p-2">{formatCurrency(dataFilter.tongtien)}vnđ</td>
+                                                                    <td className="border p-2">{dataFilter.nguoidang}</td>
+                                                                    <td className="border p-2">{dataFilter.sdtnguoidang}</td>
+                                                                    <td className="border p-2">{dataFilter.diachinguoidang}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                                                    <button
+                                                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                                        type="button"
+                                                        onClick={handleCloseChange}
+                                                    >
+                                                        Đóng
+                                                    </button>
+                                                    <button
+                                                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                                        type="button"
+                                                        onClick={handlePrint}
+                                                    >
+                                                        In
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                                </>
+                            ) : null}
                         </>
                     );
                 default:
