@@ -132,23 +132,13 @@
                                         <div>
                                             <input type="hidden" name="id" value="<%= data.id %>" />
                                         </div>
-                                        <%if(data.trangthaiduyet==="choduyet"){%>
-                                            <div>
-                                                <input type="hidden" name="trangthaiduyet" value="khongduyet" />
-                                            </div>
-                                            <label for="">
-                                                Lý do không duyệt
-                                            </label>
-                                            <% } else {%>
-                                                <div>
-                                                    <input type="hidden" name="trangthaiduyet" value="bicam" />
-                                                </div>
-                                                <label for="">
-                                                    Lý do bị cấm
-                                                </label>
-                                                <% } %>
-                                                    <textarea name="noidung" id="summernote" cols="30"
-                                                        rows="10"></textarea>
+                                        <div>
+                                            <input type="hidden" name="trangthaiduyet" value="khongduyet" required />
+                                        </div>
+                                        <label for="">
+                                            Lý do không duyệt
+                                        </label>
+                                        <textarea name="noidung" id="summernote" cols="30" rows="10"></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
                                         lại</button>

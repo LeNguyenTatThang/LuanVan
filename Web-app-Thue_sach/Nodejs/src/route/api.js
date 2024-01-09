@@ -15,19 +15,6 @@ let router = express.Router();
 let initApiRouter = (app) => {
     const pendingNotifications = new Map();
 
-    // API để thêm thông báo vào danh sách
-    app.post('/addNotification', (req, res) => {
-        const { rentalId, message } = req.body;
-        // Lưu thông báo vào danh sách
-        pendingNotifications.set(rentalId, message);
-        res.status(200).end();
-    });
-
-    //api đăng nhập admin
-    router.post('/api-adminlogin', loginController.getApiLogin);
-
-    // api lấy chi tiết admin
-    router.get('/api-admin', loginController.dataAccount);
 
     // api danh sách thể loại
     router.get('/get-api-category', categoryController.apiListCategory)
@@ -55,6 +42,14 @@ let initApiRouter = (app) => {
 
     //api thêm sách
     router.post('/post-api-book', upload.single('hinh'), bookController.postBook)
+
+
+    //lấy ds sách không được duyệt theo id_users(id_users)
+    router.get('/api/bookByIdUsersUnapproved', bookController.bookByIdUsersUnapproved)
+
+
+    //api thông báo của sách (id_sach)
+    router.post('/api/book/message', bookController.bookMessage)
 
     //api chi tiết sách trang user
     router.get('/get-api-detailBook', bookController.getApiDetailBooks)

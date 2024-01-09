@@ -104,6 +104,10 @@ const BrowseBooks = async (req, res) => {
 const BoosMessage = async (req, res) => {
     try {
         let data = req.body;
+        if (!data.noidung) {
+            req.flash('msgBook', "Yêu cầu ghi lý do không duyệt")
+            return res.redirect(`/get-detailbook?id=${data.id}`)
+        }
         let dataMsr = await book.createMessage(data)
         req.flash('msgBook', dataMsr.message)
         return res.redirect(`/get-detailbook?id=${data.id}`)
@@ -216,6 +220,36 @@ const bookByIdUsers = async (req, res) => {
 
 }
 
+//api lấy sách không đuọc duyệt theo id của users
+const bookByIdUsersUnapproved = async (req, res) => {
+    try {
+        let id_users = req.query.id_users
+        let loai = req.query.loai
+        let bookData = await book.getBookUnapprovedByIdUsers(id_users, loai)
+        if (bookData.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                data: bookData.rows,
+                message: bookData.message,
+                data: bookData.rows
+            })
+        } else {
+            return res.status(404).json({
+                errcode: bookData.errcode,
+                message: bookData.message,
+            })
+        }
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+
+}
+
 //api lấy id của sách
 const getApiDetailBooks = async (req, res) => {
     try {
@@ -274,6 +308,30 @@ const updateBook = async (req, res) => {
                     throw error
                 }
             }
+            return res.status(400).json({
+                status: 400,
+                message: dataBook.message
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
+
+const bookMessage = async (req, res) => {
+    try {
+        let id_sach = req.body.id_sach
+        let dataBook = await book.getBookMessage(id_sach)
+        if (dataBook.errcode == 0) {
+            return res.status(200).json({
+                status: 200,
+                message: dataBook.dataRow
+            })
+        } else {
             return res.status(400).json({
                 status: 400,
                 message: dataBook.message
@@ -408,6 +466,8 @@ module.exports = {
     bookByIdUsers,
     bookByCatetoryAndAuthor,
     upbookOnline,
-    apiRating
+    apiRating,
+    bookMessage,
+    bookByIdUsersUnapproved
 }
 

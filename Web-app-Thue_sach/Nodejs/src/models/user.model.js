@@ -246,13 +246,14 @@ let hashUsePassword = (matkhau) => {
 user.registerUser = async (users) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let ngaytao = new Date()
             let userData = {};
             console.log(users.matkhau)
             let matkhau = await hashUsePassword(users.matkhau)
             console.log(matkhau)
             let loai = 1;
-            const [result] = await pool.execute('insert into users(ten, email, matkhau, loai) values (?, ?, ?, ?)',
-                [users.ten, users.email, matkhau, loai]);
+            const [result] = await pool.execute('insert into users(ten, email, matkhau, loai,ngaytao) values (?, ?, ?, ?,?)',
+                [users.ten, users.email, matkhau, loai, ngaytao]);
             let id_users = result.insertId
             console.log('mã', id_users)
             userData = {

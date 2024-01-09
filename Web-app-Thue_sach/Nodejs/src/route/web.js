@@ -50,7 +50,8 @@ let initWebRouter = (app) => {
         next();
     });
 
-    // router.use(dashboardController.dashboardLogAccess);
+    router.post('/api-adminlogin', loginController.getLogin);
+    router.get('/api-admin', loginController.getDetailAccount);
     router.get('/', loginController.getLoginPage);
     router.get('/logout', auth.isLogout);
     router.get('/get-DetailAccount', auth.isLogin, loginController.getDetailAccount)

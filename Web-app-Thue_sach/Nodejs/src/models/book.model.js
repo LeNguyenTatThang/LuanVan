@@ -429,6 +429,7 @@ book.update = (data, hinhmoi) => {
     })
 }
 
+
 book.updateBookOnline = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -453,14 +454,14 @@ book.updateBookOnline = (data, hinhmoi) => {
     })
 }
 
-book.getBookByIdUsers = async (id_users, loai) => {
+book.getBookUnapprovedByIdUsers = async (id_users, loai) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
             let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
-            sql += " WHERE id_users=? AND sach.loai=? GROUP BY sach.id"
+            sql += " WHERE id_users=? AND sach.loai=? AND (trangthaiduyet='khongduyet') GROUP BY sach.id"
             const [rows, fields] = await pool.execute(sql, [id_users, loai])
             if (rows.length === 0) {
                 data = {
@@ -480,6 +481,61 @@ book.getBookByIdUsers = async (id_users, loai) => {
         }
     })
 }
+
+book.getBookByIdUsers = async (id_users, loai) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
+            sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
+            sql += " WHERE id_users=? AND sach.loai=? AND (trangthaiduyet='choduyet' OR trangthaiduyet='duocduyet') GROUP BY sach.id"
+            const [rows, fields] = await pool.execute(sql, [id_users, loai])
+            if (rows.length === 0) {
+                data = {
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    errcode: '0',
+                    message: 'ok'
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+book.getBookMessage = async (id_sach) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {}
+            let sql = "SELECT thongbao.noidung FROM thongbao WHERE id_sach ORDER BY thongbao.ngaytao DESC LIMIT 1"
+            const [rows, fields] = await pool.execute(sql, [id_sach])
+            let dataRow = rows[0]
+            if (dataRow) {
+                data = {
+                    dataRow,
+                    errcode: '0',
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 
 book.rating = async (data) => {
     return new Promise(async (resolve, reject) => {

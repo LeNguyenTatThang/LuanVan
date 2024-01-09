@@ -9,40 +9,22 @@ let getLoginPage = async (req, res) => {
     });
 }
 
-
-
-let getApiLogin = async (req, res) => {
-    let email = req.body.email;
-    let matkhau = req.body.matkhau;
-    if (!email || !matkhau) {
-        return res.status(400).json({
-            errcode: 1,
-            message: 'vui lòng nhập gmail và mật khẩu'
-        })
-    }
-    let adminData = await admin.handleAdminLogin(email, matkhau);
-    return res.status(200).json({
-        errcode: adminData.errcode,
-        message: adminData.errMessage,
-        admin: adminData.admin ? adminData.admin : { 'a': 'abc' }
-    })
-}
-
-
-
 let getLogin = async (req, res, next) => {
     try {
         let email = req.body.email;
         let matkhau = req.body.matkhau;
-        let adminData = await axios.post('/api-adminlogin', { email, matkhau })
+        if (!email || !matkhau) {
+            req.flash('errLogin', 'vui lòng nhập gmail và mật khẩu')
+            return res.redirect('/');
+        }
+        let adminData = await admin.handleAdminLogin(email, matkhau);
         if (adminData.errcode === 0) {
             req.session.adminData1 = adminData.admin;
-            req.flash('msgLogin', adminData.message)
+            req.flash('msgLogin', adminData.errMessage)
             return res.redirect('home');
         }
         if (adminData.errcode !== 0) {
-            req.flash('errLogin', adminData.message)
-
+            req.flash('errLogin', adminData.errMessage)
             return res.redirect('/');
         }
     } catch (error) {
@@ -53,8 +35,18 @@ let getLogin = async (req, res, next) => {
         }
         console.log(error.response)
     }
-
 }
+
+
+let getDetailAccount = async (req, res) => {
+    let adminID = req.query.adminID;
+    let detailAdmin = await admin.detailAcount(adminID)
+    if (detailAdmin) {
+        detailAdmin = detailAdmin.admin;
+        return res.render('auth/detailAccount.ejs', { detailAdmin: detailAdmin });
+    }
+}
+
 
 
 let dataAccount = async (req, res) => {
@@ -73,15 +65,6 @@ let dataAccount = async (req, res) => {
 
 }
 
-
-let getDetailAccount = async (req, res) => {
-    let adminID = req.query.adminID;
-    let detailAdmin = await axios.get('/api-admin?adminID=' + adminID);
-    if (detailAdmin) {
-        detailAdmin = detailAdmin.admin;
-        return res.render('auth/detailAccount.ejs', { detailAdmin: detailAdmin });
-    }
-}
 
 let editAccount = async (req, res) => {
     try {
@@ -140,7 +123,6 @@ module.exports = {
     getLoginPage,
     getLogin,
     getDetailAccount,
-    getApiLogin,
     dataAccount,
     editAccount,
     updateAccount
