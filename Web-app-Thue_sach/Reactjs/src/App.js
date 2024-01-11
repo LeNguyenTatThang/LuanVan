@@ -4,7 +4,7 @@ import './App.css';
 import Footer from './view/Footer';
 import HomePage from './view/HomePage';
 import Login from './view/Login';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, HashRouter } from "react-router-dom";
 import Page404 from './view/Page404';
 import Product from './view/Product';
 import Register from './view/Register';
@@ -25,7 +25,8 @@ import Menu from './view/Menu';
 import Logout from './view/Logout';
 function App() {
   return (
-    <Router >
+    // <Router >
+    <HashRouter>
       <Menu />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -56,7 +57,8 @@ function App() {
         <Route path="*" element={<Page404 />} />
       </Routes>
       <Footer />
-    </Router>
+    </HashRouter>
+    // </Router>
   );
 }
 
