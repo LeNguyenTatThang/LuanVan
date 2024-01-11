@@ -113,6 +113,10 @@ const deleteCategory = async (req, res) => {
 //cập nhật thể loại
 const putCatetory = async (req, res) => {
     let categoryData = req.body
+    if (!categoryData.ten) {
+        req.flash('errCatetory', 'Không được để trống tên thể loại')
+        return res.redirect(`/get-catetoryFoByID?id=${categoryData.id}`)
+    }
     let data = await category.update(categoryData);
     if (data.errcode == 0) {
         req.flash('msgCatetory', data.message)

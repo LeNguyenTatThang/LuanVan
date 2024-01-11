@@ -74,8 +74,8 @@ let initApiRouter = (app) => {
     //api update user
     router.patch('/api/update-user', upload.single('hinh'), userController.apiUpdateUser)
 
-    //api lấy sách theo tác giả
-    router.post('/api/get-book-authur', authorController.apiGetBookAuthur)
+    //api lấy sách theo tác giả (id_tacgia)
+    router.get('/api/get-book-authur', authorController.apiGetBookAuthur)
 
 
 

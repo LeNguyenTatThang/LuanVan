@@ -1,9 +1,14 @@
 import mysql from 'mysql2/promise';
+require('dotenv').config();
 const pool = ({
-  host: 'localhost',
-  user: 'root',
-  database: 'thuesach',
-  password: ''
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 60000,
 })
 
 var db;

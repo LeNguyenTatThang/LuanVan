@@ -109,6 +109,10 @@ const updateAuthor = async (req, res, next) => {
     try {
         let authorData = req.body
         let hinhmoi = {}
+        if (!authorData.tentacgia) {
+            req.flash('errAuthor', 'Không được để trống')
+            return res.redirect(`/get-authorFoByID?id=${authorData.id}`)
+        }
         if (req.file || req.file !== undefined) {
             hinhmoi = req.file.filename
         } else {
@@ -192,7 +196,7 @@ const apiRandomBook = async (req, res) => {
 
 const apiGetBookAuthur = async (req, res) => {
     try {
-        let id_authur = req.body.id_tacgia
+        let id_authur = req.query.id_tacgia
         let data = await author.BookAuthur(id_authur)
         if (data.errcode == 0) {
             return res.status(200).json({
