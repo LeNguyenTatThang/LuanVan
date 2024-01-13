@@ -1,5 +1,28 @@
 <%- include('../page/header')%>
     <%- include('../page/aside')%>
+        <script>
+            function checkImageExists(imageUrl, callback) {
+                var img = new Image();
+                img.onload = function () {
+                    callback(true);
+                };
+                img.onerror = function () {
+                    callback(false);
+                };
+                img.src = imageUrl;
+            }
+            $(document).ready(function () {
+                $(".btnDelete").click(function () {
+                    const id = $(this).attr('data-id');
+                    if (confirm(`Bạn có muốn xóa thể loại có id= ${id}`)) {
+                        return true
+
+                    } else {
+                        return false
+                    }
+                })
+            })
+        </script>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -161,8 +184,21 @@
                                                         <%= i+1 %>
                                                     </td>
                                                     <td scope="row">
-                                                        <div class="avatar avatar-sm me-3">
-                                                            <img src="/img/<%= dataCmt[i].hinh %>" class="img-list" />
+                                                        <div class="d-flex align-items-center">
+                                                            <% var imageUrl="/img/" + (dataCmt[i].hinh); %>
+                                                                <div class="avatar avatar-sm me-3">
+                                                                    <img id="authorImage_<%= i %>" src="<%= imageUrl %>"
+                                                                        class="img-list rounded-circle" />
+                                                                </div>
+                                                                <script>
+                                                                    checkImageExists('<%= imageUrl %>', function (exists) {
+                                                                        var img = document.getElementById('authorImage_<%= i %>');
+                                                                        if (!exists) {
+                                                                            img.src = "/img/image/avatar.png";
+
+                                                                        }
+                                                                    });
+                                                                </script>
                                                         </div>
                                                     </td>
                                                     <td scope="row">
@@ -189,6 +225,12 @@
                                                                             <% } %>
                                                             </select>
                                                         </div>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <a class="btn btn-sm btn-danger btnDelete"
+                                                            data-id="<%= dataCmt[i].id %>"
+                                                            href="/delete-comment/<%= dataCmt[i].id %>?id=<%=data.id %>">
+                                                            <i class="fa fa-trash"></i> Xóa</a>
                                                     </td>
                                                 </tr>
                                                 <% } %>

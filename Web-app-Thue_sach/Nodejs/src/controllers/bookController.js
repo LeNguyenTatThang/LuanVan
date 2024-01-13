@@ -73,6 +73,27 @@ const detailBroweBook = async (req, res) => {
 
 }
 
+//xoa binh luan
+const deleteComment = async (req, res) => {
+    let id = req.query.id;
+    console.log('ssss', id)
+    try {
+        let id_comment = req.params.id;
+        let data = await comment.delete(id_comment)
+        if (data.errcode === 0) {
+            req.flash('msgBook', data.message)
+            return res.redirect(`/detailBroweBook?id=${id}`);
+        } else {
+            req.flash('errBook', data.message)
+            return res.redirect(`/detailBroweBook?id=${id}`);
+        }
+    } catch (error) {
+        console.error(error);
+        req.flash('errBook', 'lỗi Server')
+        return res.redirect(`/detailBroweBook.ejs?id=${id}`);
+    }
+}
+
 const getDetailBook = async (req, res) => {
     let id = req.query.id;
     let data = await book.getId(id)
@@ -165,7 +186,33 @@ const postBook = async (req, res, next) => {
     }
 }
 
-
+//api lấy sách theo thể loại random
+const bookbyCatetory = async (req, res) => {
+    try {
+        let theloai_id = req.body.theloai_id;
+        let id = req.body.id
+        if (!theloai_id || !id) {
+            return res.status(400).json({
+                message: 'không có theloai_id'
+            })
+        }
+        let data = await book.getBookByCatetory(theloai_id, id);
+        if (data.errcode === 0) {
+            return res.status(200).json({
+                data: data.rows,
+            })
+        } else
+            return res.status(404).json({
+                message: data.message
+            })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: 'lỗi Server'
+        })
+    }
+}
 
 //api ds sach
 const postApiListBookUser = async (req, res) => {
@@ -468,6 +515,8 @@ module.exports = {
     upbookOnline,
     apiRating,
     bookMessage,
-    bookByIdUsersUnapproved
+    bookByIdUsersUnapproved,
+    deleteComment,
+    bookbyCatetory
 }
 

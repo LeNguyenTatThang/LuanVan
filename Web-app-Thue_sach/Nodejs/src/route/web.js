@@ -86,9 +86,11 @@ let initWebRouter = (app) => {
     router.post('/post-browsebook', auth.isLogin, bookController.BrowseBooks);
     router.get('/get-broweBook', auth.isLogin, bookController.getbrowebook)
     router.post('/post-Message', auth.isLogin, bookController.BoosMessage)
+    router.get('/delete-comment/:id', auth.isLogin, bookController.deleteComment)
 
     //binh luan
     router.post('/updateCpmmentStatus', auth.isLogin, commentController.updateCpmmentStatus)
+
 
     //tac gia
     router.get('/author', auth.isLogin, authorController.getAuthor);

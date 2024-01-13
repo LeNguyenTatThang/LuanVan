@@ -275,7 +275,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
+            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
@@ -500,6 +500,34 @@ book.getBookByIdUsers = async (id_users, loai) => {
                 data = {
                     rows,
                     errcode: '0',
+                    message: 'ok'
+                }
+            }
+            resolve(data)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+book.getBookByCatetory = async (theloai_id, id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
+            sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
+            sql += " WHERE trangthaiduyet='duocduyet' AND sach.trangthai = 1 AND theloai_id=? AND sach.id !=? GROUP BY sach.id ORDER BY RAND() LIMIT 3"
+            const [rows, fields] = await pool.execute(sql, [theloai_id, id])
+            if (rows.length === 0) {
+                data = {
+                    errcode: 1,
+                    message: 'không có dữ liệu'
+                }
+            } else {
+                data = {
+                    rows,
+                    errcode: 0,
                     message: 'ok'
                 }
             }

@@ -63,6 +63,30 @@ comment.getComment = async (data, name) => {
     });
 };
 
+comment.delete = (id_comment) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = {};
+            let sql = "DELETE from binhluan WHERE id = ?"
+            const [result, fields] = await pool.execute(sql, [id_comment])
+            if (result) {
+                data = {
+                    errcode: 0,
+                    message: 'xóa thành công'
+                }
+            } else {
+                data = {
+                    errcode: 1,
+                    message: 'xóa thất bại'
+                }
+            }
+
+            resolve(data)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 comment.create = async (data) => {
     return new Promise(async (resolve, reject) => {
