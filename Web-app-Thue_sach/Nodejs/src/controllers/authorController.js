@@ -200,8 +200,8 @@ const apiGetBookAuthur = async (req, res) => {
         let data = await author.BookAuthur(id_authur)
         if (data.errcode === 0) {
             return res.status(200).json({
-                data: data.rows,
                 status: 200,
+                data: data.rows,
             })
         } else {
             return res.status(404).json({
