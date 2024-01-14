@@ -198,11 +198,10 @@ const apiGetBookAuthur = async (req, res) => {
     try {
         let id_authur = req.query.id_tacgia
         let data = await author.BookAuthur(id_authur)
-        if (data.errcode == 0) {
+        if (data.errcode === 0) {
             return res.status(200).json({
                 data: data.rows,
                 status: 200,
-                message: data.message,
             })
         } else {
             return res.status(404).json({
@@ -211,6 +210,7 @@ const apiGetBookAuthur = async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             status: 500,
             message: 'lỗi Server'

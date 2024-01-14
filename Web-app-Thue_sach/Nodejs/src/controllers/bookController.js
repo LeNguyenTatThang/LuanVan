@@ -454,7 +454,7 @@ const bookByCatetoryAndAuthor = async (req, res) => {
         } else {
             return res.status(404).json({
                 status: 404,
-                data: data.message
+                message: data.message
             })
 
         }

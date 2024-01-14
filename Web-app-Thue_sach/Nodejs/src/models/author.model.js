@@ -227,10 +227,21 @@ author.BookAuthur = function (id_authur) {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            const [rows] = await pool.execute('SELECT * FROM sach INNER JOIN tacgia ON sach.id_tacgia = tacgia.id WHERE tacgia.id = ?', [id_authur])
-            data = {
-                rows,
-                errcode: 0
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0), 0) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,tiencoc,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM tacgia";
+            sql += " INNER JOIN sach ON sach.id_tacgia=tacgia.id INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id  "
+            sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
+            sql += " WHERE trangthaiduyet='duocduyet' AND sach.trangthai = 1 AND tacgia.id = ? GROUP BY sach.id"
+            const [rows, fields] = await pool.execute(sql, [id_authur])
+            if (rows.length > 0) {
+                data = {
+                    rows,
+                    errcode: 0
+                }
+            } else {
+                data = {
+                    message: 'không có dữ liệu',
+                    errcode: 1
+                }
             }
             resolve(data)
         } catch (e) {
