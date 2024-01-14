@@ -514,7 +514,7 @@ book.getBookByCatetory = async (theloai_id, id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,tiencoc,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
             sql += " WHERE trangthaiduyet='duocduyet' AND sach.trangthai = 1 AND theloai_id=? AND sach.id !=? GROUP BY sach.id ORDER BY RAND() LIMIT 3"
