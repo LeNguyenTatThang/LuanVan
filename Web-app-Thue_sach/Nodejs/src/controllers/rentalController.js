@@ -181,34 +181,80 @@ const received = async (req, res) => {
         let ngaytra = new Date(ngaynhan.getTime() + ngaythueInt * 24 * 60 * 60 * 1000);
         let data = await rental.upStatus2(rentalData, ngaynhan, ngaytra)
         if (data.errcode === 0) {
+            let currentTime = new Date();
             let thoiGianTruoc2Ngay = new Date(ngaytra.getTime() - (2 * 24 * 60 * 60 * 1000));
-            const job = schedule.scheduleJob('*/1 * * * *', async () => {
+            const job = schedule.scheduleJob(new Date(currentTime.getTime() + 1 * 60 * 1000), async () => {
                 let message = "còn 2 ngày nữa là tới ngày trả hàng"
                 let dataMsg = await rental.updateMessage(rentalData.id, message)
                 if (dataMsg.errcode !== 0) {
                     console.log('Lỗi khi cập nhật thông báo');
                 } else {
-                    console.log('Sắp tới ngày trả hàng');
+                    console.log(message);
                 }
                 job.cancel();
             });
             let thoiGianTruoc1Ngay = new Date(ngaytra.getTime() - (1 * 24 * 60 * 60 * 1000));
-            const job2 = schedule.scheduleJob('*/2 * * * *', async () => {
+            const job2 = schedule.scheduleJob(new Date(currentTime.getTime() + 2 * 60 * 1000), async () => {
                 let message = "còn 1 ngày nữa là tới ngày trả hàng"
                 let dataMsg = await rental.updateMessage(rentalData.id, message)
                 if (dataMsg.errcode !== 0) {
                     console.log('Lỗi khi cập nhật thông báo');
                 } else {
-                    console.log('Sắp tới ngày trả hàng');
+                    console.log(message);
                 }
                 job2.cancel();
             });
-            const updateStatus3 = schedule.scheduleJob('*/3 * * * *', async () => {
-                //chuyển sang trạng thái chờ trả
-                let update = await rental.upStatus3(rentalData.id)
-                console.log('chuyển sang trạng thái chờ trả')
-                updateStatus3.cancel();
+            let thoiGianTrahang = new Date(ngaytra.getTime() - (1 * 24 * 60 * 60 * 1000));
+            const job3 = schedule.scheduleJob(new Date(currentTime.getTime() + 3 * 60 * 1000), async () => {
+                let checkStatus = await rental.checkRentalStatus(rentalData.id)
+                if (checkStatus) {
+                    let message = "đơn hàng đã tới hạn trả"
+                    let dataMsg = await rental.updateMessage(rentalData.id, message)
+                    if (dataMsg.errcode !== 0) {
+                        console.log('Lỗi khi cập nhật thông báo');
+                    } else {
+                        console.log(message);
+                    }
+
+                }
+                job3.cancel();
             });
+            let thoiGianQua4Ngay = new Date(ngaytra.getTime() + (4 * 24 * 60 * 60 * 1000));
+            const job4 = schedule.scheduleJob(new Date(currentTime.getTime() + 4 * 60 * 1000), async () => {
+                let checkStatus = await rental.checkRentalStatus(rentalData.id)
+                if (checkStatus) {
+                    let message = "đơn hàng đã quá hạn trả 4 ngày"
+                    let dataMsg = await rental.updateMessage(rentalData.id, message)
+                    if (dataMsg.errcode !== 0) {
+                        console.log('Lỗi khi cập nhật thông báo');
+                    } else {
+                        console.log(message);
+                    }
+                }
+                job4.cancel();
+            });
+            let thoiGianQua14Ngay = new Date(ngaytra.getTime() + (14 * 24 * 60 * 60 * 1000));
+            const job5 = schedule.scheduleJob(new Date(currentTime.getTime() + 5 * 60 * 1000), async () => {
+                let checkStatus = await rental.checkRentalStatus(rentalData.id)
+                if (checkStatus) {
+                    let message = "đơn hàng đã quá hạn trả 14 ngày"
+                    let dataMsg = await rental.updateMessage(rentalData.id, message)
+                    if (dataMsg.errcode !== 0) {
+                        console.log('Lỗi khi cập nhật thông báo');
+                    } else {
+                        console.log(message);
+                    }
+                } else {
+                    console.log('đơn hàng đã được trả');
+                }
+                job5.cancel();
+            });
+            // const updateStatus3 = schedule.scheduleJob('*/3 * * * *', async () => {
+            //     //chuyển sang trạng thái chờ trả
+            //     let update = await rental.upStatus3(rentalData.id)
+            //     console.log('chuyển sang trạng thái chờ trả')
+            //     updateStatus3.cancel();
+            // });
             return res.status(200).json({
                 status: 200,
                 message: data.message

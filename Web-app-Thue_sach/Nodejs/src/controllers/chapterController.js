@@ -6,7 +6,6 @@ const listBookchapter = async (req, res) => {
     try {
         let data = req.body
         let dataChap = await chapter.getChaptersByBookId(data)
-        console.log('code', dataChap)
         if (dataChap.errcode == 0) {
             return res.status(200).json({
                 status: 200,
@@ -32,7 +31,6 @@ const listAllBookchapter = async (req, res) => {
     try {
         let data = req.body
         let dataChap = await chapter.getAllChaptersByBookId(data)
-        console.log('code', dataChap)
         if (dataChap.errcode == 0) {
             return res.status(200).json({
                 status: 200,

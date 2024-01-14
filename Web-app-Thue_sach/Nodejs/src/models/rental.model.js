@@ -130,7 +130,22 @@ let checkRental = (id) => {
     });
 }
 
-
+rental.checkRentalStatus = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [rows, fields] = await pool.execute('SELECT * FROM phieuthue where trangthai = 2 AND id= ?', [id])
+            let rental = rows[0];
+            if (rental) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
 
 
 
@@ -353,7 +368,7 @@ rental.getRenalByIdRental = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = 'select phieuthue.id,chutiem_sach.diachi AS diachinguoidang, phieuthue.diachi AS diachinguoithue, phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,phieuthue.sdt AS sdtnguoithue, chutiem_sach.ten AS nguoidang, ngaythue,nguoithue_phieuthue.email,chutiem_sach.sdt AS sdtnguoidang, ngaynhan, ngaytra, tongtien,phieuthue.trangthai FROM phieuthue'
+            let sqlRental = 'select phieuthue.id,phieuthue.thongbao,chutiem_sach.diachi AS diachinguoidang, phieuthue.diachi AS diachinguoithue, phieuthue.maphieu,GROUP_CONCAT(sach.id) AS sach_id, GROUP_CONCAT(masach) AS masach ,GROUP_CONCAT(sach.hinh) AS hinh, GROUP_CONCAT(sach.ten) AS tensach,GROUP_CONCAT(sach.gia) AS gia, GROUP_CONCAT(sach.tiencoc) AS tiencoc , nguoithue_phieuthue.ten AS nguoithue,phieuthue.sdt AS sdtnguoithue, chutiem_sach.ten AS nguoidang, ngaythue,nguoithue_phieuthue.email,chutiem_sach.sdt AS sdtnguoidang, ngaynhan, ngaytra, tongtien,phieuthue.trangthai FROM phieuthue'
             sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
             sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
             sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '

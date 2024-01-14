@@ -27,7 +27,7 @@
                     <div class="row">
                         <section class="col-lg-6 connectedSortable ui-sortable">
                             <div class="d-flex align-items-center">
-                                <h5 class="mr-3">Chủ tiệm:</h5>
+                                <h5 class="mr-3">Người cho thuê:</h5>
                                 <select id="selectUser" class="js-example-basic-single" name="state"
                                     style="width: 30%;">
                                     <% if (users && users.rows) { %>
@@ -61,6 +61,7 @@
                                     style="width: 30%;">
                                     <% if (usersYear && usersYear.rows) { %>
                                         <option value="" selected disabled>Chọn năm</option>
+                                        <option value="null">Tất cả</option>
                                         <% for (const years of usersYear.rows) { %>
                                             <option value="<%= years?.nam %>">
                                                 <%= years?.nam %>
@@ -220,7 +221,8 @@
 
                                     $('#selectYear').on('change', function () {
                                         var selectedYear = $(this).val();
-                                        fetchChartAccount(selectedYear);
+                                        var name = (selectedYear === "null") ? null : selectedYear;
+                                        fetchChartAccount(name);
                                     });
 
                                     fetchChartAccount(null);

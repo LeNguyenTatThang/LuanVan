@@ -76,7 +76,6 @@ const detailBroweBook = async (req, res) => {
 //xoa binh luan
 const deleteComment = async (req, res) => {
     let id = req.query.id;
-    console.log('ssss', id)
     try {
         let id_comment = req.params.id;
         let data = await comment.delete(id_comment)

@@ -101,10 +101,18 @@
                                                     </span>
                                                 </div>
                                                 <% } %>
-                                                    <a name="" id="" class="btn btn-default float-right"
-                                                        href="/rental"><i class="fa fa-arrow-left"
-                                                            aria-hidden="true"></i> Quay
-                                                        Lại</a>
+                                                    <%if(data.trangthai=== 2){%>
+                                                        <div class="form-group">
+                                                            <label for="">Thông báo </label>
+                                                            <span for="">
+                                                                <%= data.thongbao %>
+                                                            </span>
+                                                        </div>
+                                                        <% } %>
+                                                            <a name="" id="" class="btn btn-default float-right"
+                                                                href="/rental"><i class="fa fa-arrow-left"
+                                                                    aria-hidden="true"></i> Quay
+                                                                Lại</a>
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 const salt = bcrypt.genSaltSync(10);
-var pool = require('../config/connectDB')
+import pool from "../config/connectDB";
 const admin = function () { }
 
 admin.handleAdminLogin = (email, matkhau) => {

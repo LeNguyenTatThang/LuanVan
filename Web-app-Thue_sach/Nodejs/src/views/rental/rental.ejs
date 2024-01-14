@@ -58,6 +58,7 @@
                                             <th class="text-truncate">Người Cho Thuê</th>
                                             <th class="text-truncate">Ngày thuê</th>
                                             <th class="text-truncate">Trạng thái</th>
+                                            <th class="text-truncate">Thông báo</th>
                                             <th class="text-truncate text-right">Action</th>
                                         </tr>
                                     </thead>
@@ -111,8 +112,13 @@
                                                                                     bị hủy
                                                                                     <% } %>
                                                         </td>
+                                                        <td scope="row">
+                                                            <% if(data[i].trangthai===2) {%>
+                                                                <%= data[i].thongbao %>
+                                                                    <% } %>
+                                                        </td>
                                                         <td class="text-right">
-                                                            <a class="btn btn-sm btn-success d-inline-block align-middle"
+                                                            <a class="btn btn-sm btn-success d-inline-block align-middle text-nowrap !important"
                                                                 href="/detailRentals?id=<%= data[i].id %>">Chi tiết</a>
                                                         </td>
                                                     </tr>

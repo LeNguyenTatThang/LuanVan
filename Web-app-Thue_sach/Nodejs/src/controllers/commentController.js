@@ -6,7 +6,6 @@ const listComment = async (req, res) => {
     try {
         let dataComment = req.body.id
         let data = await comment.getAll(dataComment)
-        console.log(data)
         if (data.errcode === 0) {
             return res.status(200).json({
                 status: 200,
@@ -62,7 +61,6 @@ const updateCpmmentStatus = async (req, res) => {
         let trangthai = req.body.trangthai
         console.log(trangthai, id)
         let data = await comment.updatestatus(id, trangthai);
-        console.log(data)
         if (data.errcode == 0) {
             return res.json({
                 message: data.message
