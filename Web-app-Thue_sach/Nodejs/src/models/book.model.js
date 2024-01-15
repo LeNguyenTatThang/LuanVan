@@ -321,7 +321,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang,users.sdt,users.diachi, tentacgia";
+            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang,users.sdt,users.diachi,id_users, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
