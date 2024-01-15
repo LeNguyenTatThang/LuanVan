@@ -5,7 +5,7 @@ const INITIAL_STATE = {
     info: null,
     products: [],
     category: [],
-    size: [],
+    count: [],
     cart: [],
     search: [],
 };
@@ -58,7 +58,33 @@ const userCard = createSlice({
                 cart: updatedCart,
             };
         },
+        ADD_DATA: (state, action) => {
+            const products = action.payload;
 
+            // Ensure that state.count is defined
+            const currentCount = state.count || [];
+
+            // Loop through each product in the array
+            const updatedCount = products.reduce((acc, product) => {
+                // Check if Item is in cart already
+                const inCart = currentCount.find((item) => item.id === product.id);
+
+                if (inCart) {
+                    // If the item is already in the cart, update its quantity
+                    return acc.map((item) =>
+                        item.id === product.id ? { ...item, qty: item.qty + product.qty } : item
+                    );
+                } else {
+                    // If the item is not in the cart, add it
+                    return [...acc, { ...product }];
+                }
+            }, currentCount);
+
+            return {
+                ...state,
+                count: updatedCount,
+            };
+        },
     },
 });
 
@@ -66,7 +92,8 @@ export const {
     ADD_TO_CART,
     REMOVE_FROM_CART,
     REMOVE_ALL,
-    TOGGLE_CHECKBOX
+    TOGGLE_CHECKBOX,
+    ADD_DATA
 } = userCard.actions;
 
 export default userCard.reducer;

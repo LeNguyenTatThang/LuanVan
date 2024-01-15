@@ -1,5 +1,4 @@
 import React from "react";
-import { Navbar } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Cart from './Cart';

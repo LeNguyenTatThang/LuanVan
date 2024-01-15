@@ -168,7 +168,7 @@ export default function AddProduct() {
                                         <select
                                             value={book}
                                             onChange={(e) => setBook(Number(e.target.value))}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                            className="bg-gray-50 border border-gray-500 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                         >
                                             <option value={0}>Sách cho thuê</option>
                                             <option value={1}>Sách đọc miễn phí</option>
@@ -187,6 +187,7 @@ export default function AddProduct() {
                                             <>
                                                 <div>
                                                     <label>Tình trạng sách:</label>
+                                                    {JSON.stringify(tinhtrang)}
                                                     <Select
                                                         placeholder='Tình trạng sách'
                                                         value={tinhtrang}

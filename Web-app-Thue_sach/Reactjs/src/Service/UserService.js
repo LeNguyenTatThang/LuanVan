@@ -51,12 +51,17 @@ const apiUpdateBook = (id, hinh, ten, noidung, trangthai, gia, tiencoc) => {
         }
     );
 }
+
+const randomBookCate = (theloai_id, id) => {
+    return axios.post('/api/randomBookbyCatetory', { theloai_id, id })
+}
+
 const apiAuthurRandom = () => {
     return axios.get('/get-api-randomAuthor');
 }
 
-const apiBookAuthur = (id_tacgia) => {
-    axios.post('/api/get-book-authur', { id_tacgia })
+const apiBookAuthur = async (id_tacgia) => {
+    return axios.get(`/api/get-book-authur?id_tacgia=${id_tacgia}`, { id_tacgia })
 }
 
 const apiRandomBook = (id_tacgia) => {
@@ -187,9 +192,15 @@ const apiListChapter = (sach_id) => {
 const apiUpdateChapter = (id, tieude, noidung) => {
     return axios.patch('/api/chapter/updateChapter/', { id, tieude, noidung })
 }
+const apiRating = (users_id, sach_id, danhgia) => {
+    return axios.post('apiRating', { users_id, sach_id, danhgia })
+}
+const apiCountRate = (id) => {
+    return axios.post('/apiCountRating', { id })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
-    addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook,
+    addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook, randomBookCate,
     callApiCreateRental,
     callApiComment, apiSendComment, apiChapter,
     apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrderThree, apiRentOrderFour, apiCancel,
@@ -198,5 +209,5 @@ export {
     apiConfirmRentThree,
     apiCompleted,
     callApiChapter, apigetBookRead, apiPostCHapter, apiListChapter, apiUpdateChapter,
-    callApiMail,
+    callApiMail, apiRating, apiCountRate,
 };

@@ -25,17 +25,19 @@ import Menu from './view/Menu';
 import Logout from './view/Logout';
 function App() {
   return (
-    // <Router >
-    <HashRouter>
+
+    <HashRouter >
+
       <Menu />
       <Routes>
+
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<Product />} />
         <Route path="/profiles" element={<Profile />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/post-chapter/:itemId" element={<PostChapter />} />
         <Route path="/blogs" element={<Blog />} />
-        <Route path="/authur" element={<Authur />} />
+        <Route path="/authur/:id_tacgia" element={<Authur />} />
         <Route path="/review" element={<Review />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/signup" element={<Register />} />
@@ -55,10 +57,12 @@ function App() {
           }
         />
         <Route path="*" element={<Page404 />} />
+
       </Routes>
+
       <Footer />
+
     </HashRouter>
-    // </Router>
   );
 }
 

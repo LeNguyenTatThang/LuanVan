@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8000'
+    //baseURL: 'https://thuesachadmin.onrender.com/'
+    baseURL: 'http://localhost:8000/'
 });
 instance.interceptors.response.use(function (response) {
     return response.data ? response.data : { statusCode: response.status };

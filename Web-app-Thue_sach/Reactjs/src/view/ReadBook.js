@@ -214,7 +214,7 @@ export default function ReadBook() {
                             book.map((item, index) => (
                                 <tr key={index} className='shadow-sm'>
                                     <td className=" py-2 px-4 border-b">
-                                        <img src={`http://localhost:8000/img/${item.hinh}`}
+                                        <img src={`https://thuesachadmin.onrender.com/img/${item.hinh}`}
                                             alt={`${item.hinh}`} className="w-16 h-16 rounded-full" />
                                     </td>
                                     <td className="py-2 px-4 border-b">{item.ten}</td>
@@ -263,7 +263,7 @@ export default function ReadBook() {
                                     <div className=" flex items-center space-x-4">
                                         <div>
                                             <img
-                                                src={previewImage || `http://localhost:8000/img/${detail.hinh}`}
+                                                src={previewImage || `https://thuesachadmin.onrender.com/img/${detail.hinh}`}
                                                 alt={previewImage ? "Preview Image" : detail.hinh}
                                                 className="w-16 h-16 rounded-full"
                                             />
@@ -431,7 +431,7 @@ export default function ReadBook() {
                             book1.map((item, index) => (
                                 <tr key={index} className='shadow-sm'>
                                     <td className=" py-2 px-4 border-b">
-                                        <img src={`http://localhost:8000/img/${item.hinh}`}
+                                        <img src={`https://thuesachadmin.onrender.com/img/${item.hinh}`}
                                             alt={`${item.hinh}`} className="w-16 h-16 rounded-full" />
 
                                     </td>
@@ -493,7 +493,7 @@ export default function ReadBook() {
                                     <div className=" flex items-center space-x-4">
                                         <div>
                                             <img
-                                                src={previewImage || `http://localhost:8000/img/${detail.hinh}`}
+                                                src={previewImage || `https://thuesachadmin.onrender.com/img/${detail.hinh}`}
                                                 alt={previewImage ? "Preview Image" : detail.hinh}
                                                 className="w-16 h-16 rounded-full"
                                             />

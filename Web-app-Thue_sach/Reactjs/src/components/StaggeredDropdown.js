@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import iziToast from "izitoast";
 import { LOG_OUT } from "../app/userReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Logout from "../view/Logout";
 
 const StaggeredDropDown = ({ userName }) => {
@@ -20,7 +20,7 @@ const StaggeredDropDown = ({ userName }) => {
         // });
         // await dispatch(LOG_OUT());
     };
-
+    const count = useSelector((state) => state.shop.count);
     return (
         <div className=" flex items-center justify-center">
             <motion.div animate={open ? "open" : "closed"} className="relative">
@@ -45,6 +45,9 @@ const StaggeredDropDown = ({ userName }) => {
                     <motion.span variants={iconVariants}>
                         <FiChevronDown />
                     </motion.span>
+                    <div className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs p-1 rounded-full">
+                        {count.length === 0 ? <></> : <>{count.length}</>}
+                    </div>
                 </button>
 
                 <motion.ul
@@ -55,7 +58,7 @@ const StaggeredDropDown = ({ userName }) => {
                 >
                     <Option setOpen={setOpen} Icon={FiEdit} text="Xem tài khoản" to="/profiles" />
                     <Option setOpen={setOpen} Icon={FiPlusSquare} text="Thêm sách mới" to="/add-book" />
-                    <Option setOpen={setOpen} Icon={FiShare} text="Quản lý phiếu thuê" to="/manager-book" />
+                    <Option setOpen={setOpen} Icon={FiShare} text="Quản lý đơn hàng" to="/manager-book" />
                     <Option setOpen={setOpen} Icon={FiTrash} text="Quản lý sách" to="/read-book" />
                     <Logout setOpen={setOpen} />
                 </motion.ul>

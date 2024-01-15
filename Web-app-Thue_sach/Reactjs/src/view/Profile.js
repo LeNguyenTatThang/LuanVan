@@ -88,7 +88,7 @@ export default function Profile() {
 
                                 <img
                                     className="h-32 w-32 rounded-full border-4 border-white mx-auto my-4"
-                                    src={`http://localhost:8000/img/${userData?.userInfo?.hinh}`}
+                                    src={`https://thuesachadmin.onrender.com/img/${userData?.userInfo?.hinh}`}
                                     alt={userData?.userInfo?.hinh || 'Chưa cập nhật'}
                                 />
 

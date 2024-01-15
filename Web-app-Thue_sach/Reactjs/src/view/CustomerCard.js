@@ -240,9 +240,6 @@ export default function CustomerCard() {
         console.log("Updated SelectedNguoiDang:", selectedNguoiDang);
     }, [selectedNguoiDang]);
 
-
-    const [childrenChecked, setChildrenChecked] = React.useState({});
-    const maxChildren = 3;
     const CustomListItem = ({ data, checked, onChange, onDelete }) => {
         console.log('Data:', data);
         console.log('Checked:', checked);
@@ -258,7 +255,7 @@ export default function CustomerCard() {
                     <div className="thumbnail">
                         <img
                             className="w-12 h-12 rounded-full"
-                            src={`http://localhost:8000/img/${data.hinh}`}
+                            src={`https://thuesachadmin.onrender.com/img/${data.hinh}`}
                             alt={`${data.hinh}`}
                         />
                     </div>
@@ -278,72 +275,16 @@ export default function CustomerCard() {
             </li>
         );
     };
-    const [selectedParentIndex, setSelectedParentIndex] = React.useState(null);
     const [checked, setChecked] = React.useState([false, false, false, false]);
 
     const [checkChildren, setCheckChildren] = React.useState([]);
     const [boolean1, setBoolean1] = React.useState(true);
     const [booleanChildren, setBooleanChildren] = React.useState(true)
 
-    const [getDataId, setGetDataId] = React.useState()
 
     const children = Object.keys(groupedByNguoiDang).map((nguoiDang, parentIndex) => {
         const parentChildren = groupedByNguoiDang[nguoiDang];
-        const handleChange1 = (event, parentIndex) => {
-            const isChecked = event.target.checked;
-            setChecked((prev) => {
-                const newChecked = [...prev];
-                newChecked.forEach((_, index) => {
-                    newChecked[index] = false;
-                });
-                newChecked[parentIndex] = isChecked;
-                setSelectedParentIndex(isChecked ? parentIndex : null);
-                return newChecked;
-            });
-            setChildrenChecked((prev) => {
-                const newChecked = { ...prev };
 
-                // Uncheck all other children
-                Object.keys(newChecked).forEach((key) => {
-                    const otherParentChildren = groupedByNguoiDang[Object.keys(groupedByNguoiDang)[key]];
-                    if (Array.isArray(otherParentChildren)) {
-                        otherParentChildren.forEach((child, index) => {
-                            newChecked[key * maxChildren + index] = false;
-                        });
-                    }
-                });
-
-                // Check or uncheck all children of the clicked parent
-                const parentKey = Object.keys(groupedByNguoiDang)[parentIndex];
-                const parentChildren = groupedByNguoiDang[parentKey];
-                if (Array.isArray(parentChildren)) {
-                    parentChildren.forEach((child, index) => {
-                        newChecked[parentIndex * maxChildren + index] = isChecked;
-                    });
-                }
-
-                return newChecked;
-            });
-        };
-
-        const handleChange2 = (event, parentIndex, childIndex) => {
-            setChecked((prev) => {
-                const newChecked = [...prev];
-
-                // Uncheck all other children of the current parent
-                const parentChildren = groupedByNguoiDang[Object.keys(groupedByNguoiDang)[parentIndex]];
-                if (Array.isArray(parentChildren)) {
-                    parentChildren.forEach((child, index) => {
-                        newChecked[parentIndex * maxChildren + index] = false;
-                    });
-                }
-
-                // Check the clicked child
-                newChecked[parentIndex * maxChildren + childIndex] = event.target.checked;
-
-                return newChecked;
-            });
-        };
         const handleChange = (boolean1, index, data) => {
             console.log('index', index)
             console.log('Changedata', data)
@@ -409,7 +350,7 @@ export default function CustomerCard() {
             console.log(values)
 
             let indexw = values.findIndex(_v => _v == data)
-            console.log('indexw',indexw)
+            console.log('indexw', indexw)
             if (indexw == -1) {
                 console.log(values, 'VALUES')
                 console.log(data, 'data')
@@ -440,14 +381,14 @@ export default function CustomerCard() {
                     {parentChildren && Array.isArray(parentChildren) && (
                         <ul className="item-list">
                             {parentChildren.map((data, childIndex) => (<>
-                                {JSON.stringify(data.id)}
-                                {JSON.stringify(checkChildren[childIndex]?.id)}
                                 <CustomListItem
+                                    disabled={true}
                                     key={childIndex}
                                     data={data}
                                     onDelete={DeleteCart}
                                     checked={checkChildren.includes(data)}
                                     onChange={() => submitChangeData(booleanChildren, data, childIndex)}
+
                                 // control={
                                 //     <Checkbox
                                 //         checked={checkIdChildren(data,childIndex)}
@@ -605,7 +546,7 @@ export default function CustomerCard() {
                                                 <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow-lg">
                                                     <TextField id="outlined-basic" label="Số điện thoại" variant="outlined"
                                                         value={sdt}
-                                                        onChange={(event) => { setSdt(parseInt(event.target.value)) }} />
+                                                        onChange={(event) => { setSdt(event.target.value) }} />
                                                     <label className="block mb-2">
                                                         Tỉnh/Thành phố:
                                                         <Select

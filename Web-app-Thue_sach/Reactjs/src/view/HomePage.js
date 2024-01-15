@@ -17,7 +17,8 @@ export default function HomePage() {
 
     const [authur, setAuthur] = useState([]);
     const [randomBook, setRandomBook] = useState([]);
-
+    const apiUrl = 'http://localhost:8000';
+    //const apiUrl = 'https://thuesachadmin.onrender.com/';
     const fetchRandomBooks = async () => {
         try {
             let newRandomBooks = [];
@@ -48,7 +49,7 @@ export default function HomePage() {
     }, []);
 
     useEffect(() => {
-        if (authur.length > 0) {
+        if (authur?.length > 0) {
             fetchRandomBooks();
         }
     }, [authur]);
@@ -99,7 +100,7 @@ export default function HomePage() {
 
                                                 {item.hinhtacgia ? <>
                                                     <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center"
-                                                        src={`http://localhost:8000/img/${item.hinhtacgia}`}
+                                                        src={`${apiUrl}/img/${item.hinhtacgia}`}
                                                         alt={`${item.hinhtacgia}`} />
                                                 </> : <>
                                                     <img className="w-40 h-40 px-2 bg-gray-100 rounded-full bg-cover bg-center"
@@ -113,17 +114,19 @@ export default function HomePage() {
                                                         randomBook.map((data, keydata) => (
                                                             <div key={keydata}>
                                                                 {item.id === data.id_tacgia ? (
-                                                                    <div className='flex px-1 bg-white rounded-2 py-1'>
-                                                                        <div className='col-4 pl-1'>
-                                                                            <img src={`http://localhost:8000/img/${data.hinh}`} alt={data.ten} className='w-12 h-14' />
+                                                                    <Link to={`/detail-book/${data.id}`} >
+                                                                        <div className='flex px-1 bg-white rounded-2 py-1'>
+                                                                            <div className='col-4 pl-1'>
+                                                                                <img src={`${apiUrl}/img/${data.hinh}`} alt={data.ten} className='w-12 h-14' />
+                                                                            </div>
+                                                                            <div className='flex items-center py-1 px-1 justify-between w-full'>
+                                                                                <div className='py-1 text-clamp-1 w-40 overflow-hidden'>{data.ten}</div>
+                                                                                {data.loai === 0 ?
+                                                                                    <><div className='text-sm text-lime-600'>Thuê</div></> : <><div className='text-sm text-lime-600'>Đọc</div></>
+                                                                                }
+                                                                            </div>
                                                                         </div>
-                                                                        <div className='flex items-center py-1 px-1 justify-between w-full'>
-                                                                            <div className='py-1 text-clamp-1 w-40 overflow-hidden'>{data.ten}</div>
-                                                                            {data.loai === 0 ?
-                                                                                <><div className='text-sm text-lime-600'>Thuê</div></> : <><div className='text-sm text-lime-600'>Đọc</div></>
-                                                                            }
-                                                                        </div>
-                                                                    </div>
+                                                                    </Link>
                                                                 ) : (
                                                                     <></>
                                                                 )}
@@ -136,9 +139,11 @@ export default function HomePage() {
                                         </div>
                                     </div>
                                     <div className="p-4 border-t border-gray-200 h-24">
-                                        <div className="text-center">
-                                            <h1 className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">{item.tentacgia}</h1>
-                                        </div>
+                                        <Link to={`/authur/${item.id}`}>
+                                            <div className="text-center">
+                                                <h1 className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">{item.tentacgia}</h1>
+                                            </div>
+                                        </Link>
                                         <p className="text-gray-400 text-sm my-1 text-center">{item.gioithieu}</p>
                                     </div>
                                 </div>
