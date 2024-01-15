@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { REMOVE_FROM_CART, REMOVE_ALL, TOGGLE_CHECKBOX } from '../app/userCard';
+import { REMOVE_FROM_CART, REMOVE_ALL } from '../app/userCard';
 import { useNavigate } from 'react-router-dom';
 import Avt from '../avatar-authur.png';
 import axios from 'axios';
@@ -60,7 +60,7 @@ export default function CustomerCard() {
 
         if (selectedValue === '7') {
             // Nếu selectedValue là '7', tăng giá 5%
-            increaseRate = 0.05;
+            increaseRate = 0;
         } else if (selectedValue === '15') {
             // Nếu selectedValue là '15', tăng giá 10%
             increaseRate = 0.1;
@@ -168,7 +168,7 @@ export default function CustomerCard() {
     let diachi = result
     console.log(diachi)
     let ngaythue = selectedValue
-    console.log(ngaythue)
+    console.log(chutiem_id)
 
     const onClickXuatHoaDon = async () => {
         //|| selectedNguoiDang.length !== 1
@@ -506,7 +506,7 @@ export default function CustomerCard() {
                                         <br />
                                         <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
                                             Thời gian thuê là {selectedValue} ngày:
-                                            {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
+                                            {selectedValue === '7' ? '+ 0%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
                                         </div>
 
                                         <br />

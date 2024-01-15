@@ -257,7 +257,7 @@ export default function Product() {
                                                     </>}
                                                 </Link>
                                                 <div className="flex flex-col gap-2 items-center justify-center">
-                                                    <Rating name="size-large" defaultValue={item.danhgia} size="small" />
+                                                    <Rating name="size-large" value={item.danhgia} size="small" readOnly />
                                                 </div>
                                             </div>
 
