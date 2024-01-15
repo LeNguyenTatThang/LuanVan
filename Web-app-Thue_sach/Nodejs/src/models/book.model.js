@@ -321,7 +321,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang,id_users,id_users.sdt,id_users.diachi, tentacgia";
+            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang,users.sdt,users.diachi, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
@@ -615,12 +615,11 @@ book.rating = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRating = {};
-            let danhgia = parseInt(data.danhgia)
-            let sqlCheck = `SELECT id FROM danhgia WHERE users_id=?`
-            const [check] = await pool.execute(sqlCheck, [data.users_id])
+            let sqlCheck = `SELECT id FROM danhgia WHERE users_id=? AND sach_id=?`
+            const [check] = await pool.execute(sqlCheck, [data.users_id, data.sach_id])
             if (check[0]) {
                 let sql = `UPDATE danhgia SET danhgia=? WHERE id =?`
-                const [result, fields] = await pool.execute(sql, [danhgia, check[0].id])
+                const [result, fields] = await pool.execute(sql, [data.danhgia, check[0].id])
                 if (result) {
                     dataRating = {
                         errcode: '0',
@@ -634,8 +633,7 @@ book.rating = async (data) => {
                 }
             } else {
                 let sql = `INSERT INTO danhgia(danhgia,sach_id,users_id) VALUES(?,?,?)`
-                console.log(data.sach_id)
-                const [result, fields] = await pool.execute(sql, [danhgia, data.sach_id, data.users_id])
+                const [result, fields] = await pool.execute(sql, [data.danhgia, data.sach_id, data.users_id])
                 if (result) {
                     dataRating = {
                         errcode: '0',

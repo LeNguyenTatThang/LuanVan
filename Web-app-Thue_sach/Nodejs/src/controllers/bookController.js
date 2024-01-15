@@ -503,7 +503,6 @@ const bookByCatetoryAndAuthor = async (req, res) => {
 const apiRating = async (req, res) => {
     try {
         let data = req.body
-        console.log('ìd', data)
         if (!data.users_id) {
             return res.status(403).json({
                 status: 403,
