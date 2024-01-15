@@ -275,13 +275,13 @@ const received = async (req, res) => {
 }
 
 //chờ trả
-const returned = async (req, res, rentalData) => {
+const returned = async (req, res) => {
     try {
-        console.log('mã', rentalData)
-        let data = await rental.upStatus3(rentalData)
+        let id = req.body.id
+        let data = await rental.upStatus3(id)
         if (data.errcode === 0) {
-            return res.status(201).json({
-                status: 201,
+            return res.status(200).json({
+                status: 200,
                 message: data.message
             });
         } else {
