@@ -533,6 +533,7 @@ const Manager = () => {
                                                     </td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo4(item.id)}>Xem</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)}>Hủy đơn hàng</button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -869,6 +870,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">Đang chờ duyệt</td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo1(item.id)}>Xem</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)}>Hủy sách</button>
                                                     </td>
                                                 </tr>
                                             ))}

@@ -269,6 +269,13 @@ export default function Detail_book() {
                   <div className="w-1/2">
                     <strong className="text-sm">Giá thuê:</strong> {item.gia} vnđ
                   </div>
+                  <div className="text-sm hover:text-slate-500"><strong>Tình trạng sách: </strong>
+                    {item.tinhtrang === 1 ? <>
+                      <span className='text-yellow-500 font-bold'>Sách mới</span>
+                    </> : <>
+                      <span className='text-yellow-500 font-bold'>Sách cũ</span>
+                    </>}
+                  </div>
                 </div>
                 <br />
                 {item.trangthaithue === 'dangthue' ? <>
