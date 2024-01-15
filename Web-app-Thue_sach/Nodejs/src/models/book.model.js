@@ -653,4 +653,48 @@ book.rating = async (data) => {
     })
 }
 
+book.getRating = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRating = {};
+            let sqlRating = `SELECT COUNT(danhgia) AS sldanhgia FROM sach LEFT JOIN danhgia ON danhgia.sach_id = sach.id WHERE  sach.id =?`
+            let sqlRating1 = `SELECT COUNT(danhgia) AS sldanhgia1 FROM sach LEFT JOIN danhgia ON danhgia.sach_id = sach.id WHERE sach.id =? AND danhgia =1`
+            let sqlRating2 = `SELECT COUNT(danhgia) AS sldanhgia2 FROM sach LEFT JOIN danhgia ON danhgia.sach_id = sach.id WHERE sach.id =? AND danhgia =2`
+            let sqlRating3 = `SELECT COUNT(danhgia) AS sldanhgia3 FROM sach LEFT JOIN danhgia ON danhgia.sach_id = sach.id WHERE sach.id =? AND danhgia =3`
+            let sqlRating4 = `SELECT COUNT(danhgia) AS sldanhgia4 FROM sach LEFT JOIN danhgia ON danhgia.sach_id = sach.id WHERE sach.id =? AND danhgia =4`
+            let sqlRating5 = `SELECT COUNT(danhgia) AS sldanhgia5 FROM sach LEFT JOIN danhgia ON danhgia.sach_id = sach.id WHERE sach.id =? AND danhgia =5`
+            const [result] = await pool.execute(sqlRating, [data.id])
+            const [result1] = await pool.execute(sqlRating1, [data.id])
+            const [result2] = await pool.execute(sqlRating2, [data.id])
+            const [result3] = await pool.execute(sqlRating3, [data.id])
+            const [result4] = await pool.execute(sqlRating4, [data.id])
+            const [result5] = await pool.execute(sqlRating5, [data.id])
+            const sldanhgia = result[0].sldanhgia
+            const sldanhgia1 = result1[0].sldanhgia1
+            const sldanhgia2 = result2[0].sldanhgia2
+            const sldanhgia3 = result3[0].sldanhgia3
+            const sldanhgia4 = result4[0].sldanhgia4
+            const sldanhgia5 = result5[0].sldanhgia5
+            if (result || result1 || result2 || result3 || result4 || result5) {
+                dataRating = {
+                    sldanhgia,
+                    sldanhgia1,
+                    sldanhgia2,
+                    sldanhgia3,
+                    sldanhgia4,
+                    sldanhgia5,
+                    errcode: 0,
+                }
+            } else {
+                dataRating = {
+                    errcode: '1',
+                    message: 'không có dữ liệu'
+                }
+            }
+            resolve(dataRating)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 module.exports = book;

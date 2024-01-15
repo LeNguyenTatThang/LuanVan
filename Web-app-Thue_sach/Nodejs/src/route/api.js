@@ -37,6 +37,9 @@ let initApiRouter = (app) => {
 
     //sach
 
+    //api đếm só lượng đánh giá của 1 quyển sách
+    router.post('/apiCountRating', bookController.apiCountRating)
+
     //api random sách có thể loại tương tự trong trang chi tiết(theloai_id, id)
     router.post('/api/randomBookbyCatetory', bookController.bookbyCatetory)
 
