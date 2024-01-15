@@ -122,6 +122,18 @@
                                                         <%= formattedAmount(data.tiencoc) %>
                                                     </span>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="">Trạng thái duyệt: </label>
+                                                    <% if(data.trangthaiduyet==='duocduyet' ) {%>
+                                                        <span style="color: green;">
+                                                            đã được duyệt
+                                                        </span>
+                                                        <% }else { %>
+                                                            <span for="">
+                                                                Bị cấm
+                                                            </span>
+                                                            <% } %>
+                                                </div>
                                                 <% } %>
                                                     <a name="" id="" class="btn btn-default float-right"
                                                         href="/get-broweBook"><i class="fa fa-arrow-left"
@@ -143,6 +155,46 @@
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <% if(data.trangthaiduyet==='duocduyet' ){ %>
+                                <form action="/BoosMessageBan" method="post">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <div>
+                                                <input type="hidden" name="id" value="<%= data.id %>" />
+                                            </div>
+                                            <div>
+                                                <input type="hidden" name="trangthaiduyet" value="bicam" />
+                                            </div>
+                                            <label for="">
+                                                Lý do bị cấm
+                                            </label>
+                                            <textarea name="noidung" id="summernote" cols="30" rows="10"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Lưu
+                                            lại</button>
+                                    </div>
+                                </form>
+                                <% } else{%>
+                                    <form action="/BrowseBooksNoBan" method="post">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <input type="hidden" name="id" value="<%= data.id %>" />
+                                                </div>
+                                                <div>
+                                                    <input type="hidden" name="trangthaiduyet" value="duocduyet" />
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Bỏ
+                                                Cấm
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <%} %>
                         </div>
                     </div>
                     <div class="col-12">

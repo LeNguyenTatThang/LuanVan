@@ -83,8 +83,9 @@
                                                             <%= data[i].trangthai===0 ? "Ẩn" : "Hiện" %>
                                                         </td>
                                                         <td scope="row" class="changeTT" data-id="<%= data[i].id %>">
-                                                            <%= data[i].trangthaiduyet==="duocduyet" ? "Được duyệt"
-                                                                : "Chờ duyệt" %>
+                                                            <%= data[i].trangthaiduyet==="duocduyet" ? "Được duyệt" :
+                                                                data[i].trangthaiduyet==="choduyet" ? "Chờ duyệt"
+                                                                : "Bị cấm" %>
                                                         </td>
                                                         <td class="text-right">
                                                             <a class="btn btn-sm btn-success d-inline-block align-middle text-nowrap !important"

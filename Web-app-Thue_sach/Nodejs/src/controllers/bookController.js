@@ -32,9 +32,8 @@ const getbrowebook = async (req, res) => {
     try {
         let page = req.query.page ? req.query.page : 1;
         let name = req.query.name;
-        let trangthaiduyet = "duocduyet"
         let data;
-        data = await book.getApprovalStatus(page, name, trangthaiduyet);
+        data = await book.getApprovalStatus1(page, name);
         return res.render('book/listbrowebook.ejs', {
             data: data.rows,
             name: data.name,
@@ -120,6 +119,24 @@ const BrowseBooks = async (req, res) => {
     }
 }
 
+const BrowseBooksNoBan = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let trangthaiduyet = req.body.trangthaiduyet
+        let data = await book.updateApprovalStatus(id, trangthaiduyet);
+        if (data.errcode === 0) {
+            req.flash('msgBook', 'Đã cám thành công')
+            return res.redirect(`/detailBroweBook?id=${id}`)
+        } else {
+            req.flash('msgBook', 'Đã cám thất bại')
+            return res.redirect(`/detailBroweBook?id=${id}`)
+        }
+    } catch (error) {
+        console.error(error)
+        return res.redirect(`/detailBroweBook?id=${id}`)
+    }
+}
+
 //từ chối duyệt và thông báo
 const BoosMessage = async (req, res) => {
     try {
@@ -137,6 +154,22 @@ const BoosMessage = async (req, res) => {
     }
 }
 
+//Cấm sách
+const BoosMessageBan = async (req, res) => {
+    try {
+        let data = req.body;
+        if (!data.noidung) {
+            req.flash('errBook', "Yêu cầu ghi lý do bị cấm")
+            return res.redirect(`/detailBroweBook?id=${data.id}`)
+        }
+        let dataMsr = await book.createMessage(data)
+        req.flash('msgBook', dataMsr.message)
+        return res.redirect(`/detailBroweBook?id=${data.id}`)
+    } catch (error) {
+        console.error(error)
+        req.flash('errBook', "lỗi Server")
+    }
+}
 //API
 
 
@@ -516,6 +549,8 @@ module.exports = {
     bookMessage,
     bookByIdUsersUnapproved,
     deleteComment,
-    bookbyCatetory
+    bookbyCatetory,
+    BrowseBooksNoBan,
+    BoosMessageBan
 }
 
