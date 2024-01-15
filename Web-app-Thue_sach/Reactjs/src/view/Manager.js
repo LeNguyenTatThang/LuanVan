@@ -1065,7 +1065,7 @@ const Manager = () => {
                                             <th className="py-2 px-4 border-b">Trạng thái</th>
                                             <th className="py-2 px-4 border-b">Giá thuê</th>
                                             <th className='py-2 px-4 border-b'>Thông báo</th>
-                                            <th className="py-2 px-4 border-b">In hóa đơn</th>
+                                            <th className="py-2 px-4 border-b">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1081,8 +1081,9 @@ const Manager = () => {
                                                     </td>
                                                     <td className="py-2 px-4 border-b">{item.tongtien}vnđ</td>
                                                     <td className="py-2 px-4 border-b text-orange-600">{item.thongbao}</td>
-                                                    <td className="py-2 px-4 border-b flex items-center justify-evenly">
+                                                    <td className="py-2 px-4 border-b flex items-center justify-evenly gap-2">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo5(item.id)}>Xem</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)}>Trả sách</button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -1192,6 +1193,8 @@ const Manager = () => {
                                                     </td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo(item.id)}>Xem</button>
+
+
                                                     </td>
                                                 </tr>
 
