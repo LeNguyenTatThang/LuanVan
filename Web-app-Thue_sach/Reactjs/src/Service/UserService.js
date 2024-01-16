@@ -198,6 +198,12 @@ const apiRating = (users_id, sach_id, danhgia) => {
 const apiCountRate = (id) => {
     return axios.post('/apiCountRating', { id })
 }
+const apiHuyDon1 = (users_id) => {
+    return axios.post('/api/listRent5', { users_id })
+}
+const apiHuyDon2 = (chutiem_id) => {
+    return axios.post('/api/RentOrder5', { chutiem_id })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook, randomBookCate,
@@ -210,4 +216,5 @@ export {
     apiCompleted,
     callApiChapter, apigetBookRead, apiPostCHapter, apiListChapter, apiUpdateChapter,
     callApiMail, apiRating, apiCountRate,
+    apiHuyDon1, apiHuyDon2,
 };

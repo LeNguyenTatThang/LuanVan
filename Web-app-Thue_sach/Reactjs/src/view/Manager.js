@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { apiCancel, apiCompleted, apiConfirmRentOne, apiConfirmRentThree, apiConfirmRentTwo, apiConfirmRental, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
+import { apiCancel, apiCompleted, apiConfirmRentOne, apiConfirmRental, apiHuyDon1, apiHuyDon2, apiOrderFour, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderFour, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
 import iziToast from 'izitoast';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -40,6 +40,10 @@ const Manager = () => {
                 return 'bg-green-500';
             case 'Chờ trả':
                 return 'bg-red-500';
+            case 'Hoàn thành':
+                return 'bg-stone-500';
+            case 'Đã hủy':
+                return 'bg-stone-500';
             default:
                 return 'bg-gray-200';
         }
@@ -168,13 +172,12 @@ const Manager = () => {
     //chủ tiệm xác nhận lấy sách
     const [returnValue, setreturnValue] = useState([]);
     const handleReturnClick = async (id, index) => {
-        let confirmData = await apiConfirmRentThree(id);
+        let confirmData = await apiCancel(id);
         if (confirmData && confirmData.status === 200) {
             setreturnValue([...returnValue, index]);
             iziToast.success({
-                title: "Chúc mừng",
+                title: "Sách đã được hoàn",
                 position: "topRight",
-                message: "Bạn đã trả hàng"
             });
         }
     };
@@ -189,6 +192,10 @@ const Manager = () => {
         callRentOrderTwo();
         callRentOrderThree();
         callOrderThree();
+        callHuyDon();
+        callHuyDon1();
+        apiCompleted();
+        apiCompleted1();
         if (!userData.isLogin) {
             navigate('/');
         }
@@ -378,6 +385,35 @@ const Manager = () => {
         }
     };
 
+    const [huyDon, setHuyDon] = useState([])
+    const callHuyDon = async () => {
+        let huy = await apiHuyDon1(users_id)
+        if (huy && huy.status === 200) {
+            setHuyDon(huy.data)
+        }
+    }
+    const [huyDon1, setHuyDon1] = useState([])
+    const callHuyDon1 = async () => {
+        let huy = await apiHuyDon2(chutiem_id)
+        if (huy && huy.status === 200) {
+            setHuyDon1(huy.data.data)
+        }
+    }
+    //Cac hon hang hoan thanh complete
+    const [complete, setComplete] = useState()
+    const apiCompleted = async () => {
+        let com = await apiOrderFour(chutiem_id)
+        if (com && com.status === 200) {
+            setComplete(com.data.data)
+        }
+    }
+    const [complete1, setComplete1] = useState()
+    const apiCompleted1 = async () => {
+        let com1 = await apiRentOrderFour(users_id)
+        if (com1 && com1.status === 200) {
+            setComplete1(com1.data.data)
+        }
+    }
     // Các điều kiện để xuất switch case
     const getContent = (status, isForRent) => {
         if (isForRent) {
@@ -718,7 +754,6 @@ const Manager = () => {
                             ) : null}
                         </>
                     );
-
                 case 'Chờ trả':
                     return (
                         <>
@@ -836,6 +871,85 @@ const Manager = () => {
                                     <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                                 </>
                             ) : null}
+                        </>
+                    );
+
+                case 'Hoàn thành':
+                    return (
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+                                    <thead>
+                                        <tr>
+                                            <th className="py-2 px-4 border-b">STT</th>
+                                            <th className="py-2 px-4 border-b">Tên sách</th>
+                                            <th className="py-2 px-4 border-b">Người thuê</th>
+                                            <th className="py-2 px-4 border-b">Người đăng</th>
+                                            <th className="py-2 px-4 border-b">Mã phiếu</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người đăng</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người thuê</th>
+                                            <th className="py-2 px-4 border-b">SDT người đăng</th>
+                                            <th className="py-2 px-4 border-b">SDT người Thuê</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {complete && complete.length > 0 &&
+                                            complete.map((item, index) => (
+                                                <tr key={index} className={`${index % 2 === 0 ? 'hover:bg-gray-100' : 'hover:bg-gray-200'
+                                                    } hover:bg-gray-300`}>
+                                                    <td className="py-2 px-4 border-b">{index + 1}</td>
+                                                    <td className="py-2 px-4 border-b">{item.tensach}</td>
+                                                    <td className="py-2 px-4 border-b">{item.nguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.maphieu}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoithue}</td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    );
+                case 'Đã hủy':
+                    return (
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+                                    <thead>
+                                        <tr>
+                                            <th className="py-2 px-4 border-b">STT</th>
+                                            <th className="py-2 px-4 border-b">Tên sách</th>
+                                            <th className="py-2 px-4 border-b">Người thuê</th>
+                                            <th className="py-2 px-4 border-b">Người đăng</th>
+                                            <th className="py-2 px-4 border-b">Mã phiếu</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người đăng</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người thuê</th>
+                                            <th className="py-2 px-4 border-b">SDT người đăng</th>
+                                            <th className="py-2 px-4 border-b">SDT người Thuê</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {huyDon1 && huyDon1.length > 0 &&
+                                            huyDon1.map((item, index) => (
+                                                <tr key={index} className={`${index % 2 === 0 ? 'hover:bg-gray-100' : 'hover:bg-gray-200'
+                                                    } hover:bg-gray-300`}>
+                                                    <td className="py-2 px-4 border-b">{index + 1}</td>
+                                                    <td className="py-2 px-4 border-b">{item.tensach}</td>
+                                                    <td className="py-2 px-4 border-b">{item.nguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.maphieu}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoithue}</td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </>
                     );
                 default:
@@ -1283,6 +1397,84 @@ const Manager = () => {
                             ) : null}
                         </>
                     );
+                case 'Hoàn thành':
+                    return (
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+                                    <thead>
+                                        <tr>
+                                            <th className="py-2 px-4 border-b">STT</th>
+                                            <th className="py-2 px-4 border-b">Tên sách</th>
+                                            <th className="py-2 px-4 border-b">Người thuê</th>
+                                            <th className="py-2 px-4 border-b">Người đăng</th>
+                                            <th className="py-2 px-4 border-b">Mã phiếu</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người đăng</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người thuê</th>
+                                            <th className="py-2 px-4 border-b">SDT người đăng</th>
+                                            <th className="py-2 px-4 border-b">SDT người Thuê</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {complete1 && complete1.length > 0 &&
+                                            complete1.map((item, index) => (
+                                                <tr key={index} className={`${index % 2 === 0 ? 'hover:bg-gray-100' : 'hover:bg-gray-200'
+                                                    } hover:bg-gray-300`}>
+                                                    <td className="py-2 px-4 border-b">{index + 1}</td>
+                                                    <td className="py-2 px-4 border-b">{item.tensach}</td>
+                                                    <td className="py-2 px-4 border-b">{item.nguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.maphieu}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoithue}</td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    );
+                case 'Đã hủy':
+                    return (
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
+                                    <thead>
+                                        <tr>
+                                            <th className="py-2 px-4 border-b">STT</th>
+                                            <th className="py-2 px-4 border-b">Tên sách</th>
+                                            <th className="py-2 px-4 border-b">Người thuê</th>
+                                            <th className="py-2 px-4 border-b">Người đăng</th>
+                                            <th className="py-2 px-4 border-b">Mã phiếu</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người đăng</th>
+                                            <th className="py-2 px-4 border-b">Địa chỉ người thuê</th>
+                                            <th className="py-2 px-4 border-b">SDT người đăng</th>
+                                            <th className="py-2 px-4 border-b">SDT người Thuê</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {huyDon && huyDon.length > 0 &&
+                                            huyDon.map((item, index) => (
+                                                <tr key={index} className={`${index % 2 === 0 ? 'hover:bg-gray-100' : 'hover:bg-gray-200'
+                                                    } hover:bg-gray-300`}>
+                                                    <td className="py-2 px-4 border-b">{index + 1}</td>
+                                                    <td className="py-2 px-4 border-b">{item.tensach}</td>
+                                                    <td className="py-2 px-4 border-b">{item.nguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.nguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.maphieu}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.diachinguoithue}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoidang}</td>
+                                                    <td className="py-2 px-4 border-b text-orange-600">{item.sdtnguoithue}</td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    );
                 default:
                     return null;
             }
@@ -1295,7 +1487,7 @@ const Manager = () => {
             <div className="mt-8">
                 <h2 className="text-2xl font-bold mb-4">Quản lý đơn hàng thuê</h2>
                 <div className="flex space-x-4 mb-4">
-                    {['Xác nhận', 'Chờ nhận', 'Đang thuê', 'Chờ trả'].map((status) => (
+                    {['Xác nhận', 'Chờ nhận', 'Đang thuê', 'Chờ trả', 'Hoàn thành', 'Đã hủy'].map((status) => (
                         <button
                             key={status}
                             onClick={() => handleStatusChange(status)}
@@ -1318,7 +1510,7 @@ const Manager = () => {
             <div className="mt-8">
                 <h2 className="text-2xl font-bold mb-4">Quản lý đơn hàng cho thuê</h2>
                 <div className="flex space-x-4 mb-4">
-                    {['Xác nhận', 'Chờ giao', 'Đang thuê', 'Chờ trả'].map((status) => (
+                    {['Xác nhận', 'Chờ giao', 'Đang thuê', 'Chờ trả', 'Hoàn thành', 'Đã hủy'].map((status) => (
                         <button
                             key={status}
                             onClick={() => handleStatusChange(status, true)}
