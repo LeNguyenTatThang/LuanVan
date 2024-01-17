@@ -39,7 +39,7 @@ rental.create = function (data) {
                     message: `Quyển sách ${checkedBooks.map(book => `"${book.tensach}"`)} đã được thuê không thể thuê được`
                 }
             } else {
-                const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.diachi, data.ngaythue, trangthai, maphieu, data.sdt])
+                const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.tongtienthue, data.diachi, data.ngaythue, trangthai, maphieu, data.sdt])
                 let phieuthue_id = result.insertId;
                 for (let bookId of bookIds) {
                     await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);

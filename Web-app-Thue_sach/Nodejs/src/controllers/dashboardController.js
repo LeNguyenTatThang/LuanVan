@@ -69,18 +69,30 @@ const calculateOverallRevenue = async (req, res) => {
         if (!data.data || data.data.length === 0) {
             return res.json({ message: 'Không có dữ liệu' });
         }
-        console.log(data)
         const dataArray = Array.isArray(data.data) ? data.data : [data.data];
+        const allMonths = [];
+        dataArray.forEach(row => {
+            const monthYear = `${row.nam}-${row.thang}`;
+            if (!allMonths.includes(monthYear)) {
+                allMonths.push(monthYear);
+            }
+        });
         dataArray.sort((a, b) => a.chutiem_id - b.chutiem_id || (a.nam * 12 + a.thang) - (b.nam * 12 + b.thang));
         const groupedData = groupBy(dataArray.filter(item => item && item.chutiem_id), 'chutiem_id');
-        console.log(groupedData)
-        const series = Object.values(groupedData).map(group => ({
-            name: `Chủ tiệm: ${group[0].ten}`,
-            data: group.map(row => ({
-                x: `${row.nam}-${row.thang}`,
-                y: parseInt(row.tongdoanhthu)
-            }))
-        }));
+        const series = Object.values(groupedData).map(group => {
+            const dataPoints = allMonths.map(month => {
+                const dataPoint = group.find(row => `${row.nam}-${row.thang}` === month);
+                return {
+                    x: month,
+                    y: dataPoint ? parseInt(dataPoint.tongdoanhthu) : 0
+                };
+            });
+
+            return {
+                name: `Chủ tiệm: ${group[0].ten}`,
+                data: dataPoints
+            };
+        });
         const chartData = {
             series: series,
             options: {
@@ -88,7 +100,7 @@ const calculateOverallRevenue = async (req, res) => {
                     type: 'line'
                 },
                 xaxis: {
-                    categories: dataArray.map(row => `${row.nam}-${row.thang}`)
+                    categories: allMonths
                 }
             }
         };
