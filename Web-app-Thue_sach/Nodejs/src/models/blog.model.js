@@ -30,7 +30,7 @@ blog.getAll = (page, name) => {
                 data = {
                     totalPage,
                     name,
-                    errcode: '1',
+                    errcode: 1,
                     message: 'không có dữ liệu'
                 }
             } else {
@@ -38,7 +38,7 @@ blog.getAll = (page, name) => {
                     rows,
                     totalPage,
                     name,
-                    errcode: '0',
+                    errcode: 0,
                     message: 'ok'
                 }
             } resolve(data)

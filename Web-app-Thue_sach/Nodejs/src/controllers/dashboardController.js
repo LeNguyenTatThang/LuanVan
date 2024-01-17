@@ -69,6 +69,7 @@ const calculateOverallRevenue = async (req, res) => {
         if (!data.data || data.data.length === 0) {
             return res.json({ message: 'Không có dữ liệu' });
         }
+        console.log(data)
         const dataArray = Array.isArray(data.data) ? data.data : [data.data];
         dataArray.sort((a, b) => a.chutiem_id - b.chutiem_id || (a.nam * 12 + a.thang) - (b.nam * 12 + b.thang));
         const groupedData = groupBy(dataArray.filter(item => item && item.chutiem_id), 'chutiem_id');

@@ -470,7 +470,7 @@ rental.calculateOverallRevenue = (name) => {
             if (name !== null && name !== "") {
                 sqlRental += ` AND chutiem_id = ${name}`;
             }
-            sqlRental += ` GROUP BY chutiem_id, nam, thang`;
+            sqlRental += ` GROUP BY chutiem_id, nam, thang ORDER BY chutiem_id, nam, thang`;
             const [rows, fields] = await pool.execute(sqlRental)
             let dataRow = rows
             if (dataRow.length > 0) {

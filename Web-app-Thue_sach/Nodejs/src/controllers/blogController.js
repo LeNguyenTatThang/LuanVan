@@ -139,8 +139,6 @@ const apiGetBlog = async (req, res) => {
             return res.status(404).json({
                 status: 404,
                 message: data.message,
-                totalPage: data.totalPage,
-                page: parseInt(page)
             })
         }
     } catch (error) {

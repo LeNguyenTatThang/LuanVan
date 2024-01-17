@@ -131,7 +131,7 @@
                                                 var hasData = !chartData.message;
 
                                                 console.log('có dâtta', hasData);
-
+                                                console.log('có chartData', chartData);
                                                 if (!chartRevenue) {
                                                     var options = {
                                                         chart: {
@@ -164,8 +164,8 @@
                                                             }
                                                         });
                                                     }
+                                                    chartRevenue.updateSeries(hasData ? chartData.series.map(data => ({ ...data, data: data.data.map(point => ({ x: point.x, y: parseInt(point.y) })) })) : []);
 
-                                                    chartRevenue.updateSeries(hasData ? chartData.series : []);
                                                 }
                                             },
                                             error: function (error) {
