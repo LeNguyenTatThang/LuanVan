@@ -187,6 +187,16 @@ const postBook = async (req, res, next) => {
                 message: 'không có hình hoặc sai định dạng'
             })
         }
+        if (bookData.gia && bookData.tiencoc) {
+            let phantram = 0.5;
+            if (bookData.gia >= bookData.tiencoc * phantram) {
+                console.log(bookData.gia, 'và', bookData.tiencoc)
+                return res.status(402).json({
+                    status: 402,
+                    message: 'tiền thuê không được quá 50% tiền cọc'
+                })
+            }
+        }
         let data = await book.create(bookData)
         if (data.errcode === 0) {
             req.io.emit('updateData');

@@ -72,9 +72,9 @@ const calculateOverallRevenue = async (req, res) => {
         const dataArray = Array.isArray(data.data) ? data.data : [data.data];
         dataArray.sort((a, b) => a.chutiem_id - b.chutiem_id || (a.nam * 12 + a.thang) - (b.nam * 12 + b.thang));
         const groupedData = groupBy(dataArray.filter(item => item && item.chutiem_id), 'chutiem_id');
-
+        console.log(groupedData)
         const series = Object.values(groupedData).map(group => ({
-            name: `Chủ tiệm ${group[0].ten}`,
+            name: `Chủ tiệm: ${group[0].ten}`,
             data: group.map(row => ({
                 x: `${row.nam}-${row.thang}`,
                 y: parseInt(row.tongdoanhthu)

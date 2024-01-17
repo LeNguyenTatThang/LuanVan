@@ -67,7 +67,7 @@ category.getPhanTrang = async (page, name) => {
             if (name) {
                 sql += " WHERE ten LIKE '%" + name + "%' "
             }
-            const [rows, fields] = await pool.execute(sql + ' ' + 'order by id ASC LIMIT ' + start + ',' + limit)
+            const [rows, fields] = await pool.execute(sql + ' ' + 'order by id DESC LIMIT ' + start + ',' + limit)
             if (rows.length === 0) {
                 data = {
                     totalPage,

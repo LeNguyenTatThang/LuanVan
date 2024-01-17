@@ -54,3 +54,28 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+element.style {}
+
+.nav-sidebar .nav-link>.right:nth-child(2),
+.nav-sidebar .nav-link>p>.right:nth-child(2) {
+    right: 2.2rem;
+}
+
+.nav-sidebar .nav-item>.nav-link .right {
+    transition: -webkit-transform ease-in-out .3s;
+    transition: transform ease-in-out .3s;
+    transition: transform ease-in-out .3s, -webkit-transform ease-in-out .3s;
+}
+
+.nav-sidebar .nav-link>.right,
+.nav-sidebar .nav-link>p>.right {
+    position: absolute;
+    right: 1rem;
+    top: .7rem;
+}
+
+.badge-info1 {
+    color: #fff;
+    background-color: red;
+}

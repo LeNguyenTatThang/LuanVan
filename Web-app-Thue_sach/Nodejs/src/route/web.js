@@ -23,7 +23,7 @@ let initWebRouter = (app) => {
                 style: 'currency',
                 currency: 'VND',
                 minimumFractionDigits: 0,
-            }).format(amount);
+            }).format(amount).replace('₫', 'VNĐ');
             return formattedAmount;
         };
         next();

@@ -23,7 +23,7 @@ rental.create = function (data) {
             let maphieu = generateRandomCode(8)
             let dataRental = {}
             let trangthai = 0;
-            let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien, diachi, ngaythue, trangthai, maphieu,sdt) values (?,?,?,?,?,?,?,?)'
+            let sqlRental = 'insert into phieuthue(users_id, chutiem_id, tongtien,tongtienthue, diachi, ngaythue, trangthai, maphieu, sdt) values (?,?,?,?,?,?,?,?,?)'
             let sqlRental_Book = 'insert into phieuthue_sach(sach_id, phieuthue_id) VALUES (?, ?)'
             let bookIds = Array.isArray(data.sach_id) ? data.sach_id : [data.sach_id];
             let checkedBooks = [];
@@ -463,7 +463,7 @@ rental.calculateOverallRevenue = (name) => {
     return new Promise(async (resolve, reject) => {
         try {
             let dataRental = {};
-            let sqlRental = `SELECT chutiem_id,users.ten, SUM(tongtien) AS tongdoanhthu, YEAR(ngaynhan) AS nam, 
+            let sqlRental = `SELECT chutiem_id,users.ten, SUM(tongtienthue) AS tongdoanhthu, YEAR(ngaynhan) AS nam, 
             MONTH(ngaynhan) AS thang
             FROM phieuthue INNER JOIN users ON users.id = phieuthue.chutiem_id 
             WHERE (trangthai =2 OR trangthai=3 OR trangthai =4)`
