@@ -73,6 +73,7 @@ const Manager = () => {
     const [confirmedRentals, setConfirmedRentals] = useState([]);
     const handleConfirmClick = async (id) => {
         setLoading(true)
+        setButtonClicked('confirm');
         let ConfirmRental = await apiConfirmRental(id);
         if (ConfirmRental && ConfirmRental.status === 200) {
             setConfirmedRentals([...confirmedRentals, id]);
@@ -212,6 +213,7 @@ const Manager = () => {
 
     //apiCancel
     const handleCanClick = async (id) => {
+        setButtonClicked('cancel');
         let cancel = await apiCancel(id);
         if (cancel && cancel.status === 200) {
             iziToast.success({
@@ -221,6 +223,9 @@ const Manager = () => {
         }
         navigate('/manager-book');
     };
+    const [buttonClicked, setButtonClicked] = useState(null);
+
+
     const [showModal, setShowModal] = React.useState(false);
     const [filterData, setFilterData] = useState([]);
     const [filterData1, setFilterData1] = useState([]);
@@ -454,20 +459,25 @@ const Manager = () => {
                                                         {confirmedRentals.includes(item.id) ? (
                                                             <span className="text-green-500">Đã xác nhận</span>
                                                         ) : (<>
-                                                            <button
-                                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-1"
-                                                                onClick={() => handleConfirmClick(item.id)}
-                                                                disabled={loading}
-                                                            >
-                                                                {loading ? 'Loading...' : 'Xác nhận'}
-                                                            </button>
+                                                            <div>
+                                                                <button
+                                                                    className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-1 ${buttonClicked === 'confirm' ? 'opacity-50 cursor-not-allowed' : ''
+                                                                        }`}
+                                                                    onClick={() => handleConfirmClick(item.id)}
+                                                                    disabled={buttonClicked === 'cancel'}
+                                                                >
+                                                                    {buttonClicked === 'confirm' ? 'Đã Xác nhận' : 'Xác nhận'}
+                                                                </button>
 
-                                                            <button
-                                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded m-1"
-                                                                onClick={() => handleCanClick(item.id)}
-                                                            >
-                                                                Hủy đơn
-                                                            </button>
+                                                                <button
+                                                                    className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded m-1 ${buttonClicked === 'cancel' ? 'opacity-50 cursor-not-allowed' : ''
+                                                                        }`}
+                                                                    onClick={() => handleCanClick(item.id)}
+                                                                    disabled={buttonClicked === 'confirm'}
+                                                                >
+                                                                    {buttonClicked === 'cancel' ? 'Đã Hủy đơn' : 'Hủy đơn'}
+                                                                </button>
+                                                            </div>
                                                         </>
                                                         )}
                                                     </td>

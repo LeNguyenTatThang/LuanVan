@@ -299,7 +299,7 @@ export default function Product() {
                                                 <LazyLoad height={200} offset={100}>
                                                     <img
                                                         className="w-3/5 mx-auto h-56 object-cover border border-gray-200 shadow-md transform transition-transform duration-300 ease-in-out group-hover:scale-105"
-                                                        src={`https://thuesachadmin.onrender.com/img/${item.hinh}`}
+                                                        src={`${apiUrl}/img/${item.hinh}`}
                                                         alt={`${item.hinh}`}
                                                     />
                                                 </LazyLoad>
