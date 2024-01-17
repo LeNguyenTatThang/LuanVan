@@ -1,43 +1,105 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Post from '../components/Post';
+import { apiSearchBlog } from '../Service/UserService';
+import ReactPaginate from 'react-paginate';
 const Blog = () => {
-    const posts = [
-        {
-            id: 1,
-            title: 'Introduction to React',
-            content:
-                'React is a JavaScript library for building user interfaces. It allows developers to create reusable UI components...',
-            date: 'December 14, 2023',
-        },
-        {
-            id: 2,
-            title: 'Getting Started with Tailwind CSS',
-            content:
-                'Tailwind CSS is a utility-first CSS framework that provides low-level utility classes to build designs directly in your markup...',
-            date: 'December 15, 2023',
-        },
-        {
-            id: 3,
-            title: 'State Management in React with Redux',
-            content:
-                'Redux is a predictable state container for JavaScript apps. It helps manage the state of your application in a predictable way...',
-            date: 'December 16, 2023',
-        },
-        {
-            id: 4,
-            title: 'Responsive Web Design with Flexbox and Grid',
-            content:
-                'Flexbox and Grid are CSS layout models that allow you to design flexible and responsive web layouts...',
-            date: 'December 17, 2023',
-        },
-    ];
+
+    const [name, setName] = useState(null);
+    const [dataSearch, setDataSearch] = useState(null);
+    const handleSearch = async (event) => {
+        const inputValue = event?.target?.value;
+        setName(inputValue);
+        try {
+            let res = await apiSearchBlog(0, inputValue);
+
+            if (res && res.data) {
+                setDataSearch(res.data);
+            } else {
+                console.error('API response does not contain data.');
+            }
+        } catch (error) {
+            console.error('Error calling the API:', error);
+            // Handle the error as needed
+        }
+    }
+    useEffect(() => {
+        callApiBlog();
+    }, [])
+    const [totalPage, setTotalPage] = useState();
+    const [listBlog, setListBlog] = useState();
+    //
+    const callApiBlog = async (page) => {
+        try {
+            let blog = await apiSearchBlog(page, name);
+
+            if (blog && blog.status === 200) {
+                console.log('Blog Data:', blog.data);
+                setListBlog(blog.data);
+
+                setTotalPage(blog.totalPage);
+            } else {
+                console.error('Error fetching chapter:', blog);
+            }
+        } catch (error) {
+            console.error('Error calling apiChapter:', error);
+        }
+    }
+
+    const handlePageClick = (event) => {
+        const selectedPage = +event.selected + 1;
+        console.log('Selected Page:', selectedPage);
+        callApiBlog(selectedPage);
+    }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
-                <Post key={post.id} {...post} />
-            ))}
-        </div>
+        <>
+            <div className="flex items-center justify-center h-20">
+                <div className="flex items-center w-full max-w-md">
+                    <input
+                        type="text"
+                        placeholder="Nhập tên bài viết"
+                        className="flex-1 px-4 py-2 rounded-l-md border border-r-0 border-gray-300 focus:outline-none focus:border-blue-500"
+                        onChange={handleSearch}
+                    />
+                </div>
+            </div>
+            {dataSearch === null ?
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {listBlog && listBlog.length > 0 &&
+                            listBlog?.map((listBlog) => (
+                                <Post key={listBlog.id} {...listBlog} />
+                            ))}
+                    </div>
+                    <ReactPaginate
+                        className='flex justify-center'
+                        breakLabel="..."
+                        nextLabel="next >"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={3}
+                        pageCount={totalPage}
+                        previousLabel="< previous"
+                        pageClassName='page-item'
+                        pageLinkClassName='page-link'
+                        previousClassName='page-item'
+                        previousLinkClassName='page-link'
+                        nextClassName='page-item'
+                        nextLinkClassName='page-link'
+                        breakClassName='page-item'
+                        breakLinkClassName='page-link'
+                        containerClassName='pagination'
+                        activeClassName='active'
+                    />
+                </> : <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {dataSearch && dataSearch.length > 0 &&
+                            dataSearch?.map((dataSearch) => (
+                                <Post key={dataSearch.id} {...dataSearch} />
+                            ))}
+                    </div>
+                </>}
+
+        </>
     );
 };
 

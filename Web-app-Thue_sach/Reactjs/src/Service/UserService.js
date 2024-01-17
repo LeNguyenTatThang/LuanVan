@@ -68,8 +68,8 @@ const apiRandomBook = (id_tacgia) => {
     return axios.post('/get-api-randomBook', { id_tacgia })
 }
 //call api tạo phiếu thuê khi bấm Xác nhận
-const callApiCreateRental = (users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue, sdt) => {
-    return axios.post('/post-api-rental', { users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue, sdt })
+const callApiCreateRental = (users_id, chutiem_id, tongtien, tongtienthue, sach_id, diachi, ngaythue, sdt) => {
+    return axios.post('/post-api-rental', { users_id, chutiem_id, tongtien, tongtienthue, sach_id, diachi, ngaythue, sdt })
 }
 //Call api của người thuê
 const apiPostRent = (users_id, trangthai) => {
@@ -169,7 +169,6 @@ const apiPostCHapter = (noidung, sach_id, tieude) => {
     );
 }
 
-
 const callApiMail = (id) => {
     return axios.patch(`/api/accountVerification/${id}`);
 }
@@ -204,6 +203,14 @@ const apiHuyDon1 = (users_id) => {
 const apiHuyDon2 = (chutiem_id) => {
     return axios.post('/api/RentOrder5', { chutiem_id })
 }
+const apiSearchBlog = (page, name) => {
+    return axios.get('/api/Blog', {
+        params: {
+            page: page,
+            name: name,
+        },
+    })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook, randomBookCate,
@@ -217,4 +224,5 @@ export {
     callApiChapter, apigetBookRead, apiPostCHapter, apiListChapter, apiUpdateChapter,
     callApiMail, apiRating, apiCountRate,
     apiHuyDon1, apiHuyDon2,
+    apiSearchBlog,
 };

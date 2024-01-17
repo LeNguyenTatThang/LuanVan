@@ -23,6 +23,7 @@ import Blog from './view/Blog';
 import PostChapter from './view/PostChapter';
 import Menu from './view/Menu';
 import Logout from './view/Logout';
+import Contact from './view/Contact';
 function App() {
   return (
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/products" element={<Product />} />
         <Route path="/profiles" element={<Profile />} />
         <Route path="/signin" element={<Login />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/post-chapter/:itemId" element={<PostChapter />} />
         <Route path="/blogs" element={<Blog />} />
         <Route path="/authur/:id_tacgia" element={<Authur />} />

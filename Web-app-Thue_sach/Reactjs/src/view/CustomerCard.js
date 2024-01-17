@@ -20,12 +20,14 @@ import { TextField } from '@mui/material';
 
 const steps = ['Chọn sản phẩm', 'Địa chỉ giao hàng', 'Điều khoản'];
 export default function CustomerCard() {
-
+    const apiUrl = 'http://localhost:8000';
+    //const apiUrl = 'https://thuesachadmin.onrender.com/';
     const card = useSelector((state) => state.shop.cart);
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [sdt, setSdt] = useState();
+    const [address, setAddress] = useState();
     useEffect(() => {
         callAPI(host + "?depth=1");
         if (!userData.isLogin) {
@@ -52,10 +54,12 @@ export default function CustomerCard() {
 
     const [selectedValue, setSelectedValue] = useState('7');
     let TotalCart = 0;
+    let TotalCart1 = 0;
     let Total = 0;
-
+    let SumCart = 0;
     Object.keys(card).forEach(function (item) {
         const productPrice = card[item].gia;
+        const productPrice1 = card[item].tiencoc;
         let increaseRate = 0;
 
         if (selectedValue === '7') {
@@ -71,10 +75,10 @@ export default function CustomerCard() {
 
         // Tính toán giá cuối cùng cho mỗi cuốn sách
         const increasedPrice = productPrice * (1 + increaseRate);
-
         // Tính toán tổng giá của từng cuốn sách
         TotalCart += Math.floor(increasedPrice);
-
+        TotalCart1 += Math.floor(productPrice1);
+        SumCart = TotalCart + TotalCart1
         // Tính toán tổng giá mà không có tăng giá
         Total += productPrice;
     });
@@ -101,7 +105,7 @@ export default function CustomerCard() {
         // Hàm này sẽ được gọi mỗi khi có sự thay đổi ở selectedProvince, selectedDistrict, hoặc selectedWard
         printResult();
 
-    }, [selectedProvince, selectedDistrict, selectedWard]);
+    }, [address, selectedProvince, selectedDistrict, selectedWard]);
 
     const callAPI = (api) => {
         axios.get(api)
@@ -136,8 +140,8 @@ export default function CustomerCard() {
     }
 
     const printResult = () => {
-        if (selectedProvince && selectedDistrict && selectedWard) {
-            const resultString = `${selectedProvince.label} | ${selectedDistrict.label} | ${selectedWard.label}`;
+        if (address && selectedProvince && selectedDistrict && selectedWard) {
+            const resultString = `${address}, ${selectedWard.label}, ${selectedDistrict.label}, ${selectedProvince.label}`;
             setResult(resultString);
         }
     }
@@ -163,7 +167,8 @@ export default function CustomerCard() {
     //Truyền các tham số: users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue
     let users_id = userData.userInfo
     console.log(users_id)
-    let tongtien = TotalCart
+    let tongtien = TotalCart1
+    let tongtienthue = TotalCart
     console.log(tongtien)
     let diachi = result
     console.log(diachi)
@@ -179,7 +184,7 @@ export default function CustomerCard() {
                 message: "Thiếu địa chỉ hoặc chỉ chọn một người đăng"
             });
         } else {
-            let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, sach_id, diachi, ngaythue, sdt)
+            let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, tongtienthue, sach_id, diachi, ngaythue, sdt)
             if (res.status === 200) {
                 iziToast.success({
                     title: res.message,
@@ -191,9 +196,8 @@ export default function CustomerCard() {
             }
             else {
                 iziToast.error({
-                    title: "Sách của bạn đã được thuê",
+                    title: res.data.message,
                     position: "topRight",
-                    message: "Quay lại khi có sách nhé!!"
                 });
             }
         }
@@ -255,7 +259,7 @@ export default function CustomerCard() {
                     <div className="thumbnail">
                         <img
                             className="w-12 h-12 rounded-full"
-                            src={`https://thuesachadmin.onrender.com/img/${data.hinh}`}
+                            src={`${apiUrl}/img/${data.hinh}`}
                             alt={`${data.hinh}`}
                         />
                     </div>
@@ -381,8 +385,9 @@ export default function CustomerCard() {
                     {parentChildren && Array.isArray(parentChildren) && (
                         <ul className="item-list">
                             {parentChildren.map((data, childIndex) => (<>
+
                                 <CustomListItem
-                                    disabled={true}
+
                                     key={childIndex}
                                     data={data}
                                     onDelete={DeleteCart}
@@ -397,6 +402,7 @@ export default function CustomerCard() {
                                 //     />
                                 // }
                                 />
+
                             </>))}
                         </ul>
                     )}
@@ -491,8 +497,8 @@ export default function CustomerCard() {
                                         </div>
                                         {children}
                                         <hr className="border-gray-300" />
-                                        <div className="bg-white text-black p-4 rounded-md shadow-md">
-                                            <label className="text-lg font-bold">Chọn khoảng thời gian:</label>
+                                        <div className="bg-white text-black p-5 rounded-md shadow-md mx-auto">
+                                            <label className="text-lg font-bold pl-80">Chọn khoảng thời gian:</label>
                                             <select
                                                 className="p-2 border rounded-md mt-2"
                                                 value={selectedValue}
@@ -504,19 +510,18 @@ export default function CustomerCard() {
                                             </select>
                                         </div>
                                         <br />
-                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
-                                            Thời gian thuê là {selectedValue} ngày:
-                                            {selectedValue === '7' ? '+ 0%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
-                                        </div>
 
                                         <br />
-                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
-                                            <strong>Tổng tiền:</strong> {TotalCart} vnđ
+                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-1" style={{ textAlign: 'right' }}>
+
+                                            <strong>Tổng tiền:</strong> {SumCart} vnđ
                                         </h3>
 
                                         <br />
                                         <div>
-                                            <strong>Lưu ý:</strong><span className='text-amber-500'> &nbsp;Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (người đăng)</span>
+                                            <strong>Lưu ý:</strong><br /><span className='text-amber-500'> &nbsp; + Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (chung người đăng)</span><br />
+                                            <span className='text-amber-500'> &nbsp; + Giá thuê 15 ngày ứng với tiền thuê mỗi sách thêm 10%</span><br />
+                                            <span className='text-amber-500'> &nbsp; + Giá thuê 30 ngày ứng với tiền thuê mỗi sách thêm 15%</span>
                                         </div>
                                         <br />
 
@@ -547,6 +552,8 @@ export default function CustomerCard() {
                                                     <TextField id="outlined-basic" label="Số điện thoại" variant="outlined"
                                                         value={sdt}
                                                         onChange={(event) => { setSdt(event.target.value) }} />
+                                                    <br />
+
                                                     <label className="block mb-2">
                                                         Tỉnh/Thành phố:
                                                         <Select
@@ -574,6 +581,9 @@ export default function CustomerCard() {
                                                             options={wards.map(ward => ({ value: ward.code, label: ward.name }))}
                                                         />
                                                     </label>
+                                                    <TextField id="outlined-basic" label="Địa chỉ" variant="outlined"
+                                                        value={address}
+                                                        onChange={(event) => { setAddress(event.target.value) }} />
                                                 </div>
                                             </div>
                                         </div>

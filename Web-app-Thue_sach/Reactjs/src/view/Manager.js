@@ -72,6 +72,7 @@ const Manager = () => {
 
     const [confirmedRentals, setConfirmedRentals] = useState([]);
     const handleConfirmClick = async (id) => {
+        setLoading(true)
         let ConfirmRental = await apiConfirmRental(id);
         if (ConfirmRental && ConfirmRental.status === 200) {
             setConfirmedRentals([...confirmedRentals, id]);
@@ -81,6 +82,9 @@ const Manager = () => {
                 message: "Xác nhận thành công"
             })
         }
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     };
 
     //button xác nhận lấy hàng của người thuê
@@ -171,7 +175,9 @@ const Manager = () => {
     console.log("show đang thuê của chủ tiệm", OrderThree)
     //chủ tiệm xác nhận lấy sách
     const [returnValue, setreturnValue] = useState([]);
+    const [loading, setLoading] = useState(false);
     const handleReturnClick = async (id, index) => {
+        setLoading(true);
         let confirmData = await apiCancel(id);
         if (confirmData && confirmData.status === 200) {
             setreturnValue([...returnValue, index]);
@@ -180,6 +186,9 @@ const Manager = () => {
                 position: "topRight",
             });
         }
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     };
 
     const navigate = useNavigate();
@@ -389,10 +398,10 @@ const Manager = () => {
     const callHuyDon = async () => {
         let huy = await apiHuyDon1(users_id)
         if (huy && huy.status === 200) {
-            setHuyDon(huy.data)
+            setHuyDon(huy.data.data)
         }
     }
-    const [huyDon1, setHuyDon1] = useState([])
+    const [huyDon1, setHuyDon1] = useState()
     const callHuyDon1 = async () => {
         let huy = await apiHuyDon2(chutiem_id)
         if (huy && huy.status === 200) {
@@ -448,8 +457,9 @@ const Manager = () => {
                                                             <button
                                                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-1"
                                                                 onClick={() => handleConfirmClick(item.id)}
+                                                                disabled={loading}
                                                             >
-                                                                Xác nhận
+                                                                {loading ? 'Loading...' : 'Xác nhận'}
                                                             </button>
 
                                                             <button
@@ -569,7 +579,7 @@ const Manager = () => {
                                                     </td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo4(item.id)}>Xem</button>
-                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)}>Hủy đơn hàng</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)} disabled={loading}>{loading ? 'Loading...' : 'Hủy đơn hàng'}</button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -873,7 +883,6 @@ const Manager = () => {
                             ) : null}
                         </>
                     );
-
                 case 'Hoàn thành':
                     return (
                         <>
@@ -984,7 +993,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b">Đang chờ duyệt</td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo1(item.id)}>Xem</button>
-                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)}>Hủy sách</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)} disabled={loading}>{loading ? 'Loading...' : 'Hủy sách'}</button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -1199,7 +1208,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b text-orange-600">{item.thongbao}</td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly gap-2">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo5(item.id)}>Xem</button>
-                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)}>Trả sách</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)} disabled={loading}>{loading ? 'Loading...' : 'Trả sách'}</button>
                                                     </td>
                                                 </tr>
                                             ))}

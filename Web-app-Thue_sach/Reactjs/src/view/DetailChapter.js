@@ -99,7 +99,7 @@ function DetailChapter() {
 
                     {/* Nội dung chương */}
                     <div className='' style={{ flex: 2, padding: '20px' }}>
-                        <p className='overflow-auto w-4/5 break-words'>{chapterData.noidung}</p>
+                        <p className='overflow-auto w-full break-words' dangerouslySetInnerHTML={{ __html: chapterData.noidung }}></p>
                     </div>
                 </div>
             )}
