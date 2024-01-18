@@ -211,6 +211,9 @@ const apiSearchBlog = (page, name) => {
         },
     })
 }
+const apiInfoBook = (id_sach) => {
+    return axios.post('/api/book/message', { id_sach })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook, randomBookCate,
@@ -224,5 +227,5 @@ export {
     callApiChapter, apigetBookRead, apiPostCHapter, apiListChapter, apiUpdateChapter,
     callApiMail, apiRating, apiCountRate,
     apiHuyDon1, apiHuyDon2,
-    apiSearchBlog,
+    apiSearchBlog, apiInfoBook,
 };

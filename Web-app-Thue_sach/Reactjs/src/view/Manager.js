@@ -462,7 +462,7 @@ const Manager = () => {
                         <>
                             <div className="overflow-x-auto">
                                 <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
-                                    <strong>Đơn hàng mới</strong>
+
                                     <thead>
                                         <tr>
                                             <th className="py-2 px-4 border-b">STT</th>
