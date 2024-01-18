@@ -105,7 +105,7 @@ rental.upStatus1 = (data) => {
                     message: 'phiếu thuê không tồn tại'
                 }
             }
-            console.log(dataRental)
+
             resolve(dataRental)
         } catch (e) {
             reject(e);
@@ -213,7 +213,7 @@ rental.upStatus3 = (id) => {
                     message: 'phiếu thuê không tồn tại'
                 }
             }
-            console.log(dataRental)
+
             resolve(dataRental)
         } catch (e) {
             reject(e);
@@ -234,7 +234,7 @@ rental.upStatus4 = (data) => {
                 const [result, fields] = await pool.execute(sqlRental, [trangthai, data.id])
                 if (result) {
                     const [rows, fields] = await pool.execute(sqlRental_book, [data.id])
-                    console.log(rows)
+
                     if (rows) {
                         for (let bookId of rows) {
                             let sqlUpdate = 'UPDATE sach SET soluong = soluong + 1 WHERE id=?'
@@ -269,7 +269,6 @@ rental.upStatus4 = (data) => {
                     message: 'phiếu thuê không tồn tại'
                 }
             }
-            console.log(dataRental)
             resolve(dataRental)
         } catch (e) {
             reject(e);
@@ -294,7 +293,7 @@ rental.upStatus5 = (data) => {
                     if (rows) {
                         for (let bookId of rows) {
                             let sqlUpdate = 'UPDATE sach SET soluong= soluong+1 WHERE id=?'
-                            const [updeteBook] = await pool.execute(sqlUpdate, ['chuathue', bookId.sach_id])
+                            const [updeteBook] = await pool.execute(sqlUpdate, [bookId.sach_id])
                             if (updeteBook) {
                                 dataRental = {
                                     errcode: 0,
@@ -325,7 +324,7 @@ rental.upStatus5 = (data) => {
                     message: 'phiếu thuê không tồn tại'
                 }
             }
-            console.log(dataRental)
+
             resolve(dataRental)
         } catch (e) {
             reject(e);

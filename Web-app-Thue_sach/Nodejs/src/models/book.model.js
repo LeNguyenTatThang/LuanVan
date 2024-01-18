@@ -596,7 +596,6 @@ book.getBookMessage = async (id_sach) => {
                 data = {
                     dataRow,
                     errcode: '0',
-                    message: 'không có dữ liệu'
                 }
             } else {
                 data = {
