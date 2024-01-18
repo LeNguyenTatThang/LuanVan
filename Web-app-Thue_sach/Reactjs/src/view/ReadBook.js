@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { apiListChapter, apiUpdateBook, apiUpdateChapter, apigetBookRead, callApiChapter, detailBookUser } from '../Service/UserService'
+import { apiInfoBook, apiListChapter, apiUpdateBook, apiUpdateChapter, apigetBookRead, callApiChapter, detailBookUser } from '../Service/UserService'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
@@ -8,26 +8,35 @@ export default function ReadBook() {
     const [book, setBook] = useState();
     const [book1, setBook1] = useState();
     const userData = useSelector((state) => state.user);
+    const [thongbao, setThongBao] = useState();
     const getBook = async () => {
+        try {
+            let res = await apigetBookRead(userData.userInfo.id, 1)
+            if (res && res.status === 200) {
+                setBook(res.data);
 
-        let res = await apigetBookRead(userData.userInfo.id, 1);
-        if (res && res.status === 200) {
-            setBook(res.data)
-
+            }
+        } catch (error) {
+            console.error("Error fetching book data:", error)
         }
-    }
+    };
+
 
     const getBook1 = async () => {
+        try {
+            let res = await apigetBookRead(userData.userInfo.id, 0);
+            if (res && res.status === 200) {
+                setBook1(res.data)
 
-        let res = await apigetBookRead(userData.userInfo.id, 0);
-        if (res && res.status === 200) {
-            setBook1(res.data)
-
+            }
+        } catch (error) {
+            console.error('Error fetching author:', error);
         }
     }
     console.log("check book>>>>: ", book)
     const [showModal2, setShowModal2] = React.useState(false);
     const [showModal1, setShowModal1] = React.useState(false);
+    const [showModalBan, setShowModalBan] = React.useState(false);
     const [showModal, setShowModal] = React.useState(false);
     const [modalBookId, setModalBookId] = React.useState(null)
     const [detail, setDetail] = useState([]);
@@ -77,6 +86,24 @@ export default function ReadBook() {
         // Hiển thị modal
         setShowModal1(true);
     }
+    const handleEditInfoBan = async (bookId) => {
+        // Sử dụng hook để đặt giá trị id vào state
+        setModalBookId(bookId);
+        try {
+            let data = await apiInfoBook(bookId);
+            if (data && data.status === 200) {
+                console.log(data)
+                setThongBao(data.message);
+            }
+
+
+        } catch (error) {
+            console.error('Error fetching book details:', error);
+        }
+        // Hiển thị modal
+        setShowModalBan(true);
+    }
+    console.log(thongbao)
     const [listChapter, setListChapter] = useState();
     const [sach_id, setSach_id] = useState();
     const handleEditInfo2 = async (bookId) => {
@@ -138,12 +165,12 @@ export default function ReadBook() {
         getBook();
         getBook1();
         response();
+        apiInfoBook();
         if (chapterData && chapterData.tieude && chapterData.noidung) {
             // Cập nhật UI
             setChapterData(chapterData);
         }
-    }, [detail, sach_id, chuong])
-    console.log(detail)
+    }, [detail, sach_id, chuong, thongbao])
     const [tinhtrang, setTinhTrang] = useState();
     const options = [
         { value: 1, label: 'Hiện sách' },
@@ -194,10 +221,12 @@ export default function ReadBook() {
         setShowModal1(false);
         setPreviewImage();
     }
+    const handleCloseChangeBan = () => {
+        setShowModalBan(false);
+    }
     const handleCloseChange2 = () => {
         setShowModal2(false);
     }
-    console.log(ten)
     return (
         <>
             <div className="w-10/12 mx-auto overflow-x-auto shadow-md">
@@ -222,23 +251,50 @@ export default function ReadBook() {
                                     </td>
                                     <td className="py-2 px-4 border-b">{item.ten}</td>
                                     <td className="py-2 px-4 border-b">
-                                        {item.trangthaiduyet === 'choduyet' ?
-                                            <><div className="bg-stone-400 text-white px-4 py-2 rounded">Chờ duyệt</div></>
-                                            :
-                                            <><div className="bg-blue-400 text-white px-4 py-2 rounded">Đã được duyệt</div></>
+                                        {
+                                            item.trangthaiduyet === 'choduyet' ? (
+                                                // Code for 'choduyet' state
+                                                <div className="bg-stone-400 text-white px-4 py-2 rounded">Chờ duyệt</div>
+                                            ) : item.trangthaiduyet === 'duocduyet' ? (
+                                                // Code for 'duocduyet' state
+                                                <div className="bg-blue-400 text-white px-4 py-2 rounded">Được duyệt</div>
+                                            ) : item.trangthaiduyet === 'khongduyet' ? (
+                                                // Code for 'khongduyet' state
+                                                <div className="bg-red-400 text-white px-4 py-2 rounded">Không duyệt</div>
+                                            ) : item.trangthaiduyet === 'bicam' ? (
+                                                // Code for 'bicam' state
+                                                <div className="bg-gray-400 text-white px-4 py-2 rounded">Bị cấm</div>
+                                            ) : (
+                                                // Code for other states or a default case
+                                                <div className="bg-gray-400 text-white px-4 py-2 rounded">Unknown state</div>
+                                            )
                                         }
+
                                     </td>
 
                                     <td className="py-2 px-2 border-b">
-                                        {item.trangthaiduyet === 'choduyet' ? <>Hãy chờ duyệt sách</> : <>
-                                            <div>
-                                                <Link to={`/post-chapter/${item.id}`}>
-                                                    <button className="bg-green-500 text-white px-4 py-2 rounded mr-2">Thêm Chương</button>
-                                                </Link>
+                                        {item.trangthaiduyet === 'duocduyet' ? <><div>
+                                            <Link to={`/post-chapter/${item.id}`}>
+                                                <button className="bg-green-500 text-white px-4 py-2 rounded mr-2">Thêm Chương</button>
+                                            </Link>
 
-                                                <button className="bg-rose-500 text-white px-4 py-2 rounded mr-2 " onClick={() => handleEditInfo1(item.id)}>Sửa thông tin</button>
-                                                <button className="bg-orange-500 text-white px-4 py-2 rounded mr-2" onClick={() => handleEditInfo2(item.id)}>Sửa chương</button>
-                                            </div>
+                                            <button className="bg-rose-500 text-white px-4 py-2 rounded mr-2 " onClick={() => handleEditInfo1(item.id)}>Sửa thông tin</button>
+                                            <button className="bg-orange-500 text-white px-4 py-2 rounded mr-2" onClick={() => handleEditInfo2(item.id)}>Sửa chương</button>
+                                        </div></> : <>
+                                            {item.trangthaiduyet === 'khongduyet' ? (
+                                                // Code for 'khongduyet' state
+                                                <button className="bg-rose-500 text-white px-4 py-2 rounded mr-2 mx-auto" onClick={() => handleEditInfoBan(item.id)}>Xem nguyên nhân</button>
+                                            ) : item.trangthaiduyet === 'bicam' ? (
+                                                // Code for 'bicam' state
+                                                <button className="bg-rose-500 text-white px-4 py-2 rounded mr-2 mx-auto" onClick={() => handleEditInfoBan(item.id)}>Xem nguyên nhân</button>
+                                            ) : (
+                                                // Code for other states or a default case
+                                                <div className="bg-gray-400 text-white px-4 py-2 rounded w-28 mx-auto">Hãy chờ</div>
+                                            )
+                                            }
+
+
+
                                         </>}
 
                                     </td>
@@ -340,6 +396,41 @@ export default function ReadBook() {
                     <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                 </>
             ) : null}
+            {showModalBan ? (
+                <>
+                    <div
+                        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                    >
+                        <div className="relative w-3/5 my-6 mx-auto">
+                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                <div className="flex items-start justify-between p-3 border-b border-solid border-blueGray-200 rounded-t">
+                                    <h3 className="text-3xl font-semibold w-96">Xem lý do</h3>
+                                </div>
+                                <div className="relative p-6 flex-auto mx-auto">
+                                    <div className=" flex items-center space-x-4">
+                                        {thongbao && thongbao.noidung && (
+                                            <>
+                                                <strong>Nguyên nhân: </strong><div dangerouslySetInnerHTML={{ __html: thongbao.noidung }}></div>
+                                            </>)}
+                                    </div>
+
+
+                                </div>
+                                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                                    <button
+                                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        type="button"
+                                        onClick={handleCloseChangeBan}
+                                    >
+                                        Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                </>
+            ) : null}
             {showModal2 ? (
                 <>
                     <div
@@ -418,7 +509,7 @@ export default function ReadBook() {
                 </>
             ) : null}
             <br />
-            <div className="max-w-6xl mx-auto overflow-x-auto shadow-md">
+            <div className="w-10/12 mx-auto overflow-x-auto shadow-md">
                 <h2 className="text-2xl font-bold mb-4">Sách thuê</h2>
                 <table className="min-w-full bg-white border border-gray-300">
                     <thead>
@@ -439,11 +530,11 @@ export default function ReadBook() {
 
                                     </td>
                                     <td className="py-2 px-4 border-b">{item.ten}</td>
-                                    <td className="py-2 px-4 border-b">
+                                    <td className="py-2 px-1 border-b">
                                         {item.trangthaiduyet === 'choduyet' ?
-                                            <><div className="bg-stone-400 text-white px-4 py-2 rounded">Chờ duyệt</div></>
+                                            <><div className="bg-stone-400 text-white px-2 py-2 rounded inline-table">Chờ duyệt</div></>
                                             :
-                                            <><div className="bg-blue-400 text-white px-4 py-2 rounded">Đã được duyệt</div></>
+                                            <><div className="bg-blue-400 text-white px-4 py-2 rounded inline-table">Được duyệt</div></>
                                         }
                                     </td>
 
