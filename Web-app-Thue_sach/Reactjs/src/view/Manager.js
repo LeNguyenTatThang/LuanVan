@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { apiCancel, apiCompleted, apiConfirmRentOne, apiConfirmRental, apiHuyDon1, apiHuyDon2, apiOrderFour, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderFour, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
+import { apiCancel, apiCompleted, apiConfirmRentOne, apiConfirmRentThree, apiConfirmRental, apiHuyDon1, apiHuyDon2, apiOrderFour, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderFour, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
 import iziToast from 'izitoast';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -120,18 +120,28 @@ const Manager = () => {
     }
     console.log("show đang thuê của chủ tiệm", RentOrderThree)
     //button xác nhận lấy hàng của người thuê
-    const [returnItems, setreturnItems] = useState([]);
-    const handleReturn = async (id, index) => {
+    const handleReturn = async (id) => {
+        setLoading(true);
         let comData = await apiCompleted(id);
+
         if (comData && comData.status === 200) {
-            setreturnItems([...returnItems, index]);
             iziToast.success({
                 title: "Chúc mừng",
                 position: "topRight",
                 message: "Bạn đã trả hàng"
             });
+
+            // Sử dụng setTimeout để chờ 2 giây trước khi reload
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            // Xử lý trường hợp xác nhận không thành công
+            setLoading(false);
+            // Hiển thị thông báo lỗi hoặc thực hiện các bước xử lý khác
         }
     };
+
 
     // Người cho thuê
 
@@ -204,7 +214,7 @@ const Manager = () => {
         callOrderThree();
         callHuyDon();
         callHuyDon1();
-        apiCompleted();
+        apiCompleted2();
         apiCompleted1();
         if (!userData.isLogin) {
             navigate('/');
@@ -415,7 +425,7 @@ const Manager = () => {
     }
     //Cac hon hang hoan thanh complete
     const [complete, setComplete] = useState()
-    const apiCompleted = async () => {
+    const apiCompleted2 = async () => {
         let com = await apiOrderFour(chutiem_id)
         if (com && com.status === 200) {
             setComplete(com.data.data)
@@ -427,6 +437,21 @@ const Manager = () => {
         if (com1 && com1.status === 200) {
             setComplete1(com1.data.data)
         }
+    }
+    const handleiConfirm = async (id) => {
+        setLoading(true);
+        let comfrim = await apiConfirmRentThree(id)
+
+        if (comfrim && comfrim.status === 200) {
+            iziToast.success({
+                title: "Sách đã được hoàn",
+                position: "topRight",
+            });
+        }
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+
     }
     // Các điều kiện để xuất switch case
     const getContent = (status, isForRent) => {
@@ -802,10 +827,8 @@ const Manager = () => {
                                                         ) : (
                                                             <button
                                                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                                                                onClick={() => handleReturn(item.id, index)}
-                                                            >
-                                                                Xác nhận lấy sách
-                                                            </button>
+                                                                onClick={() => handleReturn(item.id)}
+                                                                disabled={loading}>{loading ? 'Loading...' : 'Xác nhận lấy sách'}</button>
                                                         )}
                                                     </td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly">
@@ -1218,7 +1241,7 @@ const Manager = () => {
                                                     <td className="py-2 px-4 border-b text-orange-600">{item.thongbao}</td>
                                                     <td className="py-2 px-4 border-b flex items-center justify-evenly gap-2">
                                                         <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleEditInfo5(item.id)}>Xem</button>
-                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleReturnClick(item.id)} disabled={loading}>{loading ? 'Loading...' : 'Trả sách'}</button>
+                                                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleiConfirm(item.id)} disabled={loading}>{loading ? 'Loading...' : 'Trả sách'}</button>
                                                     </td>
                                                 </tr>
                                             ))}
