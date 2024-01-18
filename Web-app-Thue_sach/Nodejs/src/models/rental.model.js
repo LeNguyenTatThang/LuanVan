@@ -36,14 +36,14 @@ rental.create = function (data) {
             if (checkedBooks.length > 0) {
                 dataRental = {
                     errcode: 1,
-                    message: `Quyển sách ${checkedBooks.map(book => `"${book.tensach}"`)} đã được thuê không thể thuê được`
+                    message: `Quyển sách ${checkedBooks.map(book => `"${book.tensach}"`)} đã hết hàng không thể thuê được`
                 }
             } else {
                 const [result] = await pool.execute(sqlRental, [data.users_id, data.chutiem_id, data.tongtien, data.tongtienthue, data.diachi, data.ngaythue, trangthai, maphieu, data.sdt])
                 let phieuthue_id = result.insertId;
                 for (let bookId of bookIds) {
                     await pool.execute(sqlRental_Book, [bookId, phieuthue_id]);
-                    let sqlUpdate = `UPDATE sach SET trangthaithue = 'dangthue' WHERE id=?`
+                    let sqlUpdate = `UPDATE sach SET soluong= soluong-1 WHERE id=?`
                     const [result, fields] = await pool.execute(sqlUpdate, [bookId])
                     if (result) {
 
@@ -64,7 +64,7 @@ rental.create = function (data) {
 let checkbook = (sach_id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let sqlCheck = "SELECT sach.ten FROM sach WHERE sach.id = ? AND trangthaithue = 'dangthue'"
+            let sqlCheck = "SELECT sach.ten FROM sach WHERE sach.id = ? AND soluong=0"
             const [result, fields] = await pool.execute(sqlCheck, [sach_id])
             if (result.length > 0) {
                 const tenSach = result[0].ten;
@@ -236,7 +236,7 @@ rental.upStatus4 = (data) => {
                     const [rows, fields] = await pool.execute(sqlRental_book, [data.id])
                     if (rows) {
                         for (let bookId of rows) {
-                            let sqlUpdate = 'UPDATE sach SET trangthaithue = ? WHERE id=?'
+                            let sqlUpdate = 'UPDATE sach SET soluong = soluong + 1 WHERE id=?'
                             const [updeteBook] = await pool.execute(sqlUpdate, ['chuathue', bookId.sach_id])
                             if (updeteBook) {
                                 dataRental = {
@@ -292,7 +292,7 @@ rental.upStatus5 = (data) => {
                     const [rows, fields] = await pool.execute(sqlRental_book, [data.id])
                     if (rows) {
                         for (let bookId of rows) {
-                            let sqlUpdate = 'UPDATE sach SET trangthaithue = ? WHERE id=?'
+                            let sqlUpdate = 'UPDATE sach SET soluong= soluong+1 WHERE id=?'
                             const [updeteBook] = await pool.execute(sqlUpdate, ['chuathue', bookId.sach_id])
                             if (updeteBook) {
                                 dataRental = {

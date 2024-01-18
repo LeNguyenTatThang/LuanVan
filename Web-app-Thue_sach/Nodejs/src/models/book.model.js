@@ -7,7 +7,6 @@ const book = function () { }
 book.getApprovalStatus = async (page, name, trangthaiduyet) => {
     return new Promise(async (resolve, reject) => {
         try {
-
             let data = {};
             let limit = '5';
             let sql = "SELECT sach.id,sach.hinh,sach.noidung, sach.ten,sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
@@ -59,8 +58,8 @@ book.getApprovalStatus1 = async (page, name) => {
             let limit = '5';
             let sql = "SELECT sach.id,sach.hinh,sach.noidung, sach.ten,sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
-            sql += " WHERE sach.trangthaiduyet= 'duocduyet' OR sach.trangthaiduyet= 'bicam' "
-            let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE sach.trangthaiduyet= 'duocduyet' OR sach.trangthaiduyet= 'bicam' "
+            sql += " WHERE (sach.trangthaiduyet= 'duocduyet' OR sach.trangthaiduyet= 'bicam') "
+            let sqlTotal = "SELECT COUNT(*) as total FROM sach WHERE (sach.trangthaiduyet= 'duocduyet' OR sach.trangthaiduyet= 'bicam') "
             if (name) {
                 sqlTotal += " AND sach.ten LIKE '%" + name + "%' "
             }
@@ -104,7 +103,7 @@ book.getTrangthai1 = (page) => {
         try {
             let limit = 6;
             let data = {};
-            let sql = "SELECT sach.id,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.hinh,sach.noidung,sdt,users.diachi, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            let sql = "SELECT sach.id,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.hinh,sach.noidung,sdt,users.diachi, sach.ten,sach.trangthai,soluong, tiencoc, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id "
             sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet' GROUP BY sach.id"
@@ -141,7 +140,7 @@ book.getBookByCatetoryAndAuthor = (theloai_id, loai, ten) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh,masach,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaithue, tiencoc, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,masach,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,soluong, tiencoc, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang, id_users, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
             sql += " WHERE sach.trangthai= 1 AND trangthaiduyet ='duocduyet'"
@@ -191,13 +190,13 @@ book.create = (bookData) => {
         try {
             let data = {};
             let masach = "ms" + generateRandomCode(10)
-            let sql0 = 'insert into sach(hinh, ten ,masach, trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users,noidung ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)';
+            let sql0 = 'insert into sach(hinh, ten ,masach, trangthai, tinhtrang, loai,theloai_id, gia, tiencoc, id_tacgia, id_users,noidung,soluong ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)';
             let sql1 = 'insert into sach(hinh, ten ,masach, trangthai, loai, theloai_id, id_tacgia, id_users,noidung ) values (?, ?, ?, ?, ?, ?, ?, ?,?)';
             let trangthai = 1;
             if (bookData.loai == 0) {
                 let checkPhone = await book.checkPhoneNumberUsers(bookData.id_users)
                 if (checkPhone) {
-                    if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang || !bookData.noidung) {
+                    if (!bookData.hinh || !bookData.ten || !bookData.gia || !bookData.theloai_id || !bookData.tiencoc || !bookData.tentacgia || !bookData.id_users || !bookData.tinhtrang || !bookData.noidung || !bookData.soluong) {
                         data = {
                             errcode: 1,
                             message: 'không được để trống dữ liệu'
@@ -212,7 +211,7 @@ book.create = (bookData) => {
                         } else {
                             let dataAuthorID = await checkAuthor(bookData.tentacgia)
                             let id_tacgia = dataAuthorID;
-                            await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users, bookData.noidung]);
+                            await pool.execute(sql0, [bookData.hinh, bookData.ten, masach, trangthai, bookData.tinhtrang, bookData.loai, bookData.theloai_id, bookData.gia, bookData.tiencoc, id_tacgia, bookData.id_users, bookData.noidung, bookData.soluong]);
                             data = {
                                 errcode: 0,
                                 message: 'Thêm sách thuê thành công vui lòng chờ Admin duyệt'
@@ -321,7 +320,7 @@ book.getId = (id) => {
         try {
             let data = {};
             let sqlCheck = "select loai from sach where id =?"
-            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,trangthaithue, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang,users.sdt,users.diachi,id_users, tentacgia";
+            let sql = "SELECT sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia,sach.ten,noidung,users.sdt,users.diachi, sach.id,masach,soluong, sach.trangthai,trangthaiduyet, tinhtrang, sach.loai,theloai_id, theloai.ten as theloai, users.ten as nguoidang,users.sdt,users.diachi,id_users, tentacgia";
             const [result] = await pool.execute(sqlCheck, [id])
             let check = result[0]
             if (check) {
@@ -445,8 +444,10 @@ book.update = (data, hinhmoi) => {
     return new Promise(async (resolve, reject) => {
         try {
             let bookModel = {}
-            let sqlCheck = "SELECT sach.id FROM sach WHERE sach.id =? AND trangthaithue = 'dangthue'"
-            let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai=?, gia=?, tiencoc=?, noidung =? WHERE id= ?"
+            let sqlCheck = "SELECT sach.id FROM sach "
+            sqlCheck += " INNER JOIN phieuthue_sach on phieuthue_sach.sach_id = sach.id "
+            sqlCheck += " INNER JOIN phieuthue on phieuthue.id = phieuthue_sach.phieuthue_id WHERE sach.id =? AND (phieuthue.trangthai=0 OR phieuthue.trangthai=1 OR phieuthue.trangthai=2 OR phieuthue.trangthai=3) "
+            let sqlUpdate = "UPDATE sach SET hinh=?,ten=?, trangthai=?, gia=?, tiencoc=?, noidung =?, soluong =? WHERE id= ?"
             const [check, fields] = await pool.execute(sqlCheck, [data.id])
             if (check.length > 0) {
                 bookModel = {
@@ -455,7 +456,7 @@ book.update = (data, hinhmoi) => {
                 }
             }
             else {
-                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.ten, data.trangthai, data.gia, data.tiencoc, data.noidung, data.id])
+                const [result, fields] = await pool.execute(sqlUpdate, [hinhmoi, data.ten, data.trangthai, data.gia, data.tiencoc, data.noidung, data.soluong, data.id])
                 if (result) {
                     bookModel = {
                         errcode: 0,
@@ -504,7 +505,7 @@ book.getBookUnapprovedByIdUsers = async (id_users, loai) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang,sach.trangthaithue, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang,sach.soluong, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
             sql += " WHERE id_users=? AND sach.loai=? AND (trangthaiduyet='khongduyet') GROUP BY sach.id"
@@ -532,7 +533,7 @@ book.getBookByIdUsers = async (id_users, loai) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {};
-            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang,sach.trangthaithue, tentacgia FROM sach";
+            let sql = "SELECT sach.id,sach.hinh,ROUND(COALESCE(AVG(danhgia.danhgia), 0)) AS danhgia, sach.ten,sach.trangthai,trangthaiduyet,sach.noidung,id_users, tinhtrang, sach.loai,gia,theloai.ten as theloai, users.ten as nguoidang,sach.soluong, tentacgia FROM sach";
             sql += " INNER JOIN theloai ON theloai.id=sach.theloai_id INNER JOIN users ON sach.id_users=users.id INNER JOIN tacgia ON sach.id_tacgia=tacgia.id "
             sql += " LEFT JOIN danhgia ON danhgia.sach_id = sach.id"
             sql += " WHERE id_users=? AND sach.loai=? AND (trangthaiduyet='choduyet' OR trangthaiduyet='duocduyet') GROUP BY sach.id"
