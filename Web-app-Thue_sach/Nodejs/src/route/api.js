@@ -165,7 +165,7 @@ let initApiRouter = (app) => {
     //api hiện tất cả danh sách chương theo id của sách (sach_id)
     router.post('/api/chapter/listAllBookchapter', chapterController.listAllBookchapter)
 
-    // hiện nội dung chương
+    // hiện nội dung chương(sach_id,chuong)
     router.get('/api/chapter/detailchapter', chapterController.ContentChapter)
 
     // api cập nhập chương (id)

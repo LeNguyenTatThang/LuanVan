@@ -82,7 +82,7 @@ chapter.getAllChaptersByBookId = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let chap = {}
-            const sql = "SELECT id, chuong,tieude FROM noidungsach WHERE sach_id = ? ";
+            const sql = "SELECT id, chuong,tieude,COUNT(chuong) AS sochuong FROM noidungsach WHERE sach_id = ? ";
             const [chapters, fields] = await pool.execute(sql, [data.sach_id]);
             if (chapters.length > 0) {
                 chap = {
@@ -106,14 +106,17 @@ chapter.getContentChapters = (sach_id, chuong) => {
     return new Promise(async (resolve, reject) => {
         try {
             let chap = {}
+            const sqlCount = "SELECT COUNT(chuong) AS sochuong FROM noidungsach WHERE sach_id = ? ";
+            const [count] = await pool.execute(sqlCount, [sach_id]);
+            let sochuong = count[0].sochuong
             let sql = "SELECT noidungsach.id, chuong,tieude, noidungsach.noidung FROM noidungsach";
             sql += " INNER JOIN sach ON noidungsach.sach_id = sach.id"
             sql += " WHERE sach_id= ? AND noidungsach.chuong= ? "
             const [chapters, fields] = await pool.execute(sql, [sach_id, chuong]);
             let dataChap = chapters[0];
-            console.log(dataChap)
             if (dataChap) {
                 chap = {
+                    sochuong,
                     data: dataChap,
                     errcode: 0,
                     chapters: chapters

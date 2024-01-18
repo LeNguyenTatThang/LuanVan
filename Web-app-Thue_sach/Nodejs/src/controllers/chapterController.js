@@ -110,7 +110,8 @@ const ContentChapter = async (req, res) => {
         if (dataChapter.errcode === 0) {
             return res.status(200).json({
                 status: 200,
-                data: dataChapter.data,
+                ChapterCount: dataChapter.sochuong,
+                data: dataChapter.data
             })
         } else {
             return res.status(400).json({
