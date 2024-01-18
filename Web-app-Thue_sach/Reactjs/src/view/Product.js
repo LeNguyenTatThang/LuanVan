@@ -213,29 +213,39 @@ export default function Product() {
                                                 <div
                                                     className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25">
                                                 </div>
-                                                {item.trangthaithue === 'dangthue' ? <><div className="rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out">
-                                                    Sách đang được thuê
-                                                </div>
-                                                </> : <>
-                                                    <div
-                                                        className="rounded-full text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
-                                                        {item.loai === 0 ? (
-                                                            <>
-                                                                {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
-                                                                    <div className="text-green-500">Đã thêm</div>
-                                                                ) : (
-                                                                    <div className="cursor-pointer" onClick={(e) => handleAdd(item)}>
-                                                                        Thuê
-                                                                    </div>
-                                                                )}
-                                                            </>
-                                                        ) : (
-                                                            <><Link to={`/detail-book/${item.id}`} >
+
+                                                <div
+                                                    className="rounded-full text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
+                                                    {item.loai === 0 ? (
+                                                        <>
+                                                            {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
+                                                                <div className="text-green-500">Đã thêm</div>
+                                                            ) : (
+                                                                <div>
+                                                                    {
+                                                                        item.soluong === 0 ?
+                                                                            <>
+                                                                                <div className="mr-2 mt-2 rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out">
+                                                                                    Hết hàng
+                                                                                </div>
+                                                                            </> : <>
+                                                                                <div className="cursor-pointer" onClick={(e) => handleAdd(item)}>
+                                                                                    Thuê
+                                                                                </div>
+                                                                            </>
+                                                                    }
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Link to={`/detail-book/${item.id}`} >
                                                                 <div className="cursor-pointer">Đọc</div></Link>
-                                                            </>
-                                                        )}
-                                                    </div></>
-                                                }
+                                                        </>
+                                                    )}
+                                                </div>
+
+
                                             </div>
 
                                             <div className="py-2 w-full">
@@ -261,7 +271,7 @@ export default function Product() {
                                                 </div>
                                             </div>
 
-                                        </div>
+                                        </div >
                                     </>
                                 )
                             })}
@@ -306,29 +316,36 @@ export default function Product() {
                                                 <div
                                                     className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25">
                                                 </div>
-                                                {item.trangthaithue === 'dangthue' ? <><div className="rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out">
-                                                    Sách đang được thuê
+                                                <div
+                                                    className="rounded-full text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
+                                                    {item.loai === 0 ? (
+                                                        <>
+                                                            {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
+                                                                <div className="text-green-500">Đã thêm</div>
+                                                            ) : (
+                                                                <div>
+                                                                    {
+                                                                        item.soluong === 0 ?
+                                                                            <>
+                                                                                <div className="rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out">
+                                                                                    Hết hàng
+                                                                                </div>
+                                                                            </> : <>
+                                                                                <div className="cursor-pointer" onClick={(e) => handleAdd(item)}>
+                                                                                    Thuê
+                                                                                </div>
+                                                                            </>
+                                                                    }
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Link to={`/detail-book/${item.id}`} >
+                                                                <div className="cursor-pointer">Đọc</div></Link>
+                                                        </>
+                                                    )}
                                                 </div>
-                                                </> : <>
-                                                    <div
-                                                        className="rounded-full text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
-                                                        {item.loai === 0 ? (
-                                                            <>
-                                                                {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
-                                                                    <div className="text-green-500">Đã thêm</div>
-                                                                ) : (
-                                                                    <div className="cursor-pointer" onClick={(e) => handleAdd(item)}>
-                                                                        Thuê
-                                                                    </div>
-                                                                )}
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <div className="cursor-pointer">Đọc</div>
-                                                            </>
-                                                        )}
-                                                    </div></>
-                                                }
                                             </div>
 
                                             <div className="py-2 w-full">

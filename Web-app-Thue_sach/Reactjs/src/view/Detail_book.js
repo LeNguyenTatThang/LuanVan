@@ -164,7 +164,7 @@ export default function Detail_book() {
     showComment();
     callApiChapter();
     countRating();
-  }, []);
+  }, [id]);
   const changeRating = async (sach_id, event) => {
     if (!login.isLogin) {
       iziToast.warning({
@@ -314,7 +314,7 @@ export default function Detail_book() {
                   <div className="mb-2"><strong>Số điện thoại người đăng:</strong> {item.sdt}</div>
                   <div className="mb-2"><strong>Tác giả:</strong> {item.tentacgia}</div>
                   <div className={`mb-2 ${showMore ? '' : 'overflow-hidden line-clamp-2'}`}>
-                    <strong>Trạng thái thuê</strong>: {item.trangthaithue === 'chuathue' ? 'Có thể thuê' : 'Đang được thuê'}
+                    <strong>Số lượng</strong>: {item.soluong}
                   </div>
                   <div className={`mb-2 ${showMore ? '' : 'overflow-hidden line-clamp-2'}`}>{item.noidung}</div>
                   <button className="text-blue-500 hover:underline" onClick={e => setShowMore(false)}>Ẩn bớt</button>
