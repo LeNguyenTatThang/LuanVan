@@ -589,7 +589,7 @@ book.getBookMessage = async (id_sach) => {
     return new Promise(async (resolve, reject) => {
         try {
             let data = {}
-            let sql = "SELECT thongbao.noidung FROM thongbao WHERE id_sach ORDER BY thongbao.ngaytao DESC LIMIT 1"
+            let sql = "SELECT thongbao.noidung FROM thongbao WHERE id_sach=? ORDER BY thongbao.ngaytao DESC LIMIT 1"
             const [rows, fields] = await pool.execute(sql, [id_sach])
             let dataRow = rows[0]
             if (dataRow) {
