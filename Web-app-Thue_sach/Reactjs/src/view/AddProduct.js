@@ -38,7 +38,7 @@ export default function AddProduct() {
     const userData = useSelector((state) => state.user);
     const [category, setCategory] = useState();
     const [noidung, setNoidung] = useState('');
-
+    const [soluong, setSoLuong] = useState('');
     const handleContentChange = (e) => {
         setNoidung(e.target.value);
     };
@@ -93,7 +93,7 @@ export default function AddProduct() {
         }
         //thêm các thuộc tính                hinh, ten, tinhtrang,loai, theloai_id, gia, tiencoc, tentacgia, id_users
 
-        let res = await addBook(hinh.data, ten, tinhtrang?.value, book, theloai_id, gia, tiencoc, tentacgia, id_users, noidung);
+        let res = await addBook(hinh.data, ten, tinhtrang?.value, book, theloai_id, gia, tiencoc, tentacgia, id_users, noidung, soluong);
         if (res && res.status === 200) {
             iziToast.success({
                 title: "Succes",
@@ -106,6 +106,7 @@ export default function AddProduct() {
             setHinh({ preview: '', data: '' });
             setTinhTrang('');
             setGia('');
+            setSoLuong('');
             setNoidung('');
             setTiencoc('');
             setTheloai_id('');
@@ -206,7 +207,7 @@ export default function AddProduct() {
                                                         onChange={(event) => {
                                                             if (event && event.target && event.target.value !== undefined) {
                                                                 const inputValue = event.target.value;
-                                                                if (/^\d+$/.test(inputValue)) {
+                                                                if (inputValue === '' || /^\d+$/.test(inputValue)) {
                                                                     setGia(event.target.value);
                                                                 } else {
                                                                     iziToast.error({
@@ -230,7 +231,7 @@ export default function AddProduct() {
                                                             // Ensure event.target and event.target.value are defined
                                                             if (event && event.target && event.target.value !== undefined) {
                                                                 const inputValue = event.target.value;
-                                                                if (/^\d+$/.test(inputValue)) {
+                                                                if (inputValue === '' || /^\d+$/.test(inputValue)) {
                                                                     setTiencoc(inputValue);
                                                                 } else {
                                                                     iziToast.error({
@@ -243,7 +244,30 @@ export default function AddProduct() {
                                                         }}
                                                     />
                                                 </div>
-
+                                                <div>
+                                                    <TextField id="outlined-basic" label="Số lượng sách" variant="outlined"
+                                                        type="number"
+                                                        name="tiencoc"
+                                                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                                        required=""
+                                                        value={soluong}
+                                                        onChange={(event) => {
+                                                            // Ensure event.target and event.target.value are defined
+                                                            if (event && event.target && event.target.value !== undefined) {
+                                                                const inputValue = event.target.value;
+                                                                if (inputValue === '' || /^\d+$/.test(inputValue)) {
+                                                                    setSoLuong(inputValue);
+                                                                } else {
+                                                                    iziToast.error({
+                                                                        title: "Wrong!!",
+                                                                        position: "topRight",
+                                                                        message: "Vui lòng không nhập số âm"
+                                                                    });
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
 
                                             </>
                                             :

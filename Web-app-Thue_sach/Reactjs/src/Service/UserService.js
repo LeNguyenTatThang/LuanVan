@@ -12,9 +12,9 @@ const apiRegister = (ten, email, matkhau,) => {
 const apiDetailUser = (id) => {
     return axios.get(`/api/getUserByID?id=${id}`)
 }
-const addBook = (hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users, noidung) => {
+const addBook = (hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users, noidung, soluong) => {
 
-    return axios.post("/post-api-book", { hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users, noidung },
+    return axios.post("/post-api-book", { hinh, ten, tinhtrang, loai, theloai_id, gia, tiencoc, tentacgia, id_users, noidung, soluong },
         {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -42,8 +42,8 @@ const detailBookUser = async (id) => {
     return await axios.get(`/get-api-detailBook?id=${id}`);
 }
 
-const apiUpdateBook = (id, hinh, ten, noidung, trangthai, gia, tiencoc) => {
-    return axios.patch('/api/book/update', { id, hinh, ten, noidung, trangthai, gia, tiencoc },
+const apiUpdateBook = (id, hinh, ten, noidung, trangthai, gia, tiencoc, soluong) => {
+    return axios.patch('/api/book/update', { id, hinh, ten, noidung, trangthai, gia, tiencoc, soluong },
         {
             headers: {
                 'Content-Type': 'multipart/form-data'
