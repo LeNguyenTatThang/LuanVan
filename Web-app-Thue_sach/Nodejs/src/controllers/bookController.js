@@ -197,6 +197,14 @@ const postBook = async (req, res, next) => {
                 })
             }
         }
+        if (bookData.soluong) {
+            if (bookData.soluong <= 0)
+                return res.status(402).json({
+                    status: 402,
+                    message: 'không được để số lượng là âm hoặc bằng 0'
+                })
+        }
+
         let data = await book.create(bookData)
         if (data.errcode === 0) {
             req.io.emit('updateData');
@@ -374,6 +382,12 @@ const updateBook = async (req, res) => {
         } else {
             hinhmoi = dataImage.book.hinh
         }
+        if (!data.trangthai || !data.ten || !data.soluong || !data.gia || !data.tiencoc) {
+            return res.status(402).json({
+                status: 402,
+                message: 'không được để trống dữ liệu'
+            })
+        }
         let dataBook = await book.update(data, hinhmoi)
         if (dataBook.errcode == 0) {
             if (req.file) {
@@ -444,6 +458,12 @@ const upbookOnline = async (req, res) => {
             hinhmoi = req.file.filename
         } else {
             hinhmoi = dataImage.book.hinh
+        }
+        if (!data.trangthai || !data.ten) {
+            return res.status(402).json({
+                status: 402,
+                message: 'không được để trống dữ liệu'
+            })
         }
         let dataBook = await book.updateBookOnline(data, hinhmoi)
         if (dataBook.errcode == 0) {

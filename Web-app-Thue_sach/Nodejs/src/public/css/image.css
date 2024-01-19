@@ -79,3 +79,8 @@ element.style {}
     color: #fff;
     background-color: red;
 }
+
+.content-header {
+    margin-top: 60px;
+    /* Điều chỉnh giá trị này tùy thuộc vào chiều cao của thanh menu */
+}

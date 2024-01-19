@@ -19,10 +19,12 @@
                 <h1>
                     Danh sách sách chưa duyệt
                 </h1>
-
             </section>
             <!-- Main content -->
             <section class="content">
+                <h3>
+                    Danh sách sách chưa duyệt
+                </h3>
                 <!-- Default box -->
                 <div class="row" id="dataList">
                     <div class="col-12">
@@ -82,7 +84,7 @@
                                                         <td scope="row">
                                                             <%= data[i].tinhtrang===0 ? "Sách mới" : "Sách Cũ" %>
                                                         </td>
-                                                        <td scope="row">
+                                                        <td scope="row" class="text-nowrap">
                                                             <%= data[i].theloai %>
                                                         </td>
                                                         <td scope="row">
