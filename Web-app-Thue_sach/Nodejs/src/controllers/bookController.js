@@ -1,6 +1,7 @@
 
 import axios from "../axios";
 import book from '../models/book.model'
+import rental from '../models/rental.model'
 import comment from '../models/comment.model'
 const fs = require('fs');
 
@@ -190,7 +191,7 @@ const postBook = async (req, res, next) => {
         if (bookData.gia && bookData.tiencoc) {
             let phantram = 0.5;
             if (bookData.gia >= bookData.tiencoc * phantram) {
-                console.log(bookData.gia, 'và', bookData.tiencoc)
+
                 return res.status(402).json({
                     status: 402,
                     message: 'tiền thuê không được quá 50% tiền cọc'
@@ -198,13 +199,12 @@ const postBook = async (req, res, next) => {
             }
         }
         if (bookData.soluong) {
-            if (bookData.soluong <= 0)
+            if (bookData.soluong <= 0 || bookData.soluong > 100)
                 return res.status(402).json({
                     status: 402,
-                    message: 'không được để số lượng là âm hoặc bằng 0'
+                    message: 'không được để số lượng là âm, bằng 0 hoặc lớn hơn 100'
                 })
         }
-
         let data = await book.create(bookData)
         if (data.errcode === 0) {
             req.io.emit('updateData');
@@ -387,6 +387,22 @@ const updateBook = async (req, res) => {
                 status: 402,
                 message: 'không được để trống dữ liệu'
             })
+        }
+        if (data.soluong < 0) {
+            return res.status(403).json({
+                status: 403,
+                message: 'số lượng không được âm'
+            })
+        }
+        let check = await rental.checkBook(data.id)
+        if (check) {
+            let checkNumber = parseInt(data.soluong) + check.data
+            if (checkNumber > 100) {
+                return res.status(403).json({
+                    status: 403,
+                    message: `${check.data > 0 ? `số lượng sách đang được thuê là: ${check.data} và ` : ''} số lượng sách cập nhập của bạn là ${data.soluong} nên số lượng quá 100 không thể cập nhập`
+                })
+            }
         }
         let dataBook = await book.update(data, hinhmoi)
         if (dataBook.errcode == 0) {

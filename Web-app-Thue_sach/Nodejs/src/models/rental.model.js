@@ -541,4 +541,26 @@ rental.getAll = (page, name) => {
     })
 }
 
+rental.checkBook = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let sqlRental = 'select COUNT(phieuthue_sach.sach_id) AS soluong  FROM phieuthue'
+            sqlRental += ' INNER JOIN phieuthue_sach ON phieuthue.id = phieuthue_sach.phieuthue_id'
+            sqlRental += ' INNER JOIN sach ON phieuthue_sach.sach_id = sach.id '
+            sqlRental += ' INNER JOIN users AS nguoithue_phieuthue ON phieuthue.users_id = nguoithue_phieuthue.id '
+            sqlRental += ' INNER JOIN users AS chutiem_sach ON sach.id_users = chutiem_sach.id '
+            sqlRental += ' WHERE sach.id = ? AND (phieuthue.trangthai = 0 OR phieuthue.trangthai = 1 OR phieuthue.trangthai= 2 OR phieuthue.trangthai= 3)'
+            const [rows, fields] = await pool.execute(sqlRental, [data])
+            let dataRow = rows[0].soluong
+            dataRental = {
+                data: dataRow,
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = rental;
