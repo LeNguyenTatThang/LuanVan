@@ -214,6 +214,10 @@ const apiSearchBlog = (page, name) => {
 const apiInfoBook = (id_sach) => {
     return axios.post('/api/book/message', { id_sach })
 }
+
+const apiDanhGia = async (users_id, sach_id) => {
+    return await axios.post('/apiRatingbyUser', { users_id, sach_id })
+}
 export {
     fetchAllUser, loginApi, apiRegister, apiRandomBook, updateUser, apiDetailUser, apiBookAuthur,
     addBook, apiListCate, apiListBook, detailBookUser, apiAuthurRandom, callApiSearch, apiUpdateBook, randomBookCate,
@@ -227,5 +231,5 @@ export {
     callApiChapter, apigetBookRead, apiPostCHapter, apiListChapter, apiUpdateChapter,
     callApiMail, apiRating, apiCountRate,
     apiHuyDon1, apiHuyDon2,
-    apiSearchBlog, apiInfoBook,
+    apiSearchBlog, apiInfoBook, apiDanhGia,
 };
