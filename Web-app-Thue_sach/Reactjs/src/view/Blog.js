@@ -65,10 +65,12 @@ const Blog = () => {
             </div>
             {dataSearch === null ?
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
                         {listBlog && listBlog.length > 0 &&
-                            listBlog?.map((listBlog) => (
-                                <Post key={listBlog.id} {...listBlog} />
+                            listBlog.map((listBlog) => (
+                                <div key={listBlog.id} className="w-11/12 mx-auto">
+                                    <Post {...listBlog} />
+                                </div>
                             ))}
                     </div>
                     <ReactPaginate

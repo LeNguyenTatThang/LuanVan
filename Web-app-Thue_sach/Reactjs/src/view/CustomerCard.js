@@ -526,7 +526,7 @@ export default function CustomerCard() {
 
                                         <br />
                                         <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
-                                            <strong>Tổng tiền:</strong> {TotalCart} vnđ
+                                            <strong>Tổng tiền:</strong> {SumCart} vnđ
                                         </h3>
 
                                         <br />

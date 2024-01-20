@@ -24,6 +24,8 @@ import PostChapter from './view/PostChapter';
 import Menu from './view/Menu';
 import Logout from './view/Logout';
 import Contact from './view/Contact';
+import DetailBlog from './view/DetailBlog';
+import DetailPost from './view/DetailBlog';
 function App() {
   return (
 
@@ -49,6 +51,7 @@ function App() {
         <Route path="/manager-book" element={<Manager />} />
         <Route path="/read-book" element={<ReadBook />} />
         <Route path="/create-account-ok/:id" element={<RegistrationSuccess />} />
+        <Route path="/posts/:id" element={<DetailPost />} />
         <Route path="/logout" element={<Logout />} />
         <Route
           path="/detailchapter/:sach_id/:chuong"
