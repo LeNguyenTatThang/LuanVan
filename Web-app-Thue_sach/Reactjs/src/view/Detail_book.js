@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { apiChapter, apiCountRate, apiRating, apiSendComment, callApiComment, detailBookUser, randomBookCate } from '../Service/UserService';
+import { apiChapter, apiCountRate, apiDanhGia, apiRating, apiSendComment, callApiComment, detailBookUser, randomBookCate } from '../Service/UserService';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import iziToast from 'izitoast';
@@ -160,10 +160,21 @@ export default function Detail_book() {
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
-    detailBook();
-    showComment();
-    callApiChapter();
-    countRating();
+    const fetchData = async () => {
+      try {
+        await detailBook(); // Assuming detailBook is an asynchronous function
+        await showComment(); // Assuming showComment is an asynchronous function
+        await callApiChapter(); // Assuming callApiChapter is an asynchronous function
+        await countRating(); // Assuming countRating is an asynchronous function
+        await apiDanhGia(); // Assuming apiDanhGia is an asynchronous function
+        callApiDanhGia();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Handle errors if needed
+      }
+    };
+
+    fetchData();
   }, [id]);
   const changeRating = async (sach_id, event) => {
     if (!login.isLogin) {
@@ -209,13 +220,23 @@ export default function Detail_book() {
       setCountData(count)
     }
   }
-  console.log(countData)
+  const [danhGiaUser, setDanhGiaUser] = useState();
+  const callApiDanhGia = async () => {
+    try {
+      const danhGiaResponse = await apiDanhGia(users_id.id, id);
+
+      if (danhGiaResponse && danhGiaResponse.status === 200) {
+        setDanhGiaUser(danhGiaResponse.data.danhgia);
+      }
+    } catch (error) {
+      console.error('Error calling apiDanhGia:', error);
+    }
+  }
+  console.log(danhGiaUser)
   return (
     <>
       <div className="container mx-auto my-8 ">
         <div className='flex'>
-
-
         </div>
         <Grid container spacing={2}>
           <Grid xs={5}>
@@ -261,47 +282,34 @@ export default function Detail_book() {
           <Grid xs={7} className=" bg-white rounded-md shadow-md row-3">
             <div className="w-3/4">
               <h2 className="text-3xl font-bold mb-4">{item.ten}</h2>
-              {item.loai === 0 ? <>
-                <div className='w-full flex'>
-                  <div className="w-1/2">
-                    <strong className="text-sm">Tiền đặt cọc:</strong> {item.tiencoc} vnđ
-                  </div>
-                  <div className="w-1/2">
-                    <strong className="text-sm">Giá thuê:</strong> {item.gia} vnđ
-                  </div>
-                  <div className="text-sm hover:text-slate-500"><strong>Tình trạng sách: </strong>
-                    {item.tinhtrang === 1 ? <>
-                      <span className='text-yellow-500 font-bold'>Sách mới</span>
-                    </> : <>
-                      <span className='text-yellow-500 font-bold'>Sách cũ</span>
-                    </>}
-                  </div>
-                </div>
-                <br />
-                {item.trangthaithue === 'dangthue' ? <>
-                  <div className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 w-48 mx-auto">
-                    Đã có người thuê
-                  </div></> : <>
-                  <div className='w-full'>
-                    <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 w-48 mx-auto"
-                      onClick={(e) => handleAdd(item)}
-                    >
-                      Thêm vào giỏ hàng
-                    </button>
+              {item.loai === 0 ? (
+                <>
+                  {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
+                    <div className="text-white bg-green-500 px-3 py-1 rounded-md max-w-[200px] truncate">Đã thêm</div>
 
-                  </div></>}
-
-              </> : <>
-                <div className='w-full'>
-                  <button
-                    className="bg-blue-500 w-44 text-white px-4 py-2 rounded hover:bg-blue-700 mx-auto p-3"
-                    onClick={Read}
-                  >
-                    Đọc ngay
-                  </button>
-                </div>
-              </>}
+                  ) : (
+                    <div>
+                      {
+                        item.soluong === 0 ?
+                          <>
+                            <div className="text-white bg-red-500 px-3 py-1 rounded-md max-w-[100px] truncate">
+                              Hết hàng
+                            </div>
+                          </> : <>
+                            <div className="cursor-pointer text-white bg-blue-500 px-3 py-1 rounded-md max-w-[100px] truncate" onClick={(e) => handleAdd(item)}>
+                              Thuê
+                            </div>
+                          </>
+                      }
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Link to={`/detail-book/${item.id}`} >
+                    <div className="text-white bg-green-500 px-3 py-1 rounded-md max-w-[100px] truncate cursor-pointer">Đọc</div></Link>
+                </>
+              )}
             </div>
             <div className='pt-16 p-3'>
               <h3 className="text-2xl font-bold mb-4 text-indigo-700">Thông tin chi tiết</h3>
@@ -397,29 +405,33 @@ export default function Detail_book() {
                       <div
                         className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25">
                       </div>
-                      {item.trangthaithue === 'dangthue' ? <><div className="rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out">
-                        Sách đang được thuê
-                      </div>
-                      </> : <>
-                        <div
-                          className="rounded-full text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-orange-600  transition duration-500 ease-in-out">
-                          {item.loai === 0 ? (
-                            <>
-                              {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
-                                <div className="text-green-500">Đã thêm</div>
-                              ) : (
-                                <div className="cursor-pointer" onClick={(e) => handleAdd(item)}>
-                                  Thuê
-                                </div>
-                              )}
-                            </>
+                      {item.loai === 0 ? (
+                        <>
+                          {card.some((product) => product.id === item.id) && login?.userInfo?.id ? (
+                            <div className="text-green-500 mr-2 mt-2 rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 hover:bg-orange-600 transition duration-500 ease-in-out">Đã thêm</div>
                           ) : (
-                            <><Link to={`/detail-book/${item.id}`} >
-                              <div className="cursor-pointer">Đọc</div></Link>
-                            </>
+                            <div>
+                              {
+                                item.soluong === 0 ?
+                                  <>
+                                    <div className="mr-2 mt-2 rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out">
+                                      Hết hàng
+                                    </div>
+                                  </> : <>
+                                    <div className="cursor-pointer mr-2 mt-2 rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-blue-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out" onClick={(e) => handleAdd(item)}>
+                                      Thuê
+                                    </div>
+                                  </>
+                              }
+                            </div>
                           )}
-                        </div></>
-                      }
+                        </>
+                      ) : (
+                        <>
+                          <Link to={`/detail-book/${item.id}`} >
+                            <div className="mr-2 mt-2 rounded-full text-xs absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-green-600 px-4 py-2 text-white hover:bg-orange-600 transition duration-500 ease-in-out cursor-pointer">Đọc</div></Link>
+                        </>
+                      )}
                     </div>
                     <Link to={`/detail-book/${item.id}`} >
                       <div className="py-2 w-full">
@@ -459,12 +471,13 @@ export default function Detail_book() {
             Lượt bình luận ({comments.length})
           </h2>
         </div>
-        <div className='pl-10'>
-          <p>Đánh giá:</p>
+        <div className='pl-10 flex'>
+          <p>Đánh giá:</p> &nbsp;
           <div className="flex">
             <Stack spacing={1}>
-              <Rating name="size-large" defaultValue={4} onClick={(event, value) => changeRating(item.id, event)} size="large" />
+              <Rating name="size-large" value={danhGiaUser} onClick={(event, value) => changeRating(item.id, event)} size="large" />
             </Stack>
+            <div>&nbsp; Bạn đã đánh giá: ({JSON.stringify(danhGiaUser)})</div>
           </div>
         </div>
         {!userData?.isLogin ? <>Chỉ có thành viên mới có thể viết nhận xét.Vui lòng đăng nhập hoặc đăng ký.</> : <>
