@@ -595,6 +595,36 @@ const apiCountRating = async (req, res) => {
     }
 }
 
+const apiRatingbyUser = async (req, res) => {
+    try {
+        let data = req.body
+        if (!data.users_id || !data.sach_id) {
+            return res.status(403).json({
+                status: 403,
+                message: "id user hoặc sách không tồn tại",
+            })
+        }
+        let dataRating = await book.ratingByUsers(data)
+        if (dataRating.errcode === 0) {
+            return res.status(200).json({
+                status: 200,
+                data: dataRating.dataRow
+            })
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: dataRating.message,
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            status: 500,
+            message: "lỗi Server"
+        })
+    }
+}
+
 module.exports = {
     getbook,
     getDetailBook,
@@ -617,6 +647,7 @@ module.exports = {
     bookbyCatetory,
     BrowseBooksNoBan,
     BoosMessageBan,
-    apiCountRating
+    apiCountRating,
+    apiRatingbyUser
 }
 

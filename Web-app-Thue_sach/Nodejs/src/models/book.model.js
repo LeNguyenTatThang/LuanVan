@@ -697,4 +697,30 @@ book.getRating = async (data) => {
         }
     })
 }
+
+book.ratingByUsers = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRating = {};
+            let sqlCheck = `SELECT danhgia FROM danhgia WHERE users_id=? AND sach_id=?`
+            const [rows] = await pool.execute(sqlCheck, [data.users_id, data.sach_id])
+            let dataRow = rows[0]
+            if (dataRow) {
+                dataRating = {
+                    dataRow,
+                    errcode: 0
+                }
+            } else {
+                dataRating = {
+                    message: 'không có data',
+                    errcode: 1
+                }
+            }
+            resolve(dataRating)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = book;

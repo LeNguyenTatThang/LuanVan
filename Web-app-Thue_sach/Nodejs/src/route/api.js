@@ -35,7 +35,11 @@ let initApiRouter = (app) => {
     router.patch('/api/accountVerification/:id', userController.accountVerification);
 
 
+
     //sach
+
+    //api lấy đnahs giá của users(users_id,sach_id)
+    router.post('/apiRatingbyUser', bookController.apiRatingbyUser)
 
     //api đếm só lượng đánh giá của 1 quyển sách
     router.post('/apiCountRating', bookController.apiCountRating)
