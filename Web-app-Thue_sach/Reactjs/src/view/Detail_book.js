@@ -465,21 +465,21 @@ export default function Detail_book() {
       <br />
 
       <div className="w-full mx-auto px-4 shadow-lg py-4">
-
+        <div className='pl-80 flex'>
+          <p>Đánh giá:</p> &nbsp;
+          <div className="flex">
+            <Stack spacing={danhGiaUser}>
+              <Rating name="size-large" value={danhGiaUser ? danhGiaUser : 0} onClick={(event, value) => changeRating(item.id, event)} size="large" />
+            </Stack>
+            <div>&nbsp; Bạn đã đánh giá: ({JSON.stringify(danhGiaUser)})</div>
+          </div>
+        </div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg lg:text-2xl font-bold text-gray-900">
             Lượt bình luận ({comments.length})
           </h2>
         </div>
-        <div className='pl-10 flex'>
-          <p>Đánh giá:</p> &nbsp;
-          <div className="flex">
-            <Stack spacing={1}>
-              <Rating name="size-large" value={danhGiaUser} onClick={(event, value) => changeRating(item.id, event)} size="large" />
-            </Stack>
-            <div>&nbsp; Bạn đã đánh giá: ({JSON.stringify(danhGiaUser)})</div>
-          </div>
-        </div>
+
         {!userData?.isLogin ? <>Chỉ có thành viên mới có thể viết nhận xét.Vui lòng đăng nhập hoặc đăng ký.</> : <>
           <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
             <label htmlFor="comment">Bình luận:</label>
@@ -512,7 +512,7 @@ export default function Detail_book() {
                       {show && show.hinh && (
                         <img
                           className="mr-2 w-6 h-6 rounded-full"
-                          src={`https://thuesachadmin.onrender.com/img/${show.hinh}`}
+                          src={`${apiUrl}/img/${show.hinh}`}
                           alt={`${show.hinh}`}
                         />
                       )}

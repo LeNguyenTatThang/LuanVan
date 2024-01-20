@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { REMOVE_FROM_CART, REMOVE_ALL } from '../app/userCard';
+import { REMOVE_FROM_CART, REMOVE_ALL, TOGGLE_CHECKBOX } from '../app/userCard';
 import { useNavigate } from 'react-router-dom';
 import Avt from '../avatar-authur.png';
 import axios from 'axios';
@@ -20,8 +20,7 @@ import { TextField } from '@mui/material';
 
 const steps = ['Chọn sản phẩm', 'Địa chỉ giao hàng', 'Điều khoản'];
 export default function CustomerCard() {
-    const apiUrl = 'http://localhost:8000';
-    //const apiUrl = 'https://thuesachadmin.onrender.com/';
+    const [checkChildren, setCheckChildren] = React.useState([]);
     const card = useSelector((state) => state.shop.cart);
     const dispatch = useDispatch();
     const userData = useSelector((state) => state.user);
@@ -35,18 +34,15 @@ export default function CustomerCard() {
         }
     }, [userData]);
 
-    console.log(">>>check card: ", card)
     let chutiem_id = ''
     Object.keys(card).forEach(function (item) {
         chutiem_id = card[item].id_users;
     });
-    console.log(">>>check chutiem_id: ", chutiem_id)
 
-    let sach_id = Object.keys(card).flatMap(item => {
+    let sach_id = Object.keys(checkChildren).flatMap(item => {
         // Kiểm tra xem thuộc tính 'id' có phải là mảng không
-        return Array.isArray(card[item].id) ? { ...card[item].id } : [card[item].id];
+        return Array.isArray(checkChildren[item].id) ? { ...checkChildren[item].id } : [checkChildren[item].id];
     });
-    console.log(">>>check sach_id: ", sach_id)
 
     const DeleteCart = (_value) => {
         dispatch(REMOVE_FROM_CART(_value));
@@ -58,33 +54,26 @@ export default function CustomerCard() {
     let Total = 0;
     let SumCart = 0;
     Object.keys(card).forEach(function (item) {
-        const productPrice = card[item].gia;
-        const productPrice1 = card[item].tiencoc;
-        let increaseRate = 0;
-
-        if (selectedValue === '7') {
-            // Nếu selectedValue là '7', tăng giá 5%
-            increaseRate = 0;
-        } else if (selectedValue === '15') {
-            // Nếu selectedValue là '15', tăng giá 10%
-            increaseRate = 0.1;
-        } else if (selectedValue === '30') {
-            // Nếu selectedValue là '30', tăng giá 15%
-            increaseRate = 0.15;
+        //if (checkChildren.hasOwnProperty(item)) {
+        let a = checkChildren?.filter((items) => items?.id === card[item]?.id)
+        if (a.length > 0) {
+            const productPrice = a[0]?.gia;
+            const productPrice1 = a[0]?.tiencoc;
+            let increaseRate = 0;
+            if (selectedValue === '7') {
+                increaseRate = 0;
+            } else if (selectedValue === '15') {
+                increaseRate = 0.1;
+            } else if (selectedValue === '30') {
+                increaseRate = 0.15;
+            }
+            const increasedPrice = productPrice * (1 + increaseRate);
+            TotalCart += Math.floor(increasedPrice);
+            TotalCart1 += Math.floor(productPrice1);
+            SumCart = TotalCart + TotalCart1;
+            Total += productPrice;
         }
-
-        // Tính toán giá cuối cùng cho mỗi cuốn sách
-        const increasedPrice = productPrice * (1 + increaseRate);
-        // Tính toán tổng giá của từng cuốn sách
-        TotalCart += Math.floor(increasedPrice);
-        TotalCart1 += Math.floor(productPrice1);
-        SumCart = TotalCart + TotalCart1
-        // Tính toán tổng giá mà không có tăng giá
-        Total += productPrice;
     });
-
-    console.log(`Tổng giá sau khi tăng giá ${selectedValue} ngày cho tất cả sách: ${TotalCart}`);
-    console.log(`Tổng giá mà không có tăng giá cho tất cả sách: ${Total}`);
 
     const handleSelectChange = (event) => {
         const value = event.target.value;
@@ -163,18 +152,12 @@ export default function CustomerCard() {
         printResult();
     }
 
-    console.log(result)
     //Truyền các tham số: users_id, chutiem_id, tongtien, sach_id, diachi, ngaythue
     let users_id = userData.userInfo
-    console.log(users_id)
     let tongtien = TotalCart1
-    let tongtienthue = TotalCart
-    console.log(tongtien)
     let diachi = result
-    console.log(diachi)
     let ngaythue = selectedValue
-    console.log(chutiem_id)
-
+    let tongtienthue = TotalCart
     const onClickXuatHoaDon = async () => {
         //|| selectedNguoiDang.length !== 1
         if (diachi === "") {
@@ -184,20 +167,34 @@ export default function CustomerCard() {
                 message: "Thiếu địa chỉ hoặc chỉ chọn một người đăng"
             });
         } else {
+            let formData = {
+                users_id: users_id.id,
+                chutiem_id: chutiem_id,
+                diachi: diachi,
+                ngaythue: ngaythue,
+                sach_id: sach_id,
+                tongtien: tongtien,
+                sdt: sdt,
+                tongtienthue: tongtienthue
+            }
+            console.log(formData)
+            //users_id, chutiem_id, tongtien, tongtienthue, sach_id, diachi, ngaythue, sdt 
             let res = await callApiCreateRental(users_id.id, chutiem_id, tongtien, tongtienthue, sach_id, diachi, ngaythue, sdt)
+
             if (res.status === 200) {
                 iziToast.success({
                     title: res.message,
                     position: "topRight",
                     message: "Đã xác nhận đơn hàng, hãy chờ phản hồi từ chủ shop"
                 });
-                dispatch(REMOVE_ALL());
+                dispatch(REMOVE_FROM_CART(formData));
                 navigate('/');
             }
             else {
                 iziToast.error({
-                    title: res.data.message,
+                    title: "Error!!!",
                     position: "topRight",
+                    message: res.data.message
                 });
             }
         }
@@ -212,12 +209,7 @@ export default function CustomerCard() {
     }, [card,]);
     Object.keys(card).forEach(function (item) {
         const nguoidang = card[item].nguoidang;
-        // Now, 'nguoidang' contains the value of 'nguoidang' property for the current item in the 'card' array
-
-        // ... rest of your code ...
-        console.log(nguoidang)
     });
-
 
     const [selectedNguoiDang, setSelectedNguoiDang] = useState([]);
 
@@ -229,8 +221,6 @@ export default function CustomerCard() {
         return Array.isArray(item.id) ? item.id : [item.id];
     });
 
-    console.log(">>>check chutiem_ids: ", chutiem_ids);
-    console.log(">>>check sach_ids: ", sach_ids);
     const groupedByNguoiDang = card.reduce((acc, data) => {
         const nguoidang = data.nguoidang;
         if (!acc[nguoidang]) {
@@ -245,8 +235,7 @@ export default function CustomerCard() {
     }, [selectedNguoiDang]);
 
     const CustomListItem = ({ data, checked, onChange, onDelete }) => {
-        console.log('Data:', data);
-        console.log('Checked:', checked);
+
 
         return (
             <li className="list-item">
@@ -259,7 +248,7 @@ export default function CustomerCard() {
                     <div className="thumbnail">
                         <img
                             className="w-12 h-12 rounded-full"
-                            src={`${apiUrl}/img/${data.hinh}`}
+                            src={`http://localhost:8000/img/${data.hinh}`}
                             alt={`${data.hinh}`}
                         />
                     </div>
@@ -279,63 +268,57 @@ export default function CustomerCard() {
             </li>
         );
     };
-    const [checked, setChecked] = React.useState([false, false, false, false]);
+    const [checked, setChecked] = React.useState(false);
 
-    const [checkChildren, setCheckChildren] = React.useState([]);
+
+    const [dataTacGia, setDataTacGia] = React.useState([])
     const [boolean1, setBoolean1] = React.useState(true);
     const [booleanChildren, setBooleanChildren] = React.useState(true)
-
+    const [checkLength, setCheckLength] = React.useState(false)
 
     const children = Object.keys(groupedByNguoiDang).map((nguoiDang, parentIndex) => {
         const parentChildren = groupedByNguoiDang[nguoiDang];
 
-        const handleChange = (boolean1, index, data) => {
-            console.log('index', index)
-            console.log('Changedata', data)
+        const handleChange = (boolean1, checkLength, nguoiDang, data) => {
 
-            setChecked((prev) => {
-                console.log('prev', prev)
-                const newChecked = [...prev];
-                newChecked[index] = !prev[index];
+            setDataTacGia(nguoiDang)
 
-                // Uncheck other items in the same group (parent)
-                if (index % 2 === 0) {
-                    console.log(' + 1 ')
-                    newChecked[index + 1] = false;
-                    if (boolean1 == false) {
-                        console.log('false')
-                        setCheckChildren([])
-                        setBoolean1(true)
-                    } else {
-                        console.log('true')
-                        setCheckChildren(data)
-                        setBoolean1(false)
-                    }
+            if (checkLength == false) {
+                if (boolean1 == false) {
+                    console.log('false')
+                    setCheckChildren([])
+                    setBoolean1(true)
+                    setCheckLength(false)
                 } else {
-                    console.log(' - 1 ')
-                    newChecked[index - 1] = false;
-                    if (boolean1 == true) {
-                        console.log('true')
+                    console.log('true')
+                    if (dataTacGia.includes(nguoiDang)) {
                         setCheckChildren([])
-                        setBoolean1(false)
+                        setDataTacGia([])
                     } else {
-                        console.log('false')
                         setCheckChildren(data)
-                        setBoolean1(true)
+                        setBoolean1(false)
+                        setCheckLength(true)
                     }
                 }
+            } else {
+                if (boolean1 == true) {
+                    console.log('true')
+                    setCheckChildren([])
+                    setBoolean1(false)
+                    setCheckLength(true)
+                } else {
+                    console.log('false')
+                    if (dataTacGia.includes(nguoiDang)) {
+                        setCheckChildren([])
+                        setDataTacGia([])
+                    } else {
+                        setCheckChildren(data)
+                        setBoolean1(true)
+                        setCheckLength(false)
+                    }
 
-                return newChecked;
-            });
-            // if (boolean1 == false) {
-            //     console.log('false')
-            //     setCheckChildren([])
-            //     setBoolean1(true)
-            // } else {
-            //     console.log('true')
-            //     setCheckChildren(data)
-            //     setBoolean1(false)
-            // }
+                }
+            }
 
         };
         function checkIdChildren(data, index) {
@@ -347,27 +330,46 @@ export default function CustomerCard() {
             return data?.id == checkChildren[index]?.id
         }
 
-        const submitChangeData = (booleanChildren, data, index) => {
-            console.log(checkChildren)
-            console.log(data, index)
-            let values = [...checkChildren]
-            console.log(values)
+        const submitChangeData = (booleanChildren, data, nguoiDang, parentChildren) => {
 
-            let indexw = values.findIndex(_v => _v == data)
-            console.log('indexw', indexw)
-            if (indexw == -1) {
-                console.log(values, 'VALUES')
-                console.log(data, 'data')
+            // console.log(values)
 
-                values.push(data)
+            // console.log('indexw', indexw)
+            if (dataTacGia.includes(nguoiDang)) {
+                let values = [...checkChildren]
+                let indexw = values.findIndex(_v => _v == data)
+                if (indexw == -1) {
+                    values.push(data)
+
+                } else {
+
+                    values = values.filter((_value) => _value != data)
+                    if (checkChildren.length === 1) {
+                        setDataTacGia([])
+                    }
+                }
+                setCheckChildren(values)
 
             } else {
-                console.log('asdasdasd')
 
-                values = values.filter((_value) => _value != data)
+                let a = [...parentChildren]
+
+                let indexw = a.findIndex(_v => _v == data)
+                if (indexw == -1) {
+                    console.log(data, 'data')
+
+                    a.push(data)
+
+                } else {
+                    console.log('asdasdasd')
+
+                    // a = a.filter((_value) => _value != data)
+                }
+                setDataTacGia(nguoiDang)
+                setCheckChildren(a)
             }
-            setCheckChildren(values)
-            console.log(values, ' checlasd')
+
+            // console.log(values, ' checlasd')
         }
 
         return (
@@ -376,8 +378,8 @@ export default function CustomerCard() {
                     label={nguoiDang}
                     control={
                         <Checkbox
-                            checked={checked[parentIndex]}
-                            onChange={(e) => handleChange(boolean1, parentIndex, parentChildren)}
+                            checked={dataTacGia?.includes(nguoiDang)}
+                            onChange={(e) => handleChange(boolean1, checkLength, nguoiDang, parentChildren)}
                         />
                     }
                 />
@@ -385,14 +387,13 @@ export default function CustomerCard() {
                     {parentChildren && Array.isArray(parentChildren) && (
                         <ul className="item-list">
                             {parentChildren.map((data, childIndex) => (<>
-
                                 <CustomListItem
-
+                                    disabled={true}
                                     key={childIndex}
                                     data={data}
                                     onDelete={DeleteCart}
                                     checked={checkChildren.includes(data)}
-                                    onChange={() => submitChangeData(booleanChildren, data, childIndex)}
+                                    onChange={() => submitChangeData(booleanChildren, data, nguoiDang, parentChildren)}
 
                                 // control={
                                 //     <Checkbox
@@ -402,7 +403,6 @@ export default function CustomerCard() {
                                 //     />
                                 // }
                                 />
-
                             </>))}
                         </ul>
                     )}
@@ -424,6 +424,15 @@ export default function CustomerCard() {
     };
 
     const handleNext = () => {
+
+        if (checkChildren.length === 0) {
+            dispatch(TOGGLE_CHECKBOX(checkChildren))
+            iziToast.warning({
+                title: "Vui lòng chọn sản phẩm!!!",
+                position: 'center'
+            })
+            return;
+        }
         let newSkipped = skipped;
         if (isStepSkipped(activeStep)) {
             newSkipped = new Set(newSkipped.values());
@@ -497,8 +506,8 @@ export default function CustomerCard() {
                                         </div>
                                         {children}
                                         <hr className="border-gray-300" />
-                                        <div className="bg-white text-black p-5 rounded-md shadow-md mx-auto">
-                                            <label className="text-lg font-bold pl-80">Chọn khoảng thời gian:</label>
+                                        <div className="bg-white text-black p-4 rounded-md shadow-md">
+                                            <label className="text-lg font-bold">Chọn khoảng thời gian:</label>
                                             <select
                                                 className="p-2 border rounded-md mt-2"
                                                 value={selectedValue}
@@ -510,18 +519,19 @@ export default function CustomerCard() {
                                             </select>
                                         </div>
                                         <br />
+                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
+                                            Thời gian thuê là {selectedValue} ngày:
+                                            {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
+                                        </div>
 
                                         <br />
-                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-1" style={{ textAlign: 'right' }}>
-
-                                            <strong>Tổng tiền:</strong> {SumCart} vnđ
+                                        <h3 className="text-xl leading-none text-red-500 font-semibold mt-auto border-b-2 border-gray-500 pb-2" style={{ textAlign: 'right' }}>
+                                            <strong>Tổng tiền:</strong> {TotalCart} vnđ
                                         </h3>
 
                                         <br />
                                         <div>
-                                            <strong>Lưu ý:</strong><br /><span className='text-amber-500'> &nbsp; + Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (chung người đăng)</span><br />
-                                            <span className='text-amber-500'> &nbsp; + Giá thuê 15 ngày ứng với tiền thuê mỗi sách thêm 10%</span><br />
-                                            <span className='text-amber-500'> &nbsp; + Giá thuê 30 ngày ứng với tiền thuê mỗi sách thêm 15%</span>
+                                            <strong>Lưu ý:</strong><span className='text-amber-500'> &nbsp;Ứng dụng chỉ cho thuê với cùng 1 chủ tiệm (người đăng)</span>
                                         </div>
                                         <br />
 
@@ -552,8 +562,6 @@ export default function CustomerCard() {
                                                     <TextField id="outlined-basic" label="Số điện thoại" variant="outlined"
                                                         value={sdt}
                                                         onChange={(event) => { setSdt(event.target.value) }} />
-                                                    <br />
-
                                                     <label className="block mb-2">
                                                         Tỉnh/Thành phố:
                                                         <Select
@@ -620,6 +628,7 @@ export default function CustomerCard() {
                             <Box sx={{ flex: '1 1 auto' }} />
                             <Button onClick={handleNext}>
                                 {activeStep === steps.length - 1 ? 'Kết thúc' : 'Tiếp'}
+
                             </Button>
                         </Box>
                     </React.Fragment>

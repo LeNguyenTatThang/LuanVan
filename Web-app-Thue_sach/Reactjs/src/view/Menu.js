@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Cart from './Cart';
 import StaggeredDropDown from "../components/StaggeredDropdown";
 import { Outlet } from 'react-router-dom';
+import { apiRentOrder } from "../Service/UserService";
 
 export default function Menu() {
     const userData = useSelector((state) => state.user);
+    const userLogin = useSelector((state) => state.user.userInfo)
+    console.log('Is Login use', userLogin)
+    const [data, setData] = useState();
+    const thongBao = () => {
+        apiRentOrder(userLogin?.id, 0).then(res => {
+            console.log(res.data)
+            if (res?.status === 200) {
+                let a = res?.data?.data?.length
+                console.log(a)
+                setData(a)
+            } else {
+                setData('0')
+            }
+        })
+    }
+
+    useEffect(() => {
+        thongBao();
+    }, [userLogin?.id])
 
     return (
         < >
@@ -34,7 +54,8 @@ export default function Menu() {
                         </Link>
                         {userData.isLogin ? (
                             <div className="col-2 flex items-center">
-                                <StaggeredDropDown userName={userData.userInfo.ten} />
+                                <StaggeredDropDown userName={userData.userInfo.ten} count={data} />
+
                                 <Cart />
                             </div>
                         ) : (

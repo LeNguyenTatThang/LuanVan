@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { apiCancel, apiCompleted, apiConfirmRentOne, apiConfirmRentThree, apiConfirmRental, apiHuyDon1, apiHuyDon2, apiOrderFour, apiOrderThree, apiPostRent, apiPostRentOne, apiPostRentTwo, apiRentOrder, apiRentOrderFour, apiRentOrderOne, apiRentOrderThree, apiRentOrderTwo } from '../Service/UserService';
 import iziToast from 'izitoast';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-import { ADD_DATA } from '../app/userCard';
 //hiển thị ngày được chuyển đổi từ chuỗi ngày-giờ 
 
 const Manager = () => {
@@ -147,8 +146,7 @@ const Manager = () => {
 
     //apiRentOrder xác nhận của chủ tiệm
     const [RentOrder, setRentOrder] = useState([]);
-    const dispatch = useDispatch();
-    dispatch(ADD_DATA(RentOrder))
+
     let chutiem_id = userData.userInfo.id
     const callRentOrder = async () => {
         let res = await apiRentOrder(chutiem_id, 0);

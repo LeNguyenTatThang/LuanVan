@@ -9,12 +9,14 @@ function DetailChapter() {
     const { sach_id, chuong: initialChuong } = useParams();
     const [chuong, setChuong] = useState(initialChuong);
     const navigate = useNavigate();
-
+    const [total, setTotal] = useState()
     const response = async () => {
         let res = await callApiChapter(sach_id, chuong);
         setChapterData(res.data);
+        console.log(res.ChapterCount)
+        setTotal(res.ChapterCount)
     };
-
+    console.log(total)
     useEffect(() => {
         response();
         detailBook();
@@ -62,9 +64,16 @@ function DetailChapter() {
                     <input
                         type="number"
                         value={chuong}
-                        onChange={(e) => setChuong(e.target.value)}
+                        onChange={(e) => {
+                            // Kiểm tra xem giá trị mới có nằm trong khoảng từ 1 đến total không
+                            const newValue = Math.max(1, Math.min(e.target.value, total));
+
+                            // Cập nhật giá trị của chuong
+                            setChuong(newValue);
+                        }}
                         className="border rounded p-2 w-full"
                     />
+
                 </div>
 
             </div>

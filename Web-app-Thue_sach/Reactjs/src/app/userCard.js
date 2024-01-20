@@ -7,7 +7,7 @@ const INITIAL_STATE = {
     category: [],
     count: [],
     cart: [],
-    search: [],
+    check: [],
 };
 
 const userCard = createSlice({
@@ -49,13 +49,20 @@ const userCard = createSlice({
             };
         },
         TOGGLE_CHECKBOX: (state, action) => {
-            const { productId, isChecked } = action.payload;
-            const updatedCart = state.cart.map((item) =>
-                item.id === productId ? { ...item, isChecked } : item
+            const product = action.payload;
+            // Check if Item is in cart already
+            const inCart = state.cart.find((item) =>
+                item.id === product.id ? true : false
             );
             return {
                 ...state,
-                cart: updatedCart,
+                check: inCart
+                    ? state.cart.map((item) =>
+                        item.id === product.id
+                            ? { ...item, qty: item.qty + product.qty }
+                            : item
+                    )
+                    : [...state.cart, { ...product }],
             };
         },
         ADD_DATA: (state, action) => {

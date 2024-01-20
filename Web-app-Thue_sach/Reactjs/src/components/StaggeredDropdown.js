@@ -1,26 +1,12 @@
 import React, { useState } from "react";
 import { FiEdit, FiChevronDown, FiTrash, FiShare, FiPlusSquare } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import iziToast from "izitoast";
-import { LOG_OUT } from "../app/userReducer";
-import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Logout from "../view/Logout";
 
-const StaggeredDropDown = ({ userName }) => {
+const StaggeredDropDown = ({ userName, count }) => {
     const [open, setOpen] = useState(false);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const handleLogout = async (e) => {
-        alert('ok')
-        // navigate('/');
-        // iziToast.success({
-        //     position: 'topRight',
-        //     message: 'Bạn đã đăng xuất'
-        // });
-        // await dispatch(LOG_OUT());
-    };
-    const count = useSelector((state) => state.shop.count);
+    console.log('gg', count)
     return (
         <div className=" flex items-center justify-center">
             <motion.div animate={open ? "open" : "closed"} className="relative">
@@ -45,9 +31,12 @@ const StaggeredDropDown = ({ userName }) => {
                     <motion.span variants={iconVariants}>
                         <FiChevronDown />
                     </motion.span>
-                    <div className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs p-1 rounded-full">
-                        {count.length === 0 ? <></> : <>{count.length}</>}
-                    </div>
+                    {count === '0' ? <>
+
+                    </> : <>
+                        <div className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs p-1 rounded-full">
+                            {count}
+                        </div></>}
                 </button>
 
                 <motion.ul
