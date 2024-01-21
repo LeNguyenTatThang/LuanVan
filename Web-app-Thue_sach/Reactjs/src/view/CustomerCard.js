@@ -521,7 +521,7 @@ export default function CustomerCard() {
                                         <br />
                                         <div className="inline-flex items-center text-base font-semibold text-gray-900 px-3">
                                             Thời gian thuê là {selectedValue} ngày:
-                                            {selectedValue === '7' ? '+ 5%' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
+                                            {selectedValue === '7' ? 'Giá gốc' : selectedValue === '15' ? '+ 10%' : selectedValue === '30' ? '+ 15%' : ''} với mỗi quyển sách
                                         </div>
 
                                         <br />
