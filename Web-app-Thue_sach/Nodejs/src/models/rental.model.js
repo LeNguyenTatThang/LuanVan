@@ -276,6 +276,38 @@ rental.upStatus4 = (data) => {
     })
 }
 
+rental.upStatuskotrahang = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let dataRental = {};
+            let trangthai = 4;
+            let sqlRental = 'UPDATE phieuthue set trangthai = ? WHERE id = ?'
+            let check = await checkRental(id)
+            if (check) {
+                const [result, fields] = await pool.execute(sqlRental, [trangthai, id])
+                if (result) {
+                    dataRental = {
+                        errcode: 0,
+                        message: 'thành công'
+                    }
+                } else {
+                    dataRental = {
+                        errcode: 1,
+                        message: 'thất bại'
+                    }
+                }
+            } else {
+                dataRental = {
+                    errcode: 2,
+                    message: 'phiếu thuê không tồn tại'
+                }
+            }
+            resolve(dataRental)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 //hủy phiếu thuê
 rental.upStatus5 = (data) => {

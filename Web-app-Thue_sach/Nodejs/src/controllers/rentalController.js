@@ -249,6 +249,20 @@ const received = async (req, res) => {
                 }
                 job5.cancel();
             });
+            const job6 = schedule.scheduleJob(new Date(currentTime.getTime() + 1 * 60 * 1000), async () => {
+                let checkStatus = await rental.checkRentalStatus(rentalData.id)
+                if (checkStatus) {
+                    let message = "đơn hàng đã không được trả về"
+                    let dataMsg = await rental.updateMessage(rentalData.id, message)
+                    if (dataMsg.errcode === 0) {
+                        let update = await rental.upStatuskotrahang(rentalData.id)
+                        console.log(message);
+                    } else {
+                        console.log('Lỗi khi cập nhật thông báo');
+                    }
+                }
+                job6.cancel();
+            });
             // const updateStatus3 = schedule.scheduleJob('*/3 * * * *', async () => {
             //     //chuyển sang trạng thái chờ trả
             //     let update = await rental.upStatus3(rentalData.id)
@@ -693,7 +707,6 @@ const rentalOrders4 = async (req, res) => {
 const rentalOrders5 = async (req, res) => {
     try {
         let rentalData = req.body
-        console.log('ddd0', rentalData)
         rentalData.trangthai = 5
         let data = await rental.getRentOrder(rentalData)
         if (data.errcode === 0) {
